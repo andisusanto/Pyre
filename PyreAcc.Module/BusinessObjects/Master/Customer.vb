@@ -93,6 +93,19 @@ Public Class Customer
             Return GetCollection(Of CreditNote)("CreditNotes")
         End Get
     End Property
+    <Association("Customer-CustomerContactInformation"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Contacts As XPCollection(Of CustomerContactInformation)
+        Get
+            Return GetCollection(Of CustomerContactInformation)("Contacts")
+        End Get
+    End Property
+
+    <Association("Customer-CustomerContactPerson"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property ContactPersons As XPCollection(Of CustomerContactPerson)
+        Get
+            Return GetCollection(Of CustomerContactPerson)("ContactPersons")
+        End Get
+    End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return Name

@@ -27,6 +27,7 @@ Public Class SupplierContactInformation
     End Sub
     Private _supplier As Supplier
     Private _contactInformation As ContactInformation
+    <Association("Supplier-SupplierContactInformation")>
     <RuleRequiredField("Rule Required for SupplierContactInformation.Supplier", DefaultContexts.Save)>
     Public Property Supplier As Supplier
         Get

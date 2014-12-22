@@ -47,6 +47,13 @@ Public Class ContactPerson
         End Set
     End Property
 
+    <Association("ContactPerson-ContactPersonContactInformation"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Contacts As XPCollection(Of ContactPersonContactInformation)
+        Get
+            Return GetCollection(Of ContactPersonContactInformation)("Contacts")
+        End Get
+    End Property
+
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return Name

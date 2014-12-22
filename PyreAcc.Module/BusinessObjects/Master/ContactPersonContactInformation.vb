@@ -29,6 +29,7 @@ Public Class ContactPersonContactInformation
     Private _contactPerson As ContactPerson
     Private _contactInformation As ContactInformation
 
+    <Association("ContactPerson-ContactPersonContactInformation")>
     <RuleRequiredField("Rule Required for ContactPersonContactInformation.ContactPerson", DefaultContexts.Save)>
     Public Property ContactPerson As ContactPerson
         Get

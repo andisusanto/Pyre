@@ -27,6 +27,7 @@ Public Class CustomerContactInformation
     End Sub
     Private _customer As Customer
     Private _contactInformation As ContactInformation
+    <Association("Customer-CustomerContactInformation")>
     <RuleRequiredField("Rule Required for CustomerContactInformation.Customer", DefaultContexts.Save)>
     Public Property Customer As Customer
         Get

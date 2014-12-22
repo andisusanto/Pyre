@@ -25,7 +25,7 @@
   <ImageSources>
     <AssemblyResourceImageSource AssemblyName="Report.Module" IsNewNode="True" />
   </ImageSources>
-  <NavigationItems>
+  <NavigationItems StartupNavigationItem="Inventory_ListView">
     <Items>
       <Item Id="Default" Visible="False" Index="-1">
         <Items>
@@ -127,4 +127,101 @@
     <SchemaModule Name="CloneObjectModule" Version="14.1.8.0" IsNewNode="True" />
     <SchemaModule Name="SystemModule" Version="14.1.8.0" IsNewNode="True" />
   </SchemaModules>
+  <Views>
+    <DetailView Id="ContactPersonContactInformation_DetailView">
+      <Items>
+        <PropertyEditor Id="ContactInformation.ContactNo" PropertyName="ContactInformation.ContactNo" IsNewNode="True" />
+        <PropertyEditor Id="ContactInformation.ContactType" PropertyName="ContactInformation.ContactType" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="11.838006230529595">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="ContactPersonContactInformation" Direction="Vertical" RelativeSize="100" Caption="Contact Information">
+              <LayoutItem Id="ContactInformation.ContactType" ViewItem="ContactInformation.ContactType" SizeConstraintsType="Default" Index="0" RelativeSize="100" IsNewNode="True" />
+              <LayoutItem Id="ContactInformation" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutItem Id="ContactInformation.ContactNo" ViewItem="ContactInformation.ContactNo" SizeConstraintsType="Default" Index="1" RelativeSize="88.1619937694704" IsNewNode="True" />
+      </Layout>
+    </DetailView>
+    <DetailView Id="CustomerContactInformation_DetailView">
+      <Items>
+        <PropertyEditor Id="ContactInformation.ContactNo" PropertyName="ContactInformation.ContactNo" IsNewNode="True" />
+        <PropertyEditor Id="ContactInformation.ContactType" PropertyName="ContactInformation.ContactType" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="7.6923076923076925">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="CustomerContactInformation" Direction="Vertical" RelativeSize="100" Caption="Contact Information">
+              <LayoutItem Id="ContactInformation.ContactType" ViewItem="ContactInformation.ContactType" SizeConstraintsType="Default" Index="0" RelativeSize="100" IsNewNode="True" />
+              <LayoutItem Id="ContactInformation" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutItem Id="ContactInformation.ContactNo" ViewItem="ContactInformation.ContactNo" SizeConstraintsType="Default" Index="1" RelativeSize="92.3076923076923" IsNewNode="True" />
+      </Layout>
+    </DetailView>
+    <DetailView Id="CustomerContactPerson_DetailView">
+      <Items>
+        <PropertyEditor Id="ContactPerson.Contacts" PropertyName="ContactPerson.Contacts" IsNewNode="True" />
+        <PropertyEditor Id="ContactPerson.Name" PropertyName="ContactPerson.Name" IsNewNode="True" />
+        <PropertyEditor Id="ContactPerson.PositionTitle" PropertyName="ContactPerson.PositionTitle" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="7.6923076923076925">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="CustomerContactPerson" RelativeSize="100" Caption="CustomerContactPerson">
+              <LayoutItem Id="Note" SizeConstraintsType="Default" RelativeSize="100" />
+              <LayoutItem Id="ContactPerson" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutItem Id="ContactPerson.Name" ViewItem="ContactPerson.Name" SizeConstraintsType="Default" Index="1" RelativeSize="4.8582995951417" IsNewNode="True" />
+        <LayoutItem Id="ContactPerson.PositionTitle" ViewItem="ContactPerson.PositionTitle" SizeConstraintsType="Default" Index="2" RelativeSize="4.8582995951417" IsNewNode="True" />
+        <LayoutGroup Id="Item1" ShowCaption="True" CaptionLocation="Top" Index="3" RelativeSize="82.5910931174089" Caption="Contacts" IsNewNode="True">
+          <LayoutItem Id="ContactPerson.Contacts" ViewItem="ContactPerson.Contacts" SizeConstraintsType="Default" Index="0" RelativeSize="100" ShowCaption="False" IsNewNode="True" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="SupplierContactInformation_DetailView">
+      <Items>
+        <PropertyEditor Id="ContactInformation.ContactNo" PropertyName="ContactInformation.ContactNo" IsNewNode="True" />
+        <PropertyEditor Id="ContactInformation.ContactType" PropertyName="ContactInformation.ContactType" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="7.6923076923076925">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="SupplierContactInformation" Direction="Vertical" RelativeSize="100" Caption="Contact Information">
+              <LayoutItem Id="ContactInformation.ContactType" ViewItem="ContactInformation.ContactType" SizeConstraintsType="Default" Index="0" RelativeSize="100" IsNewNode="True" />
+              <LayoutItem Id="ContactInformation" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutItem Id="ContactInformation.ContactNo" ViewItem="ContactInformation.ContactNo" SizeConstraintsType="Default" Index="1" RelativeSize="92.3076923076923" IsNewNode="True" />
+      </Layout>
+    </DetailView>
+    <DetailView Id="SupplierContactPerson_DetailView">
+      <Items>
+        <PropertyEditor Id="ContactPerson.Contacts" PropertyName="ContactPerson.Contacts" IsNewNode="True" />
+        <PropertyEditor Id="ContactPerson.Name" PropertyName="ContactPerson.Name" IsNewNode="True" />
+        <PropertyEditor Id="ContactPerson.PositionTitle" PropertyName="ContactPerson.PositionTitle" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="12.550607287449394">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="SupplierContactPerson" RelativeSize="100">
+              <LayoutItem Id="Note" SizeConstraintsType="Default" RelativeSize="48.387096774193552" />
+              <LayoutItem Id="ContactPerson" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutItem Id="ContactPerson.Name" ViewItem="ContactPerson.Name" SizeConstraintsType="Default" Index="1" RelativeSize="4.8582995951417" IsNewNode="True" />
+        <LayoutItem Id="ContactPerson.PositionTitle" ViewItem="ContactPerson.PositionTitle" SizeConstraintsType="Default" Index="2" RelativeSize="4.8582995951417" IsNewNode="True" />
+        <LayoutGroup Id="Item1" ShowCaption="True" CaptionLocation="Top" Index="3" RelativeSize="77.7327935222672" Caption="Contacts" IsNewNode="True">
+          <LayoutItem Id="ContactPerson.Contacts" ViewItem="ContactPerson.Contacts" SizeConstraintsType="Default" Index="0" RelativeSize="100" ShowCaption="False" IsNewNode="True" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+  </Views>
 </Application>

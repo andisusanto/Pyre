@@ -63,6 +63,20 @@ Public Class Supplier
             Return GetCollection(Of DebitNote)("DebitNotes")
         End Get
     End Property
+
+    <Association("Supplier-SupplierContactInformation"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Contacts As XPCollection(Of SupplierContactInformation)
+        Get
+            Return GetCollection(Of SupplierContactInformation)("Contacts")
+        End Get
+    End Property
+
+    <Association("Supplier-SupplierContactPerson"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property ContactPersons As XPCollection(Of SupplierContactPerson)
+        Get
+            Return GetCollection(Of SupplierContactPerson)("ContactPersons")
+        End Get
+    End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return Name

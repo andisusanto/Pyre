@@ -26,6 +26,7 @@ Public Class CustomerContactPerson
     Private _customer As Customer
     Private _note As String
     Private _contactPerson As ContactPerson
+    <Association("Customer-CustomerContactPerson")>
     <RuleRequiredField("Rule Required for CustomerContactPerson.Customer", DefaultContexts.Save)>
     Public Property Customer As Customer
         Get
