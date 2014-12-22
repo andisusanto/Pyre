@@ -148,6 +148,7 @@
     <Compile Include="BusinessObjects\Master\Brand.vb" />
     <Compile Include="BusinessObjects\Master\Customer.vb" />
     <Compile Include="BusinessObjects\Master\CustomerContactInformation.vb" />
+    <Compile Include="BusinessObjects\Master\CustomerContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\Inventory.vb" />
     <Compile Include="BusinessObjects\Master\InventoryItem.vb" />
     <Compile Include="BusinessObjects\Master\InventoryItemDeductTransaction.vb" />
@@ -159,6 +160,7 @@
     <Compile Include="BusinessObjects\Master\Salesman.vb" />
     <Compile Include="BusinessObjects\Master\Supplier.vb" />
     <Compile Include="BusinessObjects\Master\SupplierContactInformation.vb" />
+    <Compile Include="BusinessObjects\Master\SupplierContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\Unit.vb" />
     <Compile Include="BusinessObjects\Services\InventoryServices.vb" />
     <Compile Include="BusinessObjects\System\AutoNo.vb" />
