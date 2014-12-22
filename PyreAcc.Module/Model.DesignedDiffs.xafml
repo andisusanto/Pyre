@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Title="PyreAcc" Logo="ExpressAppLogo">
+  <BOModel>
+    <Class Name="PyreAcc.Module.AutoNo" ImageName="AutoNumber" />
+    <Class Name="PyreAcc.Module.AutoNoDetail" ImageName="AutoNumber" />
+    <Class Name="PyreAcc.Module.Category" ImageName="BO_Category" />
+    <Class Name="PyreAcc.Module.ContactInformation" ImageName="BO_Contact" />
+    <Class Name="PyreAcc.Module.ContactPerson" ImageName="BO_Lead" />
+    <Class Name="PyreAcc.Module.ContactPersonContactInformation" ImageName="BO_Contact" />
+    <Class Name="PyreAcc.Module.ContactType" ImageName="BO_Contact" />
+    <Class Name="PyreAcc.Module.Customer" ImageName="BO_Customer" />
+    <Class Name="PyreAcc.Module.CustomerContactInformation" ImageName="BO_Contact" />
+    <Class Name="PyreAcc.Module.Item" ImageName="BO_Product" />
+    <Class Name="PyreAcc.Module.ItemPrice" ImageName="BO_Sale_v92" />
+    <Class Name="PyreAcc.Module.ItemPriceMutation" ImageName="BO_Sale_Item_v92" />
+    <Class Name="PyreAcc.Module.PurchaseInvoice" ImageName="BO_Invoice" />
+    <Class Name="PyreAcc.Module.PurchaseInvoiceDetail" ImageName="BO_Invoice" />
+    <Class Name="PyreAcc.Module.SalesInvoice" ImageName="BO_Invoice" />
+    <Class Name="PyreAcc.Module.SalesInvoiceDetail" ImageName="BO_Invoice" />
+    <Class Name="PyreAcc.Module.Salesman" ImageName="BO_Employee" />
+    <Class Name="PyreAcc.Module.Supplier" ImageName="BO_Lead" />
+    <Class Name="PyreAcc.Module.SupplierContactInformation" ImageName="BO_Contact" />
+    <Class Name="PyreAcc.Module.SystemConfig" ImageName="Setup" />
+  </BOModel>
+  <ImageSources>
+    <AssemblyResourceImageSource AssemblyName="Report.Module" IsNewNode="True" />
+  </ImageSources>
+  <NavigationItems>
+    <Items>
+      <Item Id="Default" Visible="False" Index="-1">
+        <Items>
+          <Item Id="ApplicationRole_ListView" Removed="True" />
+          <Item Id="ApplicationUser_ListView" Removed="True" />
+          <Item Id="AutoNo_ListView" Removed="True" />
+          <Item Id="Brand_ListView" Removed="True" />
+          <Item Id="Category_ListView" Removed="True" />
+          <Item Id="CompanyInformation_ListView" Removed="True" />
+          <Item Id="ContactPerson_ListView" Removed="True" />
+          <Item Id="ContactType_ListView" Removed="True" />
+          <Item Id="CreditNote_ListView" Removed="True" />
+          <Item Id="Customer_ListView" Removed="True" />
+          <Item Id="DebitNote_ListView" Removed="True" />
+          <Item Id="Inventory_ListView" Removed="True" />
+          <Item Id="Item_ListView" Removed="True" />
+          <Item Id="ItemPriceMutation_ListView" Removed="True" />
+          <Item Id="Location_ListView" Removed="True" />
+          <Item Id="PurchaseInvoice_ListView" Removed="True" />
+          <Item Id="PurchasePayment_ListView" Removed="True" />
+          <Item Id="PurchaseReturn_ListView" Removed="True" />
+          <Item Id="Query_ListView" Removed="True" />
+          <Item Id="Report_ListView" Removed="True" />
+          <Item Id="ReportConfiguration_ListView" Removed="True" />
+          <Item Id="SalesInvoice_ListView" Removed="True" />
+          <Item Id="Salesman_ListView" Removed="True" />
+          <Item Id="SalesPayment_ListView" Removed="True" />
+          <Item Id="SalesReturn_ListView" Removed="True" />
+          <Item Id="StockMutation_ListView" Removed="True" />
+          <Item Id="Supplier_ListView" Removed="True" />
+          <Item Id="SystemConfig_ListView" Removed="True" />
+          <Item Id="Unit_ListView" Removed="True" />
+        </Items>
+      </Item>
+      <Item Id="@12ec2c38-baab-4840-a83d-e84d3a6a94cc" Caption="Transaction" Index="0" ChildItemsDisplayStyle="List" IsNewNode="True">
+        <Items IsNewNode="True">
+          <Item Id="Purchase" Index="1" IsNewNode="True">
+            <Items IsNewNode="True">
+              <Item Id="DebitNote_ListView" ViewId="DebitNote_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="PurchaseInvoice_ListView" ViewId="PurchaseInvoice_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="PurchasePayment_ListView" ViewId="PurchasePayment_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="PurchaseReturn_ListView" ViewId="PurchaseReturn_ListView" ObjectKey="" IsNewNode="True" />
+            </Items>
+          </Item>
+          <Item Id="Sales" Index="2" IsNewNode="True">
+            <Items IsNewNode="True">
+              <Item Id="CreditNote_ListView" ViewId="CreditNote_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="SalesInvoice_ListView" ViewId="SalesInvoice_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="SalesPayment_ListView" ViewId="SalesPayment_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="SalesReturn_ListView" ViewId="SalesReturn_ListView" ObjectKey="" IsNewNode="True" />
+            </Items>
+          </Item>
+          <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="StockMutation_ListView" ViewId="StockMutation_ListView" ObjectKey="" IsNewNode="True" />
+        </Items>
+      </Item>
+      <Item Id="@e54db6c4-d4c2-4e03-8f61-abc8550b6ff2" Caption="Master" Index="1" ChildItemsDisplayStyle="List" IsNewNode="True">
+        <Items IsNewNode="True">
+          <Item Id="Inventory_ListView" ViewId="Inventory_ListView" ObjectKey="" Index="0" IsNewNode="True" />
+          <Item Id="Item_ListView" ViewId="Item_ListView" ObjectKey="" Index="1" IsNewNode="True" />
+          <Item Id="Customer_ListView" ViewId="Customer_ListView" ObjectKey="" Index="2" IsNewNode="True" />
+          <Item Id="Supplier_ListView" ViewId="Supplier_ListView" ObjectKey="" Index="3" IsNewNode="True" />
+          <Item Id="Salesman_ListView" ViewId="Salesman_ListView" ObjectKey="" Index="4" IsNewNode="True" />
+          <Item Id="Brand_ListView" ViewId="Brand_ListView" ObjectKey="" Index="5" IsNewNode="True" />
+          <Item Id="Category_ListView" ViewId="Category_ListView" ObjectKey="" Index="6" IsNewNode="True" />
+          <Item Id="ContactType_ListView" ViewId="ContactType_ListView" ObjectKey="" Index="7" IsNewNode="True" />
+          <Item Id="Location_ListView" ViewId="Location_ListView" ObjectKey="" Index="8" IsNewNode="True" />
+          <Item Id="Unit_ListView" ViewId="Unit_ListView" ObjectKey="" Index="9" IsNewNode="True" />
+          <Item Id="ContactPerson_ListView" ViewId="ContactPerson_ListView" ObjectKey="" Index="10" IsNewNode="True" />
+        </Items>
+      </Item>
+      <Item Id="@63726291-c60d-42ca-9afe-ad4e324fa107" Caption="System" Index="2" ChildItemsDisplayStyle="List" IsNewNode="True">
+        <Items IsNewNode="True">
+          <Item Id="Configuration" IsNewNode="True">
+            <Items IsNewNode="True">
+              <Item Id="AutoNo_ListView" ViewId="AutoNo_ListView" ObjectKey="" Index="1" IsNewNode="True" />
+              <Item Id="SystemConfig_ListView" ViewId="SystemConfig_ListView" ObjectKey="" Index="2" IsNewNode="True" />
+              <Item Id="CompanyInformation_ListView" ViewId="CompanyInformation_ListView" ObjectKey="" Index="3" IsNewNode="True" />
+              <Item Id="ReportConfiguration_ListView" ObjectKey="" ViewId="ReportConfiguration_DetailView" Index="4" IsNewNode="True" />
+            </Items>
+          </Item>
+          <Item Id="Report" IsNewNode="True">
+            <Items IsNewNode="True">
+              <Item Id="Query_ListView" ViewId="Query_ListView" ObjectKey="" Index="1" IsNewNode="True" />
+              <Item Id="Report_ListView" ViewId="Report_ListView" ObjectKey="" Index="2" IsNewNode="True" />
+            </Items>
+          </Item>
+          <Item Id="Security" IsNewNode="True">
+            <Items IsNewNode="True">
+              <Item Id="ApplicationRole_ListView" ViewId="ApplicationRole_ListView" ObjectKey="" Index="1" IsNewNode="True" />
+              <Item Id="ApplicationUser_ListView" ViewId="ApplicationUser_ListView" ObjectKey="" Index="2" IsNewNode="True" />
+            </Items>
+          </Item>
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
+  <SchemaModules>
+    <SchemaModule Name="CloneObjectModule" Version="14.1.8.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="14.1.8.0" IsNewNode="True" />
+  </SchemaModules>
+</Application>

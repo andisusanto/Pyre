@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F622EA3C-2609-4BB3-B589-6B1F2CFBB035}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PyreAcc.Module</RootNamespace>
+    <AssemblyName>PyreAcc.Module</AssemblyName>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>PyreAcc.Module.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>PyreAcc.Module.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EasyTest|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\EasyTest\</OutputPath>
+    <DocumentationFile>PyreAcc.Module.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>EASYTEST</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.ExpressApp.AuditTrail.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.ExpressApp.CloneObject.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.ExpressApp.ConditionalAppearance.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.ExpressApp.Security.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.ExpressApp.Validation.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.ExpressApp.Xpo.v14.1">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v14.1.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.v14.1">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.v14.1">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Persistent.Base.v14.1">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Persistent.BaseImpl.v14.1">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v14.1">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Evaluator">
+      <HintPath>..\DLL\Evaluator.dll</HintPath>
+    </Reference>
+    <Reference Include="Report.Module">
+      <HintPath>..\DLL\Report.Module.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessObjects\Base\AppBase.vb" />
+    <Compile Include="BusinessObjects\Base\TransactionBase.vb" />
+    <Compile Include="BusinessObjects\Master\Category.vb" />
+    <Compile Include="BusinessObjects\Master\ContactInformation.vb" />
+    <Compile Include="BusinessObjects\Master\ContactPerson.vb" />
+    <Compile Include="BusinessObjects\Master\ContactPersonContactInformation.vb" />
+    <Compile Include="BusinessObjects\Master\ContactType.vb" />
+    <Compile Include="BusinessObjects\Master\Brand.vb" />
+    <Compile Include="BusinessObjects\Master\Customer.vb" />
+    <Compile Include="BusinessObjects\Master\CustomerContactInformation.vb" />
+    <Compile Include="BusinessObjects\Master\Inventory.vb" />
+    <Compile Include="BusinessObjects\Master\InventoryItem.vb" />
+    <Compile Include="BusinessObjects\Master\InventoryItemDeductTransaction.vb" />
+    <Compile Include="BusinessObjects\Master\InventoryItemDeductTransactionDetail.vb" />
+    <Compile Include="BusinessObjects\Master\Item.vb" />
+    <Compile Include="BusinessObjects\Master\ItemPrice.vb" />
+    <Compile Include="BusinessObjects\Master\ItemUnit.vb" />
+    <Compile Include="BusinessObjects\Master\Location.vb" />
+    <Compile Include="BusinessObjects\Master\Salesman.vb" />
+    <Compile Include="BusinessObjects\Master\Supplier.vb" />
+    <Compile Include="BusinessObjects\Master\SupplierContactInformation.vb" />
+    <Compile Include="BusinessObjects\Master\Unit.vb" />
+    <Compile Include="BusinessObjects\Services\InventoryServices.vb" />
+    <Compile Include="BusinessObjects\System\AutoNo.vb" />
+    <Compile Include="BusinessObjects\System\AutoNoDetail.vb" />
+    <Compile Include="BusinessObjects\System\CompanyInformation.vb" />
+    <Compile Include="BusinessObjects\System\Security\ApplicationRole.vb" />
+    <Compile Include="BusinessObjects\System\Security\ApplicationUser.vb" />
+    <Compile Include="BusinessObjects\System\SystemConfig.vb" />
+    <Compile Include="BusinessObjects\Transaction\CreditNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\DebitNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\InventoryItemAdjustment.vb" />
+    <Compile Include="BusinessObjects\Transaction\ItemPriceMutation.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchaseInvoice.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchaseInvoiceDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchasePayment.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchasePaymentDebitNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchasePaymentDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchaseReturn.vb" />
+    <Compile Include="BusinessObjects\Transaction\PurchaseReturnDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesInvoice.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesInvoiceBonusItem.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesInvoiceDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesPayment.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesPaymentCreditNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesPaymentDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesReturn.vb" />
+    <Compile Include="BusinessObjects\Transaction\SalesReturnDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\StockMutation.vb" />
+    <Compile Include="Controllers\AutoNoController.Designer.vb">
+      <DependentUpon>AutoNoController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\AutoNoController.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\TransactionBaseController.Designer.vb">
+      <DependentUpon>TransactionBaseController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\TransactionBaseController.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Global\GlobalFunction.vb" />
+    <Compile Include="Global\GlobalVar.vb" />
+    <Compile Include="Module.Designer.vb">
+      <DependentUpon>Module.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Module.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="DatabaseUpdate\Updater.vb" />
+    <Compile Include="Nonpersistent\PopUpNote.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controllers\AutoNoController.resx">
+      <DependentUpon>AutoNoController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\TransactionBaseController.resx">
+      <DependentUpon>TransactionBaseController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Module.resx">
+      <DependentUpon>Module.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BusinessObjects\ReadMe.txt" />
+    <None Include="Controllers\ReadMe.txt" />
+    <None Include="FunctionalTests\Sample.ets" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DatabaseUpdate\ReadMe.txt" />
+    <None Include="FunctionalTests\ReadMe.txt" />
+    <None Include="Images\ReadMe.txt" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FunctionalTests\Config.xml" />
+    <EmbeddedResource Include="Images\Images.AutoNumber.png" />
+    <EmbeddedResource Include="Images\Images.AutoNumber_Large.png" />
+    <EmbeddedResource Include="Images\Images.Cancel.png" />
+    <EmbeddedResource Include="Images\Images.Cancel_Large.png" />
+    <EmbeddedResource Include="Images\Images.Cleared.png" />
+    <EmbeddedResource Include="Images\Images.Cleared_Large.png" />
+    <EmbeddedResource Include="Images\Images.Config.png" />
+    <EmbeddedResource Include="Images\Images.Config_Large.png" />
+    <EmbeddedResource Include="Images\Images.Full.png" />
+    <EmbeddedResource Include="Images\Images.Full_Large.png" />
+    <EmbeddedResource Include="Images\Images.Invoice.png" />
+    <EmbeddedResource Include="Images\Images.Invoice_Large.png" />
+    <EmbeddedResource Include="Images\Images.Master.png" />
+    <EmbeddedResource Include="Images\Images.Master_Large.png" />
+    <EmbeddedResource Include="Images\Images.Order.png" />
+    <EmbeddedResource Include="Images\Images.Order_Large.png" />
+    <EmbeddedResource Include="Images\Images.Partial.png" />
+    <EmbeddedResource Include="Images\Images.Partial_Large.png" />
+    <EmbeddedResource Include="Images\Images.Recalculate.png" />
+    <EmbeddedResource Include="Images\Images.Recalculate_Large.png" />
+    <EmbeddedResource Include="Images\Images.SetAsClear.png" />
+    <EmbeddedResource Include="Images\Images.SetAsClear_Large.png" />
+    <EmbeddedResource Include="Images\Images.Setup.png" />
+    <EmbeddedResource Include="Images\Images.Setup_Large.png" />
+    <EmbeddedResource Include="Images\Images.Stamp.png" />
+    <EmbeddedResource Include="Images\Images.Stamp_Large.png" />
+    <EmbeddedResource Include="Images\Images.Submit.png" />
+    <EmbeddedResource Include="Images\Images.Submit_Large.png" />
+    <EmbeddedResource Include="Images\Images.System.png" />
+    <EmbeddedResource Include="Images\Images.System_Large.png" />
+    <EmbeddedResource Include="Images\Images.Transaction.png" />
+    <EmbeddedResource Include="Images\Images.Transaction_Large.png" />
+    <EmbeddedResource Include="Images\Images.Wizard.png" />
+    <EmbeddedResource Include="Images\Images.Wizard_Large.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

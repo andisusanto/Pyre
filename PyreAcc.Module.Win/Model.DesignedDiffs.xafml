@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <SchemaModules>
+    <SchemaModule Name="CloneObjectModule" Version="14.1.8.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="14.1.8.0" IsNewNode="True" />
+    <SchemaModule Name="SystemWindowsFormsModule" Version="14.1.8.0" IsNewNode="True" />
+  </SchemaModules>
+  <ViewItems>
+    <PropertyEditor Name="PropertyEditors">
+      <RegisteredPropertyEditor PropertyType="System.Decimal" DefaultDisplayFormat="{0:###,###,###,###,##0.######################}" DefaultEditMask="###,###,###,###,##0.######################" />
+      <RegisteredPropertyEditor PropertyType="System.Double" DefaultDisplayFormat="{0:###,###,###,###,##0.######################}" DefaultEditMask="###,###,###,###,##0.######################" />
+    </PropertyEditor>
+  </ViewItems>
+</Application>
