@@ -37,6 +37,7 @@ Public Class PurchaseReturn
     Private _transDate As Date
     Private _supplier As Supplier
     Private _total As Decimal
+    Private _inventory As Inventory
     Private _debitNote As DebitNote
     <RuleRequiredField("Rule Required for PurchaseReturn.No", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for PurchaseReturn.No", DefaultContexts.Save)>
@@ -73,6 +74,15 @@ Public Class PurchaseReturn
         End Get
         Set(value As Decimal)
             SetPropertyValue("Total", _total, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for PurchaseReturn.Inventory", DefaultContexts.Save)>
+    Public Property Inventory As Inventory
+        Get
+            Return _inventory
+        End Get
+        Set(value As Inventory)
+            SetPropertyValue("Inventory", _inventory, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>

@@ -25,13 +25,14 @@ Partial Public Class PyreAccAspNetModule
 	''' the contents of this method with the code editor.
 	''' </summary>
 	Private Sub InitializeComponent()
-		'
-		'PyreAccAspNetModule
-		'
-		Me.RequiredModuleTypes.Add(GetType(PyreAcc.[Module].PyreAccModule))
+        '
+        'PyreAccAspNetModule
+        '
+        Me.RequiredModuleTypes.Add(GetType(PyreAcc.[Module].PyreAccModule))
         Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.Web.SystemModule.SystemAspNetModule))
+        Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.TreeListEditors.Web.TreeListEditorsAspNetModule))
 
-	End Sub
+    End Sub
 
 #End Region
 End Class

@@ -140,12 +140,14 @@
   <ItemGroup>
     <Compile Include="BusinessObjects\Base\AppBase.vb" />
     <Compile Include="BusinessObjects\Base\TransactionBase.vb" />
+    <Compile Include="BusinessObjects\Master\Account.vb" />
     <Compile Include="BusinessObjects\Master\Category.vb" />
     <Compile Include="BusinessObjects\Master\ContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\ContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\ContactPersonContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\ContactType.vb" />
     <Compile Include="BusinessObjects\Master\Brand.vb" />
+    <Compile Include="BusinessObjects\Master\Currency.vb" />
     <Compile Include="BusinessObjects\Master\Customer.vb" />
     <Compile Include="BusinessObjects\Master\CustomerContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\CustomerContactPerson.vb" />
@@ -157,6 +159,8 @@
     <Compile Include="BusinessObjects\Master\ItemPrice.vb" />
     <Compile Include="BusinessObjects\Master\ItemUnit.vb" />
     <Compile Include="BusinessObjects\Master\Location.vb" />
+    <Compile Include="BusinessObjects\Master\OtherExpenseItem.vb" />
+    <Compile Include="BusinessObjects\Master\Period.vb" />
     <Compile Include="BusinessObjects\Master\Salesman.vb" />
     <Compile Include="BusinessObjects\Master\Supplier.vb" />
     <Compile Include="BusinessObjects\Master\SupplierContactInformation.vb" />
@@ -173,6 +177,8 @@
     <Compile Include="BusinessObjects\Transaction\DebitNote.vb" />
     <Compile Include="BusinessObjects\Transaction\InventoryItemAdjustment.vb" />
     <Compile Include="BusinessObjects\Transaction\ItemPriceMutation.vb" />
+    <Compile Include="BusinessObjects\Transaction\OtherExpense.vb" />
+    <Compile Include="BusinessObjects\Transaction\OtherExpenseDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\PurchaseInvoice.vb" />
     <Compile Include="BusinessObjects\Transaction\PurchaseInvoiceDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\PurchasePayment.vb" />

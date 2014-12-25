@@ -25,13 +25,14 @@ Partial Public Class PyreAccWindowsFormsModule
 	''' the contents of this method with the code editor.
 	''' </summary>
 	Private Sub InitializeComponent()
-		'
-		'PyreAccWindowsFormsModule
-		'
-		Me.RequiredModuleTypes.Add(GetType(PyreAcc.[Module].PyreAccModule))
+        '
+        'PyreAccWindowsFormsModule
+        '
+        Me.RequiredModuleTypes.Add(GetType(PyreAcc.[Module].PyreAccModule))
         Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.Win.SystemModule.SystemWindowsFormsModule))
+        Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.TreeListEditors.Win.TreeListEditorsWindowsFormsModule))
 
-	End Sub
+    End Sub
 
 #End Region
 End Class

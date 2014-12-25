@@ -29,6 +29,7 @@
     <Items>
       <Item Id="Default" Visible="False" Index="-1">
         <Items>
+          <Item Id="Account_ListView" Removed="True" />
           <Item Id="ApplicationRole_ListView" Removed="True" />
           <Item Id="ApplicationUser_ListView" Removed="True" />
           <Item Id="AutoNo_ListView" Removed="True" />
@@ -44,6 +45,9 @@
           <Item Id="Item_ListView" Removed="True" />
           <Item Id="ItemPriceMutation_ListView" Removed="True" />
           <Item Id="Location_ListView" Removed="True" />
+          <Item Id="OtherExpense_ListView" Removed="True" />
+          <Item Id="OtherExpenseItem_ListView" Removed="True" />
+          <Item Id="Period_ListView" Removed="True" />
           <Item Id="PurchaseInvoice_ListView" Removed="True" />
           <Item Id="PurchasePayment_ListView" Removed="True" />
           <Item Id="PurchaseReturn_ListView" Removed="True" />
@@ -79,6 +83,7 @@
             </Items>
           </Item>
           <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="OtherExpense_ListView" ViewId="OtherExpense_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="StockMutation_ListView" ViewId="StockMutation_ListView" ObjectKey="" IsNewNode="True" />
         </Items>
       </Item>
@@ -95,6 +100,9 @@
           <Item Id="Location_ListView" ViewId="Location_ListView" ObjectKey="" Index="8" IsNewNode="True" />
           <Item Id="Unit_ListView" ViewId="Unit_ListView" ObjectKey="" Index="9" IsNewNode="True" />
           <Item Id="ContactPerson_ListView" ViewId="ContactPerson_ListView" ObjectKey="" Index="10" IsNewNode="True" />
+          <Item Id="Account_ListView" ViewId="Account_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="OtherExpenseItem_ListView" ViewId="OtherExpenseItem_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="Period_ListView" ViewId="Period_ListView" ObjectKey="" IsNewNode="True" />
         </Items>
       </Item>
       <Item Id="@63726291-c60d-42ca-9afe-ad4e324fa107" Caption="System" Index="2" ChildItemsDisplayStyle="List" IsNewNode="True">

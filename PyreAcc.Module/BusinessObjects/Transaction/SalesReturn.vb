@@ -37,8 +37,8 @@ Public Class SalesReturn
     Private _transDate As Date
     Private _customer As Customer
     Private _total As Decimal
-    Private _creditNote As CreditNote
     Private _inventory As Inventory
+    Private _creditNote As CreditNote
     <RuleRequiredField("Rule Required for SalesReturn.No", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for SalesReturn.No", DefaultContexts.Save)>
     Public Property No As String
@@ -76,15 +76,6 @@ Public Class SalesReturn
             SetPropertyValue("Total", _total, value)
         End Set
     End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property CreditNote As CreditNote
-        Get
-            Return _creditNote
-        End Get
-        Set(value As CreditNote)
-            SetPropertyValue("CreditNote", _creditNote, value)
-        End Set
-    End Property
     <RuleRequiredField("Rule Required for SalesReturn.Inventory", DefaultContexts.Save)>
     Public Property Inventory As Inventory
         Get
@@ -92,6 +83,15 @@ Public Class SalesReturn
         End Get
         Set(value As Inventory)
             SetPropertyValue("Inventory", _inventory, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property CreditNote As CreditNote
+        Get
+            Return _creditNote
+        End Get
+        Set(value As CreditNote)
+            SetPropertyValue("CreditNote", _creditNote, value)
         End Set
     End Property
     <Association("SalesReturn-SalesReturnDetail"), DevExpress.Xpo.Aggregated()>
