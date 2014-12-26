@@ -38,6 +38,7 @@ Public Class Item
     Private fBrand As Brand
     Private fMainSupplier As Supplier
     Private fBaseUnit As Unit
+    Private fHasExpiryDate As Boolean
     Private fActive As Boolean
 
     Private fSince As Date
@@ -96,6 +97,14 @@ Public Class Item
         End Get
         Set(value As Unit)
             SetPropertyValue("BaseUnit", fBaseUnit, value)
+        End Set
+    End Property
+    Public Property HasExpiryDate As Boolean
+        Get
+            Return fHasExpiryDate
+        End Get
+        Set(value As Boolean)
+            SetPropertyValue("HasExpiryDate", fHasExpiryDate, value)
         End Set
     End Property
     Public Property Active As Boolean

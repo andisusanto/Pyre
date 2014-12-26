@@ -27,6 +27,8 @@ Public Class Period
 
     Private _code As String
     Private _description As String
+    Private _year As Integer
+    Private _month As Integer
     Private _startDate As Date
     Private _endDate As Date
     Private _closed As Boolean
@@ -48,6 +50,22 @@ Public Class Period
         End Get
         Set(ByVal value As String)
             SetPropertyValue("Description", _description, value)
+        End Set
+    End Property
+    Public Property Year As Integer
+        Get
+            Return _year
+        End Get
+        Set(value As Integer)
+            SetPropertyValue("Year", _year, value)
+        End Set
+    End Property
+    Public Property Month As Integer
+        Get
+            Return _month
+        End Get
+        Set(value As Integer)
+            SetPropertyValue("Month", _month, value)
         End Set
     End Property
     <RuleRequiredField("Rule Required for Period.StartDate", DefaultContexts.Save)>

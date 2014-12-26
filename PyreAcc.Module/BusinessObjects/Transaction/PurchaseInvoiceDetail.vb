@@ -34,6 +34,7 @@ Public Class PurchaseInvoiceDetail
     Private _sequence As Integer
     Private _purchaseInvoice As PurchaseInvoice
     Private _item As Item
+    Private _expiryDate As Date
     Private _quantity As Integer
     Private _paidQuantity As Integer
     Private _returnedQuantity As Integer
@@ -78,6 +79,15 @@ Public Class PurchaseInvoiceDetail
         End Get
         Set(ByVal value As Item)
             SetPropertyValue("Item", _item, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
+    Public Property ExpiryDate As Date
+        Get
+            Return _expiryDate
+        End Get
+        Set(value As Date)
+            SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
     Public Property Quantity As Integer

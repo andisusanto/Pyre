@@ -173,6 +173,9 @@
     <Compile Include="BusinessObjects\System\Security\ApplicationRole.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationUser.vb" />
     <Compile Include="BusinessObjects\System\SystemConfig.vb" />
+    <Compile Include="BusinessObjects\Transaction\BalanceSheet.vb" />
+    <Compile Include="BusinessObjects\Transaction\BalanceSheetAccount.vb" />
+    <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItem.vb" />
     <Compile Include="BusinessObjects\Transaction\CreditNote.vb" />
     <Compile Include="BusinessObjects\Transaction\DebitNote.vb" />
     <Compile Include="BusinessObjects\Transaction\InventoryItemAdjustment.vb" />
