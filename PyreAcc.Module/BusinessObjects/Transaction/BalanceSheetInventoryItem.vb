@@ -14,6 +14,7 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
 <DeferredDeletion(False)>
+<RuleCriteria("Rule Criteria for BalanceSheetInventoryItem.UnitPrice > 0", DefaultContexts.Save, "UnitPrice > 0")>
 <DefaultClassOptions()> _
 Public Class BalanceSheetInventoryItem
     Inherits BaseObject
@@ -27,8 +28,12 @@ Public Class BalanceSheetInventoryItem
     Private _balanceSheet As BalanceSheet
     Private _inventory As Inventory
     Private _item As Item
+    Private _transDate As Date
+    Private _unitPrice As Decimal
+    Private _expiryDate As Date
     Private _initialBalance As Decimal
     Private _lastBalance As Decimal
+    <Association("BalanceSheet-BalanceSheetInventoryItem")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
         Get
@@ -54,6 +59,32 @@ Public Class BalanceSheetInventoryItem
         End Get
         Set(ByVal value As Item)
             SetPropertyValue("Item", _item, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.TransDate", DefaultContexts.Save)>
+    Public Property TransDate As Date
+        Get
+            Return _transDate
+        End Get
+        Set(ByVal value As Date)
+            SetPropertyValue("TransDate", _transDate, value)
+        End Set
+    End Property
+    Public Property UnitPrice As Decimal
+        Get
+            Return _unitPrice
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("UnitPrice", _unitPrice, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
+    Public Property ExpiryDate As Date
+        Get
+            Return _expiryDate
+        End Get
+        Set(ByVal value As Date)
+            SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
     Public Property InitialBalance As Decimal

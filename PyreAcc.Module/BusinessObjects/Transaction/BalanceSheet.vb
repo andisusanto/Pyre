@@ -12,6 +12,7 @@ Imports System.Collections.Generic
 Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
+<CreatableItem(False)>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class BalanceSheet

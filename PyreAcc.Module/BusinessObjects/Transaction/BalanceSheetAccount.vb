@@ -28,6 +28,7 @@ Public Class BalanceSheetAccount
     Private _account As Account
     Private _initialBalance As Decimal
     Private _lastBalance As Decimal
+    <Association("BalanceSheet-BalanceSheetAccount")>
     <RuleRequiredField("Rule Required for BalanceSheetAccount.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
         Get
@@ -62,5 +63,10 @@ Public Class BalanceSheetAccount
             SetPropertyValue("LastBalance", _lastBalance, value)
         End Set
     End Property
-
+    <Association("BalanceSheetAccount-BalanceSheetAccountMutation"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Mutations As XPCollection(Of BalanceSheetAccountMutation)
+        Get
+            Return GetCollection(Of BalanceSheetAccountMutation)("Mutations")
+        End Get
+    End Property
 End Class
