@@ -39,7 +39,6 @@ Public Class SalesInvoiceDetail
     Private _returnedQuantity As Integer
     Private _unitPrice As Decimal
     Private _total As Decimal
-    Private _inventoryItemDeductTransaction As InventoryItemDeductTransaction
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -150,15 +149,6 @@ Public Class SalesInvoiceDetail
                     SalesInvoice.Total += Total
                 End If
             End If
-        End Set
-    End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property InventoryItemDeductTransaction As InventoryItemDeductTransaction
-        Get
-            Return _inventoryItemDeductTransaction
-        End Get
-        Set(value As InventoryItemDeductTransaction)
-            SetPropertyValue("InventoryItemDeductTransaction", _inventoryItemDeductTransaction, value)
         End Set
     End Property
     Private Sub CalculateTotal()

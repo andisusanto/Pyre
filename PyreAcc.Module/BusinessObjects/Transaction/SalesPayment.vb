@@ -16,7 +16,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for SalesPayment.Total > 0", DefaultContexts.Save, "Total > 0")>
-<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total")>
+<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, CreditNoteAmount, RemainingAmount")>
 <Appearance("Appearance for SalesPayment.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
 <Appearance("Appearance for SalesPayment.Details.Count > 0", AppearanceItemType:="ViewItem", criteria:="@Details.Count > 0", enabled:=False, targetitems:="Customer")>
 <DeferredDeletion(False)>
@@ -127,10 +127,10 @@ Public Class SalesPayment
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            If objDetail.SalesInvoiceDetail.SalesInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Sales Invoice with No {0} has not been submitted", objDetail.SalesInvoiceDetail.SalesInvoice.No))
-            If objDetail.SalesInvoiceDetail.SalesInvoice.PaymentOutstandingStatus = OutstandingStatus.Cleared Then Throw New Exception(String.Format("Sales Invoice with No {0} already set as cleared", objDetail.SalesInvoiceDetail.SalesInvoice.No))
-            If objDetail.SalesInvoiceDetail.PaymentOutstandingQuantity < objDetail.Quantity Then Throw New Exception(String.Format("Invalid Quantity for submitting Invoice. Invalid line : {0}", objDetail.ToString))
-            objDetail.SalesInvoiceDetail.PaidQuantity += objDetail.Quantity
+            If objDetail.SalesInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Sales Invoice with No {0} has not been submitted", objDetail.SalesInvoice.No))
+            If objDetail.SalesInvoice.PaymentOutstandingStatus = OutstandingStatus.Cleared Then Throw New Exception(String.Format("Sales Invoice with No {0} already set as cleared", objDetail.SalesInvoice.No))
+            If objDetail.SalesInvoice.PaymentOutstandingAmount < objDetail.Amount Then Throw New Exception(String.Format("Invalid amount for submitting payment. Invalid line : {0}", objDetail.ToString))
+            objDetail.SalesInvoice.PaidAmount += objDetail.Amount
         Next
         For Each obj In CreditNotes
             If obj.CreditNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Credit note with no {0} has no enough balance", obj.CreditNote.No))
@@ -140,7 +140,7 @@ Public Class SalesPayment
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            objDetail.SalesInvoiceDetail.PaidQuantity -= objDetail.Quantity
+            objDetail.SalesInvoice.PaidAmount -= objDetail.Amount
         Next
         For Each obj In CreditNotes
             obj.CreditNote.UsedAmount -= obj.Amount

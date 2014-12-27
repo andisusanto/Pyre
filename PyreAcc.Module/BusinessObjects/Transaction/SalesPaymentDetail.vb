@@ -14,10 +14,9 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
-<Appearance("Appearance Default Disabled for SalesPaymentDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total")>
-<RuleCriteria("Rule Criteria for SalesPaymentDetail.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for SalesPaymentDetail.Amount > 0", DefaultContexts.Save, "Amount > 0")>
 <DeferredDeletion(False)>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesPaymentDetail", DefaultContexts.Save, "SalesPayment, SalesInvoiceDetail")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesPaymentDetail", DefaultContexts.Save, "SalesPayment, SalesInvoice")>
 <DefaultClassOptions()> _
 Public Class SalesPaymentDetail
     Inherits AppBase
@@ -32,9 +31,8 @@ Public Class SalesPaymentDetail
     End Sub
     Private _sequence As Integer
     Private _salesPayment As SalesPayment
-    Private _salesInvoiceDetail As SalesInvoiceDetail
-    Private _quantity As Integer
-    Private _total As Decimal
+    Private _salesInvoice As SalesInvoice
+    Private _amount As Decimal
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -54,7 +52,7 @@ Public Class SalesPaymentDetail
             SetPropertyValue("SalesPayment", _salesPayment, value)
             If Not IsLoading Then
                 If SalesPayment IsNot Nothing Then
-                    SalesPayment.Total += Total
+                    SalesPayment.Total += Amount
                     If SalesPayment.Details.Count = 0 Then
                         Sequence = 0
                     Else
@@ -62,61 +60,47 @@ Public Class SalesPaymentDetail
                         Sequence = SalesPayment.Details(SalesPayment.Details.Count - 1).Sequence + 1
                     End If
                 End If
-                If oldValue IsNot Nothing Then oldValue.Total -= Total
+                If oldValue IsNot Nothing Then oldValue.Total -= Amount
             End If
         End Set
     End Property
-    <DataSourceProperty("SalesInvoiceDetailDatasource")>
-    <RuleRequiredField("Rule Required for SalesPaymentDetail.SalesInvoiceDetail", DefaultContexts.Save)>
-    Public Property SalesInvoiceDetail As SalesInvoiceDetail
+    <DataSourceProperty("SalesInvoiceDatasource")>
+    <RuleRequiredField("Rule Required for SalesPaymentDetail.SalesInvoice", DefaultContexts.Save)>
+    Public Property SalesInvoice As SalesInvoice
         Get
-            Return _salesInvoiceDetail
+            Return _salesInvoice
         End Get
-        Set(ByVal value As SalesInvoiceDetail)
-            SetPropertyValue("SalesInvoiceDetail", _salesInvoiceDetail, value)
+        Set(ByVal value As SalesInvoice)
+            SetPropertyValue("SalesInvoice", _salesInvoice, value)
             If Not IsLoading Then
-                If SalesInvoiceDetail IsNot Nothing Then
-                    Quantity = SalesInvoiceDetail.Quantity - SalesInvoiceDetail.ReturnedQuantity
+                If SalesInvoice IsNot Nothing Then
+                    Amount = SalesInvoice.PaymentOutstandingAmount
                 Else
-                    Total = 0
+                    Amount = 0
                 End If
             End If
         End Set
     End Property
-    Public Property Quantity As Integer
+    Public Property Amount As Decimal
         Get
-            Return _quantity
-        End Get
-        Set(ByVal value As Integer)
-            SetPropertyValue("Quantity", _quantity, value)
-            If Not IsLoading Then
-                CalculateTotal()
-            End If
-        End Set
-    End Property
-    Public Property Total As Decimal
-        Get
-            Return _total
+            Return _amount
         End Get
         Set(ByVal value As Decimal)
-            Dim oldValue = Total
-            SetPropertyValue("Total", _total, value)
+            Dim oldValue = Amount
+            SetPropertyValue("Amount", _amount, value)
             If Not IsLoading Then
                 If SalesPayment IsNot Nothing Then
                     SalesPayment.Total -= oldValue
-                    SalesPayment.Total += Total
+                    SalesPayment.Total += Amount
                 End If
             End If
         End Set
     End Property
 
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property SalesInvoiceDetailDatasource As XPCollection(Of SalesInvoiceDetail)
+    Public ReadOnly Property SalesInvoiceDatasource As XPCollection(Of SalesInvoice)
         Get
-            Return New XPCollection(Of SalesInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("SalesInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("SalesInvoice.PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("SalesInvoice.Customer", SalesPayment.Customer), New BinaryOperator("PaymentOutstandingQuantity", 0, BinaryOperatorType.Greater))))
+            Return New XPCollection(Of SalesInvoice)(Session, (GroupOperator.And(New BinaryOperator("Status", TransactionStatus.Submitted), New BinaryOperator("PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("Customer", SalesPayment.Customer), New BinaryOperator("PaymentOutstandingAmount", 0, BinaryOperatorType.Greater))))
         End Get
     End Property
-    Private Sub CalculateTotal()
-        Total = SalesInvoiceDetail.UnitPrice * Quantity
-    End Sub
 End Class

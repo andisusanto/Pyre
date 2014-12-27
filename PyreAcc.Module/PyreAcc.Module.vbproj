@@ -151,9 +151,6 @@
     <Compile Include="BusinessObjects\Master\CustomerContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\CustomerContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\Inventory.vb" />
-    <Compile Include="BusinessObjects\Master\InventoryItem.vb" />
-    <Compile Include="BusinessObjects\Master\InventoryItemDeductTransaction.vb" />
-    <Compile Include="BusinessObjects\Master\InventoryItemDeductTransactionDetail.vb" />
     <Compile Include="BusinessObjects\Master\Item.vb" />
     <Compile Include="BusinessObjects\Master\ItemPrice.vb" />
     <Compile Include="BusinessObjects\Master\ItemUnit.vb" />
@@ -165,7 +162,6 @@
     <Compile Include="BusinessObjects\Master\SupplierContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\SupplierContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\Unit.vb" />
-    <Compile Include="BusinessObjects\Services\InventoryServices.vb" />
     <Compile Include="BusinessObjects\System\AutoNo.vb" />
     <Compile Include="BusinessObjects\System\AutoNoDetail.vb" />
     <Compile Include="BusinessObjects\System\CompanyInformation.vb" />
@@ -178,7 +174,6 @@
     <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItem.vb" />
     <Compile Include="BusinessObjects\Transaction\CreditNote.vb" />
     <Compile Include="BusinessObjects\Transaction\DebitNote.vb" />
-    <Compile Include="BusinessObjects\Transaction\InventoryItemAdjustment.vb" />
     <Compile Include="BusinessObjects\Transaction\ItemPriceMutation.vb" />
     <Compile Include="BusinessObjects\Transaction\OtherExpense.vb" />
     <Compile Include="BusinessObjects\Transaction\OtherExpenseDetail.vb" />
@@ -330,7 +325,9 @@
     <EmbeddedResource Include="Images\Images.Wizard.png" />
     <EmbeddedResource Include="Images\Images.Wizard_Large.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="BusinessObjects\Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

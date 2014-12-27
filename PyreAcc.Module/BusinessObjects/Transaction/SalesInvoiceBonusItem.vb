@@ -31,7 +31,6 @@ Public Class SalesInvoiceBonusItem
     Private _salesInvoice As SalesInvoice
     Private _item As Item
     Private _quantity As Integer
-    Private _inventoryItemDeductTransaction As InventoryItemDeductTransaction
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -75,15 +74,6 @@ Public Class SalesInvoiceBonusItem
         End Get
         Set(ByVal value As Integer)
             SetPropertyValue("Quantity", _quantity, value)
-        End Set
-    End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property InventoryItemDeductTransaction As InventoryItemDeductTransaction
-        Get
-            Return _inventoryItemDeductTransaction
-        End Get
-        Set(value As InventoryItemDeductTransaction)
-            SetPropertyValue("InventoryItemDeductTransaction", _inventoryItemDeductTransaction, value)
         End Set
     End Property
 End Class

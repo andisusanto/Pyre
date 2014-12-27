@@ -66,13 +66,6 @@ Public Class Inventory
             SetPropertyValue("Active", fActive, value)
         End Set
     End Property
-
-    <Association("Inventory-InventoryItem"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Items As XPCollection(Of InventoryItem)
-        Get
-            Return GetCollection(Of InventoryItem)("Items")
-        End Get
-    End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return Name

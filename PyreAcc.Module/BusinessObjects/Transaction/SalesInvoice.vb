@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
-<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus")>
+<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, PaidAmount, OutstandingPaymentAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesInvoice
@@ -34,9 +34,13 @@ Public Class SalesInvoice
     End Sub
     Private _no As String
     Private _transDate As Date
+    Private _term As Integer
+    Private _dueDate As Date
     Private _customer As Customer
     Private _inventory As Inventory
     Private _total As Decimal
+    Private _paidAmount As Decimal
+    Private _paymentOutstandingAmount As Decimal
     Private _salesman As Salesman
     Private _paymentOutstandingStatus As OutstandingStatus
     Private _returnOutstandingStatus As OutstandingStatus
@@ -57,6 +61,38 @@ Public Class SalesInvoice
         End Get
         Set(value As Date)
             SetPropertyValue("TransDate", _transDate, value)
+            If Not IsLoading Then
+                If TransDate.AddDays(Term) <> DueDate Then
+                    DueDate = TransDate.AddDays(Term)
+                End If
+            End If
+        End Set
+    End Property
+    Public Property Term As Integer
+        Get
+            Return _term
+        End Get
+        Set(value As Integer)
+            SetPropertyValue("Term", _term, value)
+            If Not IsLoading Then
+                If TransDate.AddDays(Term) <> DueDate Then
+                    DueDate = TransDate.AddDays(Term)
+                End If
+            End If
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for SalesInvoice.DueDate", DefaultContexts.Save)>
+    Public Property DueDate As Date
+        Get
+            Return _dueDate
+        End Get
+        Set(value As Date)
+            SetPropertyValue("DueDate", _dueDate, value)
+            If Not IsLoading Then
+                If TransDate.AddDays(Term) <> DueDate Then
+                    Term = DateDiff(DateInterval.Day, TransDate, DueDate)
+                End If
+            End If
         End Set
     End Property
     <RuleRequiredField("Rule Required for SalesInvoice.Customer", DefaultContexts.Save)>
@@ -83,6 +119,28 @@ Public Class SalesInvoice
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculatePaymentOutstandingAmount()
+            End If
+        End Set
+    End Property
+    Public Property PaidAmount As Decimal
+        Get
+            Return _paidAmount
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("PaidAmount", _paidAmount, value)
+            If Not IsLoading Then
+                CalculatePaymentOutstandingAmount()
+            End If
+        End Set
+    End Property
+    Public Property PaymentOutstandingAmount As Decimal
+        Get
+            Return _paymentOutstandingAmount
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("PaymentOutstandingAmount", _paymentOutstandingAmount, value)
         End Set
     End Property
     Public Property Salesman As Salesman
@@ -127,6 +185,9 @@ Public Class SalesInvoice
             Return No
         End Get
     End Property
+    Private Sub CalculatePaymentOutstandingAmount()
+        PaymentOutstandingAmount = Total - PaidAmount
+    End Sub
     <Action(autoCommit:=False, Caption:="Recalculate Outstanding Status", _
     confirmationMessage:="Are you really want to recalculate these transactions' PaymentOutstandingStatus?", _
     selectiondependencytype:=MethodActionSelectionDependencyType.RequireMultipleObjects, _
@@ -176,24 +237,8 @@ Public Class SalesInvoice
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        For Each objDetail In Details
-            objDetail.InventoryItemDeductTransaction = InventoryServices.CreateInventoryDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.Quantity, InventoryItemDeductTransactionType.Sale)
-        Next
-        For Each objDetail In BonusItems
-            objDetail.InventoryItemDeductTransaction = InventoryServices.CreateInventoryDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.Quantity, InventoryItemDeductTransactionType.Sale)
-        Next
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
-        For Each objDetail In Details
-            Dim tmp = objDetail.InventoryItemDeductTransaction
-            objDetail.InventoryItemDeductTransaction = Nothing
-            InventoryServices.DeleteInventoryItemDeductTransaction(tmp)
-        Next
-        For Each objDetail In BonusItems
-            Dim tmp = objDetail.InventoryItemDeductTransaction
-            objDetail.InventoryItemDeductTransaction = Nothing
-            InventoryServices.DeleteInventoryItemDeductTransaction(tmp)
-        Next
     End Sub
 End Class

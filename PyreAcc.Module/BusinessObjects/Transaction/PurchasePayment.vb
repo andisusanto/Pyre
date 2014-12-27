@@ -126,10 +126,10 @@ Public Class PurchasePayment
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            If objDetail.PurchaseInvoiceDetail.PurchaseInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Purchase Invoice with No {0} has not been submitted", objDetail.PurchaseInvoiceDetail.PurchaseInvoice.No))
-            If objDetail.PurchaseInvoiceDetail.PurchaseInvoice.PaymentOutstandingStatus = OutstandingStatus.Cleared Then Throw New Exception(String.Format("Purchase Invoice with No {0} already set as cleared", objDetail.PurchaseInvoiceDetail.PurchaseInvoice.No))
-            If objDetail.PurchaseInvoiceDetail.PaymentOutstandingQuantity < objDetail.Quantity Then Throw New Exception(String.Format("Invalid Quantity for submitting Invoice. Invalid line : {0}", objDetail.ToString))
-            objDetail.PurchaseInvoiceDetail.PaidQuantity += objDetail.Quantity
+            If objDetail.PurchaseInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Purchase Invoice with No {0} has not been submitted", objDetail.PurchaseInvoice.No))
+            If objDetail.PurchaseInvoice.PaymentOutstandingStatus = OutstandingStatus.Cleared Then Throw New Exception(String.Format("Purchase Invoice with No {0} already set as cleared", objDetail.PurchaseInvoice.No))
+            If objDetail.PurchaseInvoice.PaymentOutstandingAmount < objDetail.Amount Then Throw New Exception(String.Format("Invalid amount for submitting Invoice. Invalid line : {0}", objDetail.ToString))
+            objDetail.PurchaseInvoice.PaidAmount += objDetail.Amount
         Next
         For Each obj In DebitNotes
             If obj.DebitNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Debit note with no {0} has no enough balance", obj.DebitNote.No))
@@ -139,7 +139,7 @@ Public Class PurchasePayment
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            objDetail.PurchaseInvoiceDetail.PaidQuantity -= objDetail.Quantity
+            objDetail.PurchaseInvoice.PaidAmount -= objDetail.Amount
         Next
         For Each obj In DebitNotes
             obj.DebitNote.UsedAmount -= obj.Amount

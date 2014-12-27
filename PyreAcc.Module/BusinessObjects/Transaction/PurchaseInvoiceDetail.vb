@@ -40,7 +40,6 @@ Public Class PurchaseInvoiceDetail
     Private _returnedQuantity As Integer
     Private _unitPrice As Decimal
     Private _total As Decimal
-    Private _inventoryItem As InventoryItem
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -121,15 +120,6 @@ Public Class PurchaseInvoiceDetail
             If Not IsLoading Then
                 PurchaseInvoice.UpdateReturnOutstandingStatus()
             End If
-        End Set
-    End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property InventoryItem As InventoryItem
-        Get
-            Return _inventoryItem
-        End Get
-        Set(value As InventoryItem)
-            SetPropertyValue("InventoryItem", _inventoryItem, value)
         End Set
     End Property
     <PersistentAlias("Quantity - PaidQuantity")>

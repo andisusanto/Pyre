@@ -14,10 +14,9 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
-<Appearance("Appearance Default Disabled for PurchasePaymentDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total")>
-<RuleCriteria("Rule Criteria for PurchasePaymentDetail.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for PurchasePaymentDetail.Amount > 0", DefaultContexts.Save, "Amount > 0")>
 <DeferredDeletion(False)>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchasePaymentDetail", DefaultContexts.Save, "PurchasePayment, PurchaseInvoiceDetail")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchasePaymentDetail", DefaultContexts.Save, "PurchasePayment, PurchaseInvoice")>
 <DefaultClassOptions()> _
 Public Class PurchasePaymentDetail
     Inherits AppBase
@@ -32,9 +31,8 @@ Public Class PurchasePaymentDetail
     End Sub
     Private _sequence As Integer
     Private _purchasePayment As PurchasePayment
-    Private _purchaseInvoiceDetail As PurchaseInvoiceDetail
-    Private _quantity As Integer
-    Private _total As Decimal
+    Private _purchaseInvoice As PurchaseInvoice
+    Private _amount As Decimal
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -54,7 +52,7 @@ Public Class PurchasePaymentDetail
             SetPropertyValue("PurchasePayment", _purchasePayment, value)
             If Not IsLoading Then
                 If PurchasePayment IsNot Nothing Then
-                    PurchasePayment.Total += Total
+                    PurchasePayment.Total += Amount
                     If PurchasePayment.Details.Count = 0 Then
                         Sequence = 0
                     Else
@@ -62,61 +60,47 @@ Public Class PurchasePaymentDetail
                         Sequence = PurchasePayment.Details(PurchasePayment.Details.Count - 1).Sequence + 1
                     End If
                 End If
-                If oldValue IsNot Nothing Then oldValue.Total -= Total
+                If oldValue IsNot Nothing Then oldValue.Total -= Amount
             End If
         End Set
     End Property
-    <DataSourceProperty("PurchaseInvoiceDetailDatasource")>
-    <RuleRequiredField("Rule Required for PurchasePaymentDetail.PurchaseInvoiceDetail", DefaultContexts.Save)>
-    Public Property PurchaseInvoiceDetail As PurchaseInvoiceDetail
+    <DataSourceProperty("PurchaseInvoiceDatasource")>
+    <RuleRequiredField("Rule Required for PurchasePaymentDetail.PurchaseInvoice", DefaultContexts.Save)>
+    Public Property PurchaseInvoice As PurchaseInvoice
         Get
-            Return _purchaseInvoiceDetail
+            Return _purchaseInvoice
         End Get
-        Set(ByVal value As PurchaseInvoiceDetail)
-            SetPropertyValue("PurchaseInvoiceDetail", _purchaseInvoiceDetail, value)
+        Set(ByVal value As PurchaseInvoice)
+            SetPropertyValue("PurchaseInvoice", _purchaseInvoice, value)
             If Not IsLoading Then
-                If PurchaseInvoiceDetail IsNot Nothing Then
-                    Quantity = PurchaseInvoiceDetail.Quantity - PurchaseInvoiceDetail.ReturnedQuantity
+                If PurchaseInvoice IsNot Nothing Then
+                    Amount = PurchaseInvoice.PaymentOutstandingAmount
                 Else
-                    Total = 0
+                    Amount = 0
                 End If
             End If
         End Set
     End Property
-    Public Property Quantity As Integer
+    Public Property Amount As Decimal
         Get
-            Return _quantity
-        End Get
-        Set(ByVal value As Integer)
-            SetPropertyValue("Quantity", _quantity, value)
-            If Not IsLoading Then
-                CalculateTotal()
-            End If
-        End Set
-    End Property
-    Public Property Total As Decimal
-        Get
-            Return _total
+            Return _amount
         End Get
         Set(ByVal value As Decimal)
-            Dim oldValue = Total
-            SetPropertyValue("Total", _total, value)
+            Dim oldValue = Amount
+            SetPropertyValue("Amount", _amount, value)
             If Not IsLoading Then
                 If PurchasePayment IsNot Nothing Then
                     PurchasePayment.Total -= oldValue
-                    PurchasePayment.Total += Total
+                    PurchasePayment.Total += Amount
                 End If
             End If
         End Set
     End Property
 
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property PurchaseInvoiceDetailDatasource As XPCollection(Of PurchaseInvoiceDetail)
+    Public ReadOnly Property PurchaseInvoiceDatasource As XPCollection(Of PurchaseInvoice)
         Get
-            Return New XPCollection(Of PurchaseInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("PurchaseInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("PurchaseInvoice.PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("PurchaseInvoice.Supplier", PurchasePayment.Supplier), New BinaryOperator("PaymentOutstandingQuantity", 0, BinaryOperatorType.Greater))))
+            Return New XPCollection(Of PurchaseInvoice)(Session, (GroupOperator.And(New BinaryOperator("Status", TransactionStatus.Submitted), New BinaryOperator("PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("Supplier", PurchasePayment.Supplier), New BinaryOperator("PaymentOutstandingAmount", 0, BinaryOperatorType.Greater))))
         End Get
     End Property
-    Private Sub CalculateTotal()
-        Total = PurchaseInvoiceDetail.UnitPrice * Quantity
-    End Sub
 End Class

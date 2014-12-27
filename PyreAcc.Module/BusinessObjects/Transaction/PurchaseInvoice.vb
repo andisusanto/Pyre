@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
-<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, ReturnOutstandingStatus")>
+<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, ReturnOutstandingStatus, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PurchaseInvoice
@@ -40,6 +40,8 @@ Public Class PurchaseInvoice
     Private _supplier As Supplier
     Private _inventory As Inventory
     Private _total As Decimal
+    Private _paidAmount As Decimal
+    Private _paymentOutstandingAmount As Decimal
     Private _paymentOutstandingStatus As OutstandingStatus
     Private _returnOutstandingStatus As OutstandingStatus
     <RuleUniqueValue("Rule Unique for PurchaseInvoice.No", DefaultContexts.Save)>
@@ -126,8 +128,31 @@ Public Class PurchaseInvoice
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculatePaymentOutstandingAmount()
+            End If
         End Set
     End Property
+    Public Property PaidAmount As Decimal
+        Get
+            Return _paidAmount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("PaidAmount", _paidAmount, value)
+            If Not IsLoading Then
+                CalculatePaymentOutstandingAmount()
+            End If
+        End Set
+    End Property
+    Public Property PaymentOutstandingAmount As Decimal
+        Get
+            Return _paymentOutstandingAmount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("PaymentOutstandingAmount", _paymentOutstandingAmount, value)
+        End Set
+    End Property
+
     Public Property PaymentOutstandingStatus As OutstandingStatus
         Get
             Return _paymentOutstandingStatus
@@ -156,6 +181,9 @@ Public Class PurchaseInvoice
             Return No
         End Get
     End Property
+    Private Sub CalculatePaymentOutstandingAmount()
+        PaymentOutstandingAmount = Total - PaidAmount
+    End Sub
     <Action(autoCommit:=False, Caption:="Recalculate Outstanding Status", _
    confirmationMessage:="Are you really want to recalculate these transactions' PaymentOutstandingStatus?", _
    selectiondependencytype:=MethodActionSelectionDependencyType.RequireMultipleObjects, _
@@ -205,17 +233,9 @@ Public Class PurchaseInvoice
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        For Each objDetail In Details
-            objDetail.InventoryItem = InventoryServices.CreateInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.Quantity, objDetail.UnitPrice)
-        Next
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
-        For Each objDetail In Details
-            Dim tmp = objDetail.InventoryItem
-            objDetail.InventoryItem = Nothing
-            InventoryServices.DeleteInventoryItem(tmp)
-        Next
     End Sub
 End Class
 Public Enum OutstandingStatus
