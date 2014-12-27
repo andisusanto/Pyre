@@ -34,7 +34,7 @@ Public Class SalesPayment
     End Sub
     Private _no As String
     Private _transDate As Date
-    Private _Customer As Customer
+    Private _customer As Customer
     Private _total As Decimal
     Private _creditNoteAmount As Decimal
     Private _remainingAmount As Decimal
@@ -62,10 +62,10 @@ Public Class SalesPayment
     <RuleRequiredField("Rule Required for SalesPayment.Customer", DefaultContexts.Save)>
     Public Property Customer As Customer
         Get
-            Return _Customer
+            Return _customer
         End Get
         Set(value As Customer)
-            SetPropertyValue("Customer", _Customer, value)
+            SetPropertyValue("Customer", _customer, value)
         End Set
     End Property
     Public Property Total As Decimal

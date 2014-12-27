@@ -31,7 +31,6 @@ Public Class Account
     Private _code As String
     Private _description As String
     Private _parent As Account
-    Private _currency As Currency
     Private _isParent As Boolean
     Private _isActive As Boolean
     <RuleUniqueValue("Rule Unique for Account.Code", DefaultContexts.Save)>
@@ -61,15 +60,6 @@ Public Class Account
         End Get
         Set(ByVal value As Account)
             SetPropertyValue("Parent", _parent, value)
-        End Set
-    End Property
-    <RuleRequiredField("Rule Required for Account.Currency", DefaultContexts.Save)>
-    Public Property Currency As Currency
-        Get
-            Return _currency
-        End Get
-        Set(value As Currency)
-            SetPropertyValue("Currency", _currency, value)
         End Set
     End Property
     Public Property IsActive As Boolean

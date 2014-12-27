@@ -28,7 +28,6 @@ Public Class SystemConfig
         ' Place here your initialization code.
     End Sub
     Private fDefaultUnit As Unit
-    Private fBaseCurrency As Currency
     Private fReportPath As String
 
     Public Property DefaultUnit As Unit
@@ -37,14 +36,6 @@ Public Class SystemConfig
         End Get
         Set(value As Unit)
             SetPropertyValue("DefaultUnit", fDefaultUnit, value)
-        End Set
-    End Property
-    Public Property BaseCurrency As Currency
-        Get
-            Return fBaseCurrency
-        End Get
-        Set(value As Currency)
-            SetPropertyValue("BaseCurrency", fBaseCurrency, value)
         End Set
     End Property
     <Size(150)>

@@ -147,7 +147,6 @@
     <Compile Include="BusinessObjects\Master\ContactPersonContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\ContactType.vb" />
     <Compile Include="BusinessObjects\Master\Brand.vb" />
-    <Compile Include="BusinessObjects\Master\Currency.vb" />
     <Compile Include="BusinessObjects\Master\Customer.vb" />
     <Compile Include="BusinessObjects\Master\CustomerContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\CustomerContactPerson.vb" />
