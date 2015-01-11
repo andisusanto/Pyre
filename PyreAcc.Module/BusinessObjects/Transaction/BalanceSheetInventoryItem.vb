@@ -31,8 +31,9 @@ Public Class BalanceSheetInventoryItem
     Private _transDate As Date
     Private _unitPrice As Decimal
     Private _expiryDate As Date
-    Private _initialBalance As Decimal
-    Private _lastBalance As Decimal
+    Private _quantity As Decimal
+    Private _deductedQuantity As Decimal
+    Private _remainingQuantity As Decimal
     <Association("BalanceSheet-BalanceSheetInventoryItem")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
@@ -87,21 +88,43 @@ Public Class BalanceSheetInventoryItem
             SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
-    Public Property InitialBalance As Decimal
+    Public Property Quantity As Decimal
         Get
-            Return _initialBalance
+            Return _quantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("InitialBalance", _initialBalance, value)
+            SetPropertyValue("Quantity", _quantity, value)
+            If Not IsLoading Then
+                CalculateRemainingQuantity()
+            End If
         End Set
     End Property
-    Public Property LastBalance As Decimal
+    Public Property DeductedQuantity As Decimal
         Get
-            Return _lastBalance
+            Return _deductedQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("LastBalance", _lastBalance, value)
+            SetPropertyValue("DeductedQuantity", _deductedQuantity, value)
+            If Not IsLoading Then
+                CalculateRemainingQuantity()
+            End If
         End Set
     End Property
-
+    Public Property RemainingQuantity As Decimal
+        Get
+            Return _remainingQuantity
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("RemainingQuantity", _remainingQuantity, value)
+        End Set
+    End Property
+    Private Sub CalculateRemainingQuantity()
+        RemainingQuantity = Quantity - DeductedQuantity
+    End Sub
+    <Association("BalanceSheetInventoryItem-BalanceSheetInventoryItemDeductTransactionDetail")>
+    Public ReadOnly Property DeductDetails As XPCollection(Of BalanceSheetInventoryItemDeductTransactionDetail)
+        Get
+            Return GetCollection(Of BalanceSheetInventoryItemDeductTransactionDetail)("DeductDetails")
+        End Get
+    End Property
 End Class

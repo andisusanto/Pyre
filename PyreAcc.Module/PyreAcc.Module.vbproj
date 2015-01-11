@@ -162,6 +162,7 @@
     <Compile Include="BusinessObjects\Master\SupplierContactInformation.vb" />
     <Compile Include="BusinessObjects\Master\SupplierContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\Unit.vb" />
+    <Compile Include="BusinessObjects\Services\BalanceSheetService.vb" />
     <Compile Include="BusinessObjects\System\AutoNo.vb" />
     <Compile Include="BusinessObjects\System\AutoNoDetail.vb" />
     <Compile Include="BusinessObjects\System\CompanyInformation.vb" />
@@ -172,8 +173,11 @@
     <Compile Include="BusinessObjects\Transaction\BalanceSheetAccount.vb" />
     <Compile Include="BusinessObjects\Transaction\BalanceSheetAccountMutation.vb" />
     <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItem.vb" />
+    <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItemDeductTransaction.vb" />
+    <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItemDeductTransactionDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\CreditNote.vb" />
     <Compile Include="BusinessObjects\Transaction\DebitNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\InventoryItemAdjustment.vb" />
     <Compile Include="BusinessObjects\Transaction\ItemPriceMutation.vb" />
     <Compile Include="BusinessObjects\Transaction\OtherExpense.vb" />
     <Compile Include="BusinessObjects\Transaction\OtherExpenseDetail.vb" />
@@ -185,7 +189,6 @@
     <Compile Include="BusinessObjects\Transaction\PurchaseReturn.vb" />
     <Compile Include="BusinessObjects\Transaction\PurchaseReturnDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\SalesInvoice.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesInvoiceBonusItem.vb" />
     <Compile Include="BusinessObjects\Transaction\SalesInvoiceDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\SalesPayment.vb" />
     <Compile Include="BusinessObjects\Transaction\SalesPaymentCreditNote.vb" />
@@ -241,6 +244,7 @@
     <EmbeddedResource Include="Module.resx">
       <DependentUpon>Module.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -325,9 +329,7 @@
     <EmbeddedResource Include="Images\Images.Wizard.png" />
     <EmbeddedResource Include="Images\Images.Wizard_Large.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BusinessObjects\Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

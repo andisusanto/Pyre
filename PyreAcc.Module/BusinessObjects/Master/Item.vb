@@ -15,7 +15,7 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)> _
 <Appearance("Appearance Default Disabled for Item", enabled:=False, targetitems:="PriceHistory")>
-<Appearance("Appearance for Item.PriceHistory.Count > 1", enabled:=False, criteria:="@PriceHistory.Count > 1", targetitems:="Since, MinimumPrice, MaximumPrice")>
+<Appearance("Appearance for Item.PriceHistory.Count > 1", enabled:=False, visibility:=Editors.ViewItemVisibility.Hide, criteria:="@PriceHistory.Count > 1", targetitems:="Since, MinimumPrice, MaximumPrice")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class Item

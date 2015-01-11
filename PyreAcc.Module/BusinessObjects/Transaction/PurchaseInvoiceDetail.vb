@@ -40,6 +40,7 @@ Public Class PurchaseInvoiceDetail
     Private _returnedQuantity As Integer
     Private _unitPrice As Decimal
     Private _total As Decimal
+    Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -159,6 +160,15 @@ Public Class PurchaseInvoiceDetail
                     PurchaseInvoice.Total += Total
                 End If
             End If
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
+        Get
+            Return _balanceSheetInventoryItem
+        End Get
+        Set(value As BalanceSheetInventoryItem)
+            SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
         End Set
     End Property
     Private Sub CalculateTotal()

@@ -33,6 +33,7 @@
           <Item Id="ApplicationRole_ListView" Removed="True" />
           <Item Id="ApplicationUser_ListView" Removed="True" />
           <Item Id="AutoNo_ListView" Removed="True" />
+          <Item Id="BalanceSheet_ListView" Removed="True" />
           <Item Id="Brand_ListView" Removed="True" />
           <Item Id="Category_ListView" Removed="True" />
           <Item Id="CompanyInformation_ListView" Removed="True" />
@@ -42,6 +43,7 @@
           <Item Id="Customer_ListView" Removed="True" />
           <Item Id="DebitNote_ListView" Removed="True" />
           <Item Id="Inventory_ListView" Removed="True" />
+          <Item Id="InventoryItemAdjustment_ListView" Removed="True" />
           <Item Id="Item_ListView" Removed="True" />
           <Item Id="ItemPriceMutation_ListView" Removed="True" />
           <Item Id="Location_ListView" Removed="True" />
@@ -82,6 +84,8 @@
               <Item Id="SalesReturn_ListView" ViewId="SalesReturn_ListView" ObjectKey="" IsNewNode="True" />
             </Items>
           </Item>
+          <Item Id="BalanceSheet_ListView" ViewId="BalanceSheet_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="InventoryItemAdjustment_ListView" ViewId="InventoryItemAdjustment_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="OtherExpense_ListView" ViewId="OtherExpense_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="StockMutation_ListView" ViewId="StockMutation_ListView" ObjectKey="" IsNewNode="True" />

@@ -18,6 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit", "IsPeriodClosed = FALSE")>
 <Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, PaidAmount, OutstandingPaymentAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
@@ -174,15 +175,17 @@ Public Class SalesInvoice
             Return GetCollection(Of SalesInvoiceDetail)("Details")
         End Get
     End Property
-    <Association("SalesInvoice-SalesInvoiceBonusItem"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property BonusItems As XPCollection(Of SalesInvoiceBonusItem)
-        Get
-            Return GetCollection(Of SalesInvoiceBonusItem)("BonusItems")
-        End Get
-    End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return No
+        End Get
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property IsPeriodClosed As Boolean
+        Get
+            Dim period As Period = Session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
+            If period Is Nothing Then Return True
+            Return period.Closed
         End Get
     End Property
     Private Sub CalculatePaymentOutstandingAmount()
@@ -237,6 +240,7 @@ Public Class SalesInvoice
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
