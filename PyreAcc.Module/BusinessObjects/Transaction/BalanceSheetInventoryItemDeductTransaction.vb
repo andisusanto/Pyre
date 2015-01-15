@@ -30,7 +30,7 @@ Public Class BalanceSheetInventoryItemDeductTransaction
     Private _transDate As Date
     Private _type As BalanceSheetInventoryItemDeductTransactionType
     Private _quantity As Decimal
-
+    <Association("BalanceSheet-BalanceSheetInventoryItemDeductTransaction")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItemDeductTransaction.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
         Get
@@ -99,7 +99,16 @@ Public Class BalanceSheetInventoryItemDeductTransaction
         Next
     End Sub
     Public Sub DistributeDeduction()
-        Dim tmpInventoryItem As New XPCollection(Of BalanceSheetInventoryItem)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, GroupOperator.And(New BinaryOperator("BalanceSheet", BalanceSheet), New BinaryOperator("Inventory", Inventory), New BinaryOperator("TransDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("Item", Item), New BinaryOperator("RemainingQuantity", 0, BinaryOperatorType.Greater), New BinaryOperator("IsDeleted", False))) With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+        Dim tmpInventoryItem As New XPCollection(Of BalanceSheetInventoryItem)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
+                                                                               GroupOperator.And(New BinaryOperator("BalanceSheet", BalanceSheet), _
+                                                                                                 New BinaryOperator("Inventory", Inventory), _
+                                                                                                 New BinaryOperator("TransDate", TransDate, BinaryOperatorType.LessOrEqual), _
+                                                                                                 New BinaryOperator("Item", Item), _
+                                                                                                 New BinaryOperator("RemainingQuantity", 0, BinaryOperatorType.Greater), _
+                                                                                                 New BinaryOperator("IsDeleted", False), _
+                                                                                                 GroupOperator.Or(New BinaryOperator("Item.HasExpiryDate", False), _
+                                                                                                                  New BinaryOperator("ExpiryDate", TransDate, BinaryOperatorType.GreaterOrEqual)))) _
+        With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
         Dim xpInventoryItem As New XPCollection(Of BalanceSheetInventoryItem)(Session, False)
         For Each obj In tmpInventoryItem
             xpInventoryItem.Add(obj)

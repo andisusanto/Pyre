@@ -46,4 +46,10 @@ Public Class BalanceSheet
             Return GetCollection(Of BalanceSheetInventoryItem)("InventoryItems")
         End Get
     End Property
+    <Association("BalanceSheet-BalanceSheetInventoryItemDeductTransaction"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property InventoryItemDeductTransactions As XPCollection(Of BalanceSheetInventoryItemDeductTransaction)
+        Get
+            Return GetCollection(Of BalanceSheetInventoryItemDeductTransaction)("InventoryItemDeductTransactions")
+        End Get
+    End Property
 End Class

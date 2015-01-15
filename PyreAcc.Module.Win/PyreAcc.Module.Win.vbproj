@@ -158,6 +158,12 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\SuppressTransactionBaseConfirmation.Designer.vb">
+      <DependentUpon>SuppressTransactionBaseConfirmation.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\SuppressTransactionBaseConfirmation.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
