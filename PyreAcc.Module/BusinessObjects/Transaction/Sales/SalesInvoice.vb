@@ -15,14 +15,14 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
-<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
-<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
-<RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
-<RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit", "IsPeriodClosed = FALSE")>
-<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, ReturnOutstandingStatus, PaidAmount, PaymentOutstandingAmount")>
+<RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
+<RuleCriteria("Rule Criteria for Cancel SalesInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
+<RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
+<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
-Public Class PurchaseInvoice
+Public Class SalesInvoice
     Inherits TransactionBase
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -34,19 +34,19 @@ Public Class PurchaseInvoice
         TransDate = Now
     End Sub
     Private _no As String
-    Private _referenceNo As String
     Private _transDate As Date
     Private _term As Integer
     Private _dueDate As Date
-    Private _supplier As Supplier
+    Private _customer As Customer
     Private _inventory As Inventory
     Private _total As Decimal
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
+    Private _salesman As Salesman
     Private _paymentOutstandingStatus As OutstandingStatus
     Private _returnOutstandingStatus As OutstandingStatus
-    <RuleUniqueValue("Rule Unique for PurchaseInvoice.No", DefaultContexts.Save)>
-    <RuleRequiredField("Rule Required for PurchaseInvoice.No", DefaultContexts.Save)>
+    <RuleUniqueValue("Rule Unique for SalesInvoice.No", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for SalesInvoice.No", DefaultContexts.Save)>
     Public Property No As String
         Get
             Return _no
@@ -55,16 +55,7 @@ Public Class PurchaseInvoice
             SetPropertyValue("No", _no, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for PurchaseInvoice.ReferenceNo", DefaultContexts.Save)>
-    Public Property ReferenceNo As String
-        Get
-            Return _referenceNo
-        End Get
-        Set(value As String)
-            SetPropertyValue("ReferenceNo", _referenceNo, value)
-        End Set
-    End Property
-    <RuleRequiredField("Rule Required for PurchaseInvoice.TransDate", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for SalesInvoice.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
             Return _transDate
@@ -91,7 +82,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
-    <RuleRequiredField("Rule Required for PurchaseInvoice.DueDate", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for SalesInvoice.DueDate", DefaultContexts.Save)>
     Public Property DueDate As Date
         Get
             Return _dueDate
@@ -105,16 +96,16 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
-    <RuleRequiredField("Rule Required for PurchaseInvoice.Supplier", DefaultContexts.Save)>
-    Public Property Supplier As Supplier
+    <RuleRequiredField("Rule Required for SalesInvoice.Customer", DefaultContexts.Save)>
+    Public Property Customer As Customer
         Get
-            Return _supplier
+            Return _customer
         End Get
-        Set(value As Supplier)
-            SetPropertyValue("Supplier", _supplier, value)
+        Set(value As Customer)
+            SetPropertyValue("Customer", _customer, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for PurchaseInvoice.Inventory", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for SalesInvoice.Inventory", DefaultContexts.Save)>
     Public Property Inventory As Inventory
         Get
             Return _inventory
@@ -138,7 +129,7 @@ Public Class PurchaseInvoice
         Get
             Return _paidAmount
         End Get
-        Set(ByVal value As Decimal)
+        Set(value As Decimal)
             SetPropertyValue("PaidAmount", _paidAmount, value)
             If Not IsLoading Then
                 CalculatePaymentOutstandingAmount()
@@ -149,11 +140,18 @@ Public Class PurchaseInvoice
         Get
             Return _paymentOutstandingAmount
         End Get
-        Set(ByVal value As Decimal)
+        Set(value As Decimal)
             SetPropertyValue("PaymentOutstandingAmount", _paymentOutstandingAmount, value)
         End Set
     End Property
-
+    Public Property Salesman As Salesman
+        Get
+            Return _salesman
+        End Get
+        Set(value As Salesman)
+            SetPropertyValue("Salesman", _salesman, value)
+        End Set
+    End Property
     Public Property PaymentOutstandingStatus As OutstandingStatus
         Get
             Return _paymentOutstandingStatus
@@ -171,10 +169,10 @@ Public Class PurchaseInvoice
             SetPropertyValue("ReturnOutstandingStatus", _returnOutstandingStatus, value)
         End Set
     End Property
-    <Association("PurchaseInvoice-PurchaseInvoiceDetail"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Details As XPCollection(Of PurchaseInvoiceDetail)
+    <Association("SalesInvoice-SalesInvoiceDetail"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Details As XPCollection(Of SalesInvoiceDetail)
         Get
-            Return GetCollection(Of PurchaseInvoiceDetail)("Details")
+            Return GetCollection(Of SalesInvoiceDetail)("Details")
         End Get
     End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
@@ -194,13 +192,13 @@ Public Class PurchaseInvoice
         PaymentOutstandingAmount = Total - PaidAmount
     End Sub
     <Action(autoCommit:=False, Caption:="Recalculate Outstanding Status", _
-   confirmationMessage:="Are you really want to recalculate these transactions' PaymentOutstandingStatus?", _
-   selectiondependencytype:=MethodActionSelectionDependencyType.RequireMultipleObjects, _
-    targetobjectscriteria:="PaymentOutstandingStatus = 'Cleared'", _
-   ImageName:="Recalculate")>
+    confirmationMessage:="Are you really want to recalculate these transactions' PaymentOutstandingStatus?", _
+    selectiondependencytype:=MethodActionSelectionDependencyType.RequireMultipleObjects, _
+     targetobjectscriteria:="PaymentOutstandingStatus = 'Cleared'", _
+    ImageName:="Recalculate")>
     Public Sub UpdatePaymentOutstandingStatus()
-        Dim totalQuantity As Double = 0
-        Dim totalOutstandingQuantity As Double = 0
+        Dim totalQuantity As Decimal = 0
+        Dim totalOutstandingQuantity As Decimal = 0
         For Each objDetail In Details
             totalQuantity += objDetail.Quantity
             totalOutstandingQuantity += objDetail.PaymentOutstandingQuantity
@@ -224,8 +222,8 @@ Public Class PurchaseInvoice
         PaymentOutstandingStatus = OutstandingStatus.Cleared
     End Sub
     Public Sub UpdateReturnOutstandingStatus()
-        Dim totalQuantity As Double = 0
-        Dim totalOutstandingQuantity As Double = 0
+        Dim totalQuantity As Decimal = 0
+        Dim totalOutstandingQuantity As Decimal = 0
         For Each objDetail In Details
             totalQuantity += objDetail.Quantity
             totalOutstandingQuantity += objDetail.ReturnOutstandingQuantity
@@ -242,13 +240,16 @@ Public Class PurchaseInvoice
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+        For Each objDetail In Details
+            objDetail.BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.Quantity, BalanceSheetInventoryItemDeductTransactionType.Sale)
+        Next
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
+        For Each objDetail In Details
+            Dim tmp = objDetail.BalanceSheetInventoryItemDeductTransaction
+            objDetail.BalanceSheetInventoryItemDeductTransaction = Nothing
+            BalanceSheetService.DeleteBalanceSheetInventoryItemDeductTransaction(tmp)
+        Next
     End Sub
 End Class
-Public Enum OutstandingStatus
-    Full
-    [PartiallyPaid]
-    Cleared
-End Enum

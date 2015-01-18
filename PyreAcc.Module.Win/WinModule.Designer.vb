@@ -31,6 +31,7 @@ Partial Public Class PyreAccWindowsFormsModule
         Me.RequiredModuleTypes.Add(GetType(PyreAcc.[Module].PyreAccModule))
         Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.Win.SystemModule.SystemWindowsFormsModule))
         Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.TreeListEditors.Win.TreeListEditorsWindowsFormsModule))
+        Me.RequiredModuleTypes.Add(GetType(DevExpress.ExpressApp.Validation.Win.ValidationWindowsFormsModule))
 
     End Sub
 

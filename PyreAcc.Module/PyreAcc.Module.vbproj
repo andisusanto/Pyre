@@ -125,6 +125,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -139,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessObjects\Base\AppBase.vb" />
+    <Compile Include="BusinessObjects\Base\ProcessBase.vb" />
     <Compile Include="BusinessObjects\Base\TransactionBase.vb" />
     <Compile Include="BusinessObjects\Master\Account.vb" />
     <Compile Include="BusinessObjects\Master\Category.vb" />
@@ -175,31 +177,38 @@
     <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItem.vb" />
     <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItemDeductTransaction.vb" />
     <Compile Include="BusinessObjects\Transaction\BalanceSheetInventoryItemDeductTransactionDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\CreditNote.vb" />
-    <Compile Include="BusinessObjects\Transaction\DebitNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\Process\InventoryClosingProcess.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\CreditNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\DebitNote.vb" />
     <Compile Include="BusinessObjects\Transaction\InventoryItemAdjustment.vb" />
     <Compile Include="BusinessObjects\Transaction\ItemPriceMutation.vb" />
     <Compile Include="BusinessObjects\Transaction\OtherExpense.vb" />
     <Compile Include="BusinessObjects\Transaction\OtherExpenseDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchaseInvoice.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchaseInvoiceDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchasePayment.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchasePaymentDebitNote.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchasePaymentDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchaseReturn.vb" />
-    <Compile Include="BusinessObjects\Transaction\PurchaseReturnDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesInvoice.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesInvoiceDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesPayment.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesPaymentCreditNote.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesPaymentDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesReturn.vb" />
-    <Compile Include="BusinessObjects\Transaction\SalesReturnDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchaseInvoice.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchaseInvoiceDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchasePayment.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchasePaymentDebitNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchasePaymentDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchaseReturn.vb" />
+    <Compile Include="BusinessObjects\Transaction\Purchase\PurchaseReturnDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesInvoice.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesInvoiceDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesPayment.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesPaymentCreditNote.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesPaymentDetail.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesReturn.vb" />
+    <Compile Include="BusinessObjects\Transaction\Sales\SalesReturnDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\StockMutation.vb" />
     <Compile Include="Controllers\AutoNoController.Designer.vb">
       <DependentUpon>AutoNoController.vb</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AutoNoController.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\ProcessBaseViewController.Designer.vb">
+      <DependentUpon>ProcessBaseViewController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\ProcessBaseViewController.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controllers\TransactionBaseController.Designer.vb">
@@ -237,6 +246,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controllers\AutoNoController.resx">
       <DependentUpon>AutoNoController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\ProcessBaseViewController.resx">
+      <DependentUpon>ProcessBaseViewController.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\TransactionBaseController.resx">
       <DependentUpon>TransactionBaseController.vb</DependentUpon>

@@ -33,7 +33,7 @@ Public Class SalesReturnDetail
     Private _sequence As Integer
     Private _salesReturn As SalesReturn
     Private _salesInvoiceDetail As SalesInvoiceDetail
-    Private _quantity As Integer
+    Private _quantity As Decimal
     Private _total As Decimal
     Public Property Sequence As Integer
         Get
@@ -83,11 +83,11 @@ Public Class SalesReturnDetail
             End If
         End Set
     End Property
-    Public Property Quantity As Integer
+    Public Property Quantity As Decimal
         Get
             Return _quantity
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As Decimal)
             SetPropertyValue("Quantity", _quantity, value)
             If Not IsLoading Then
                 CalculateTotal()

@@ -14,12 +14,12 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
-<Appearance("Appearance Default Disabled for SalesInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="ReturnedQuantity, PaidQuantity, Total")>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesInvoiceDetail", DefaultContexts.Save, "SalesInvoice, Item")>
-<RuleCriteria("Rule Criteria for SalesInvoiceDetail.Total > 0", DefaultContexts.Save, "Total > 0", "Total must be greater than zero")>
+<Appearance("Appearance Default Disabled for PurchaseInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="ReturnedQuantity, PaidQuantity, Total")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseInvoiceDetail", DefaultContexts.Save, "PurchaseInvoice, Item")>
+<RuleCriteria("Rule Criteria for PurchaseInvoiceDetail.Total > 0", DefaultContexts.Save, "Total > 0", "Total must be greater than zero")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
-Public Class SalesInvoiceDetail
+Public Class PurchaseInvoiceDetail
     Inherits AppBase
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -32,14 +32,15 @@ Public Class SalesInvoiceDetail
     End Sub
 
     Private _sequence As Integer
-    Private _salesInvoice As SalesInvoice
+    Private _purchaseInvoice As PurchaseInvoice
     Private _item As Item
-    Private _quantity As Integer
-    Private _paidQuantity As Integer
-    Private _returnedQuantity As Integer
+    Private _expiryDate As Date
+    Private _quantity As Decimal
+    Private _paidQuantity As Decimal
+    Private _returnedQuantity As Decimal
     Private _unitPrice As Decimal
     Private _total As Decimal
-    Private _balanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
+    Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -48,30 +49,30 @@ Public Class SalesInvoiceDetail
             SetPropertyValue("Sequence", _sequence, value)
         End Set
     End Property
-    <Association("SalesInvoice-SalesInvoiceDetail")>
-    <RuleRequiredField("Rule Required for SalesInvoiceDetail.SalesInvoice", DefaultContexts.Save)>
-    Public Property SalesInvoice As SalesInvoice
+    <Association("PurchaseInvoice-PurchaseInvoiceDetail")>
+    <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.PurchaseInvoice", DefaultContexts.Save)>
+    Public Property PurchaseInvoice As PurchaseInvoice
         Get
-            Return _salesInvoice
+            Return _purchaseInvoice
         End Get
-        Set(ByVal value As SalesInvoice)
-            Dim oldValue = SalesInvoice
-            SetPropertyValue("SalesInvoice", _salesInvoice, value)
+        Set(ByVal value As PurchaseInvoice)
+            Dim oldValue = PurchaseInvoice
+            SetPropertyValue("PurchaseInvoice", _purchaseInvoice, value)
             If Not IsLoading Then
-                If SalesInvoice IsNot Nothing Then
-                    SalesInvoice.Total += Total
-                    If SalesInvoice.Details.Count = 0 Then
+                If PurchaseInvoice IsNot Nothing Then
+                    PurchaseInvoice.Total += Total
+                    If PurchaseInvoice.Details.Count = 0 Then
                         Sequence = 0
                     Else
-                        SalesInvoice.Details.Sorting = New SortingCollection(New SortProperty("Sequence", DB.SortingDirection.Ascending))
-                        Sequence = SalesInvoice.Details(SalesInvoice.Details.Count - 1).Sequence + 1
+                        PurchaseInvoice.Details.Sorting = New SortingCollection(New SortProperty("Sequence", DB.SortingDirection.Ascending))
+                        Sequence = PurchaseInvoice.Details(PurchaseInvoice.Details.Count - 1).Sequence + 1
                     End If
                 End If
                 If oldValue IsNot Nothing Then oldValue.Total -= Total
             End If
         End Set
     End Property
-    <RuleRequiredField("Rule Required for SalesInvoiceDetail.Item", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.Item", DefaultContexts.Save)>
     Public Property Item As Item
         Get
             Return _item
@@ -80,48 +81,57 @@ Public Class SalesInvoiceDetail
             SetPropertyValue("Item", _item, value)
         End Set
     End Property
-    Public Property Quantity As Integer
+    <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
+    Public Property ExpiryDate As Date
+        Get
+            Return _expiryDate
+        End Get
+        Set(value As Date)
+            SetPropertyValue("ExpiryDate", _expiryDate, value)
+        End Set
+    End Property
+    Public Property Quantity As Decimal
         Get
             Return _quantity
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As Decimal)
             SetPropertyValue("Quantity", _quantity, value)
             If Not IsLoading Then
                 CalculateTotal()
             End If
         End Set
     End Property
-    Public Property PaidQuantity As Integer
+    Public Property PaidQuantity As Decimal
         Get
             Return _paidQuantity
         End Get
-        Set(value As Integer)
+        Set(value As Decimal)
             SetPropertyValue("PaidQuantity", _paidQuantity, value)
             If Not IsLoading Then
-                SalesInvoice.UpdatePaymentOutstandingStatus()
+                PurchaseInvoice.UpdatePaymentOutstandingStatus()
             End If
         End Set
     End Property
-    Public Property ReturnedQuantity As Integer
+    Public Property ReturnedQuantity As Decimal
         Get
             Return _returnedQuantity
         End Get
-        Set(value As Integer)
+        Set(value As Decimal)
             SetPropertyValue("ReturnedQuantity", _returnedQuantity, value)
             If Not IsLoading Then
-                SalesInvoice.UpdateReturnOutstandingStatus()
+                PurchaseInvoice.UpdateReturnOutstandingStatus()
             End If
         End Set
     End Property
     <PersistentAlias("Quantity - PaidQuantity")>
-    Public ReadOnly Property PaymentOutstandingQuantity As Integer
+    Public ReadOnly Property PaymentOutstandingQuantity As Decimal
         Get
             Return EvaluateAlias("PaymentOutstandingQuantity")
         End Get
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     <PersistentAlias("Quantity - ReturnedQuantity")>
-    Public ReadOnly Property ReturnOutstandingQuantity As Integer
+    Public ReadOnly Property ReturnOutstandingQuantity As Decimal
         Get
             Return EvaluateAlias("ReturnOutstandingQuantity")
         End Get
@@ -145,20 +155,20 @@ Public Class SalesInvoiceDetail
             Dim oldValue = Total
             SetPropertyValue("Total", _total, value)
             If Not IsLoading Then
-                If SalesInvoice IsNot Nothing Then
-                    SalesInvoice.Total -= oldValue
-                    SalesInvoice.Total += Total
+                If PurchaseInvoice IsNot Nothing Then
+                    PurchaseInvoice.Total -= oldValue
+                    PurchaseInvoice.Total += Total
                 End If
             End If
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
+    Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
         Get
-            Return _balanceSheetInventoryItemDeductTransaction
+            Return _balanceSheetInventoryItem
         End Get
-        Set(value As BalanceSheetInventoryItemDeductTransaction)
-            SetPropertyValue("BalanceSheetInventoryItemDeductTransaction", _balanceSheetInventoryItemDeductTransaction, value)
+        Set(value As BalanceSheetInventoryItem)
+            SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
         End Set
     End Property
     Private Sub CalculateTotal()
@@ -166,8 +176,8 @@ Public Class SalesInvoiceDetail
     End Sub
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
-            If SalesInvoice Is Nothing OrElse Item Is Nothing Then Return Nothing
-            Return SalesInvoice.DefaultDisplay & " ~ " & Item.DefaultDisplay
+            If PurchaseInvoice Is Nothing OrElse Item Is Nothing Then Return Nothing
+            Return PurchaseInvoice.DefaultDisplay & " ~ " & Item.DefaultDisplay
         End Get
     End Property
 End Class

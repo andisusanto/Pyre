@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Title="PyreAcc" Logo="ExpressAppLogo">
+  <ActionDesign>
+    <Actions>
+      <Action Id="TransactionBaseCancelSubmitAction" ValidationContexts="CancelSubmit" />
+      <Action Id="TransactionBaseSubmitAction" ValidationContexts="Submit" />
+    </Actions>
+  </ActionDesign>
   <BOModel>
     <Class Name="PyreAcc.Module.AutoNo" ImageName="AutoNumber" />
     <Class Name="PyreAcc.Module.AutoNoDetail" ImageName="AutoNumber" />
@@ -43,6 +49,7 @@
           <Item Id="Customer_ListView" Removed="True" />
           <Item Id="DebitNote_ListView" Removed="True" />
           <Item Id="Inventory_ListView" Removed="True" />
+          <Item Id="InventoryClosingProcess_ListView" Removed="True" />
           <Item Id="InventoryItemAdjustment_ListView" Removed="True" />
           <Item Id="Item_ListView" Removed="True" />
           <Item Id="ItemPriceMutation_ListView" Removed="True" />
@@ -82,6 +89,11 @@
               <Item Id="SalesInvoice_ListView" ViewId="SalesInvoice_ListView" ObjectKey="" IsNewNode="True" />
               <Item Id="SalesPayment_ListView" ViewId="SalesPayment_ListView" ObjectKey="" IsNewNode="True" />
               <Item Id="SalesReturn_ListView" ViewId="SalesReturn_ListView" ObjectKey="" IsNewNode="True" />
+            </Items>
+          </Item>
+          <Item Id="Process" Index="3" IsNewNode="True">
+            <Items IsNewNode="True">
+              <Item Id="InventoryClosingProcess_ListView" ViewId="InventoryClosingProcess_ListView" ObjectKey="" IsNewNode="True" />
             </Items>
           </Item>
           <Item Id="BalanceSheet_ListView" ViewId="BalanceSheet_ListView" ObjectKey="" IsNewNode="True" />

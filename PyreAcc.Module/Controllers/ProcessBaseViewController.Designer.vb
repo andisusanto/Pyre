@@ -42,7 +42,7 @@ Partial Class ProcessBaseViewController
         '
         'ProcessBaseViewController
         '
-        Me.TargetObjectType = GetType(Haermes.[Module].ProcessBase)
+        Me.TargetObjectType = GetType(PyreAcc.[Module].ProcessBase)
         Me.TargetViewNesting = DevExpress.ExpressApp.Nesting.Root
 
     End Sub

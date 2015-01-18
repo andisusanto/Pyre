@@ -22,7 +22,6 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <DefaultClassOptions()> _
 Public MustInherit Class ProcessBase
     Inherits BaseObject
-    Implements IProcess
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
     End Sub

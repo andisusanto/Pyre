@@ -27,7 +27,7 @@ Public Class OtherExpenseDetail
     End Sub
     Private _otherExpense As OtherExpense
     Private _otherExpenseItem As OtherExpenseItem
-    Private _amount As Double
+    Private _amount As Decimal
     <Association("OtherExpense-OtherExpenseDetail")>
     <RuleRequiredField("Rule Required for OtherExpenseDetail.OtherExpense", DefaultContexts.Save)>
      Public Property OtherExpense As OtherExpense
@@ -47,11 +47,11 @@ Public Class OtherExpenseDetail
             SetPropertyValue("OtherExpenseItem", _otherExpenseItem, value)
         End Set
     End Property
-    Public Property Amount As Double
+    Public Property Amount As Decimal
         Get
             Return _amount
         End Get
-        Set(ByVal value As Double)
+        Set(ByVal value As Decimal)
             SetPropertyValue("Amount", _amount, value)
         End Set
     End Property

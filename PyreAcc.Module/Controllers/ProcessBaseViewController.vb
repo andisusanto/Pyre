@@ -53,14 +53,14 @@ Partial Public Class ProcessBaseViewController
         t.Start()
     End Sub
     Private Sub Execute()
-        Dim objSpace As XPObjectSpace = ObjectSpaceHelper.GetObjectSpace()
+        Dim objSpace As XPObjectSpace = Application.CreateObjectSpace()
         Dim objProcess As ProcessBase = objSpace.GetObject(View.CurrentObject)
         Dim id As Guid = objProcess.Oid
         Dim type As Type = objProcess.GetType
         Dim IsError As Boolean = False
         Dim ErrorMessage As String = ""
         Try
-            objProcess.Start = CalendarNow()
+            objProcess.Start = GlobalFunction.GetServerNow(objSpace.Session)
             objSpace.CommitChanges()
             objProcess.Execute()
             objProcess.Status = ProcessStatus.FinishSuccessfully
@@ -71,7 +71,7 @@ Partial Public Class ProcessBaseViewController
             objSpace.Rollback()
         Finally
             objProcess = objSpace.GetObjectByKey(type, id)
-            objProcess.Finish = CalendarNow()
+            objProcess.Finish = GlobalFunction.GetServerNow(objSpace.Session)
             If IsError Then
                 objProcess.Status = ProcessStatus.FinishWithError
                 If ErrorMessage.Length > 4000 Then ErrorMessage = ErrorMessage.Substring(0, 3800)
