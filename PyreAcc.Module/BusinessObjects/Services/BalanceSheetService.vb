@@ -92,13 +92,13 @@ Public Class BalanceSheetService
         Next
     End Sub
 
-    Public Shared Function GetBalance(ByVal TransDate As Date, ByVal Inventory As Inventory, ByVal Item As Item) As Decimal
+    Public Shared Function GetInventoryItemBalance(ByVal TransDate As Date, ByVal Inventory As Inventory, ByVal Item As Item) As Decimal
         Dim session As Session = Inventory.Session
         Dim period As Period = session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
         Dim BalanceSheet As BalanceSheet = session.FindObject(Of BalanceSheet)(New BinaryOperator("Period", period))
-        Return GetBalance(BalanceSheet, TransDate, Inventory, Item)
+        Return GetInventoryItemBalance(BalanceSheet, TransDate, Inventory, Item)
     End Function
-    Public Shared Function GetBalance(ByVal BalanceSheet As BalanceSheet, ByVal TransDate As Date, ByVal Inventory As Inventory, ByVal Item As Item) As Decimal
+    Public Shared Function GetInventoryItemBalance(ByVal BalanceSheet As BalanceSheet, ByVal TransDate As Date, ByVal Inventory As Inventory, ByVal Item As Item) As Decimal
         Dim session As Session = Inventory.Session
         BalanceSheet.InventoryItems.Filter = GroupOperator.And(New BinaryOperator("Item", Item), New BinaryOperator("TransDate", TransDate, BinaryOperatorType.LessOrEqual))
         BalanceSheet.InventoryItemDeductTransactions.Filter = GroupOperator.And(New BinaryOperator("Item", Item), New BinaryOperator("TransDate", TransDate, BinaryOperatorType.LessOrEqual))
@@ -113,4 +113,25 @@ Public Class BalanceSheetService
         Next
         Return tmpBalance
     End Function
+
+    Public Shared Function CreateBalanceSheetAccountMutation(ByVal Account As Account, ByVal TransDate As Date, ByVal Amount As Decimal, ByVal Note As String) As BalanceSheetAccountMutation
+        Dim session As Session = Account.Session
+        Dim period As Period = session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
+        If period.Closed Then Throw New Exception("Not in open period")
+        Dim BalanceSheetAccount As BalanceSheetAccount = session.FindObject(Of BalanceSheetAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("BalanceSheet.Period", period), New BinaryOperator("Account", Account)))
+        If BalanceSheetAccount Is Nothing Then
+            Dim BalanceSheet As BalanceSheet = session.FindObject(Of BalanceSheet)(PersistentCriteriaEvaluationBehavior.InTransaction, New BinaryOperator("Period", period))
+            If BalanceSheet Is Nothing Then Throw New Exception("Balance sheet not found")
+            BalanceSheetAccount = New BalanceSheetAccount(session) With {.Account = Account, .BalanceSheet = BalanceSheet}
+        End If
+        Dim BalanceSheetAccountMutation As New BalanceSheetAccountMutation(session) With {.BalanceSheetAccount = BalanceSheetAccount, .TransDate = TransDate, .Amount = Amount, .Note = Note}
+        BalanceSheetAccount.LastBalance += Amount
+        Return BalanceSheetAccountMutation
+    End Function
+
+    Public Shared Sub DeleteBalanceSheetAccountMutation(ByVal BalanceSheetAccountMutation As BalanceSheetAccountMutation)
+        BalanceSheetAccountMutation.BalanceSheetAccount.LastBalance -= BalanceSheetAccountMutation.Amount
+        BalanceSheetAccountMutation.Delete()
+    End Sub
+
 End Class

@@ -16,6 +16,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for PurchasePayment.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, DebitNoteAmount, RemainingAmount")>
 <Appearance("Appearance for PurchasePayment.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
 <Appearance("Appearance for PurchasePayment.Details.Count > 0", AppearanceItemType:="ViewItem", criteria:="@Details.Count > 0", enabled:=False, targetitems:="Supplier")>
@@ -38,6 +39,8 @@ Public Class PurchasePayment
     Private _total As Decimal
     Private _debitNoteAmount As Decimal
     Private _remainingAmount As Decimal
+    Private _fromAccount As Account
+    Private _balanceSheetAccountMutation As BalanceSheetAccountMutation
     <RuleUniqueValue("Rule Unique for PurchasePayment.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for PurchasePayment.No", DefaultContexts.Save)>
     Public Property No As String
@@ -97,6 +100,32 @@ Public Class PurchasePayment
             SetPropertyValue("RemainingAmount", _remainingAmount, value)
         End Set
     End Property
+    <RuleRequiredField("Rule Required for PurchasePayment.FromAccount", DefaultContexts.Save)>
+    Public Property FromAccount As Account
+        Get
+            Return _fromAccount
+        End Get
+        Set(value As Account)
+            SetPropertyValue("FromAccount", _fromAccount, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property BalanceSheetAccountMutation As BalanceSheetAccountMutation
+        Get
+            Return _balanceSheetAccountMutation
+        End Get
+        Set(value As BalanceSheetAccountMutation)
+            SetPropertyValue("BalanceSheetAccountMutation", _balanceSheetAccountMutation, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property IsPeriodClosed As Boolean
+        Get
+            Dim period As Period = Session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
+            If period Is Nothing Then Return True
+            Return period.Closed
+        End Get
+    End Property
     Private Sub CalculateRemainingAmount()
         RemainingAmount = Total - DebitNoteAmount
     End Sub
@@ -135,6 +164,7 @@ Public Class PurchasePayment
             If obj.DebitNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Debit note with no {0} has no enough balance", obj.DebitNote.No))
             obj.DebitNote.UsedAmount += obj.Amount
         Next
+        BalanceSheetAccountMutation = BalanceSheetService.CreateBalanceSheetAccountMutation(FromAccount, TransDate, -1 * RemainingAmount, "Purchase")
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -144,5 +174,8 @@ Public Class PurchasePayment
         For Each obj In DebitNotes
             obj.DebitNote.UsedAmount -= obj.Amount
         Next
+        Dim tmp = BalanceSheetAccountMutation
+        BalanceSheetAccountMutation = Nothing
+        If tmp IsNot Nothing Then BalanceSheetService.DeleteBalanceSheetAccountMutation(tmp)
     End Sub
 End Class
