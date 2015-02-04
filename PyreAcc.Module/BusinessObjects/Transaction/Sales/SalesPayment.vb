@@ -16,7 +16,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for SalesPayment.Total > 0", DefaultContexts.Save, "Total > 0")>
-<RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
+<RuleCriteria("Rule Criteria for SalesPayment.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, CreditNoteAmount, RemainingAmount")>
 <Appearance("Appearance for SalesPayment.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
 <Appearance("Appearance for SalesPayment.Details.Count > 0", AppearanceItemType:="ViewItem", criteria:="@Details.Count > 0", enabled:=False, targetitems:="Customer")>
@@ -165,6 +165,7 @@ Public Class SalesPayment
             obj.CreditNote.UsedAmount += obj.Amount
         Next
         BalanceSheetAccountMutation = BalanceSheetService.CreateBalanceSheetAccountMutation(ToAccount, TransDate, RemainingAmount, "Sales")
+        Customer.OutstandingPaymentAmount -= Total
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -177,5 +178,6 @@ Public Class SalesPayment
         Dim tmp = BalanceSheetAccountMutation
         BalanceSheetAccountMutation = Nothing
         If tmp IsNot Nothing Then BalanceSheetService.DeleteBalanceSheetAccountMutation(tmp)
+        Customer.OutstandingPaymentAmount += Total
     End Sub
 End Class

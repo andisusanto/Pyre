@@ -188,6 +188,14 @@ Public Class SalesInvoice
             Return period.Closed
         End Get
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property IsExceedingMaximumOutstandingPaymentAmount As Boolean
+        Get
+            If CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitExceedMaximumOutstandingPaymentInvoice Then Return False
+            If Customer.MaximumOutstandingPaymentAmount < Customer.OutstandingPaymentAmount + PaymentOutstandingAmount Then Return True
+            Return False
+        End Get
+    End Property
     Private Sub CalculatePaymentOutstandingAmount()
         PaymentOutstandingAmount = Total - PaidAmount
     End Sub
@@ -240,9 +248,15 @@ Public Class SalesInvoice
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+        Dim CheckPriceRange = Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice
         For Each objDetail In Details
+            If CheckPriceRange Then
+                Dim itemPrice As ItemPrice = objDetail.Item.GetPrice(TransDate)
+                If objDetail.UnitPrice > itemPrice.MaximumPrice OrElse objDetail.UnitPrice < itemPrice.MinimumPrice Then Throw New Exception(String.Format("Line with item {0}'s price out of range", objDetail.Item.Name))
+            End If
             objDetail.BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.Quantity, BalanceSheetInventoryItemDeductTransactionType.Sale)
         Next
+        Customer.OutstandingPaymentAmount += Total
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -251,5 +265,6 @@ Public Class SalesInvoice
             objDetail.BalanceSheetInventoryItemDeductTransaction = Nothing
             BalanceSheetService.DeleteBalanceSheetInventoryItemDeductTransaction(tmp)
         Next
+        Customer.OutstandingPaymentAmount -= Total
     End Sub
 End Class

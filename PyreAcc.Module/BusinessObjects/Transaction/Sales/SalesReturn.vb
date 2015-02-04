@@ -115,10 +115,10 @@ Public Class SalesReturn
         MyBase.OnSubmitted()
         For Each objDetail In Details
             If objDetail.SalesInvoiceDetail.SalesInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Sales Invoice with No {0} has not been submitted", objDetail.SalesInvoiceDetail.SalesInvoice.No))
-            If objDetail.SalesInvoiceDetail.ReturnOutstandingQuantity < objDetail.Quantity Then Throw New Exception(String.Format("Invalid Quantity for submitting Invoice. Invalid line : {0}", objDetail.ToString))
+            If objDetail.SalesInvoiceDetail.ReturnOutstandingQuantity < objDetail.Quantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
             objDetail.SalesInvoiceDetail.ReturnedQuantity += objDetail.Quantity
         Next
-        Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "XuperACC.Module.CreditNote"), New BinaryOperator("IsActive", True)))
+        Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
         Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
         objCreditNote.No = objAutoNo.GetAutoNo(objCreditNote)
         CreditNote = objCreditNote

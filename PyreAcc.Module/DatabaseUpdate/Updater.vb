@@ -25,7 +25,7 @@ Public Class Updater
         MyBase.UpdateDatabaseAfterUpdateSchema()
         
         Dim administratorRole As ApplicationRole = CreateAdministratorRole()
-        Dim userAdmin As ApplicationUser = ObjectSpace.FindObject(Of ApplicationUser)(New BinaryOperator("UserName", "Admin"))
+        Dim userAdmin As ApplicationUser = ObjectSpace.FindObject(Of ApplicationUser)(New BinaryOperator("UserName", "andi"))
         If userAdmin Is Nothing Then
             userAdmin = ObjectSpace.CreateObject(Of ApplicationUser)()
             userAdmin.UserName = "andi"

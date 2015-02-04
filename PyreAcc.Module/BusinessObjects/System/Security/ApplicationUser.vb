@@ -32,5 +32,22 @@ Public Class ApplicationUser
         IsActive = True
         ' Place here your initialization code.
     End Sub
-
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property SubmitExceedMaximumOutstandingPaymentInvoice As Boolean
+        Get
+            For Each objRole In Roles
+                If CType(objRole, ApplicationRole).SubmitExceedMaximumOutstandingPaymentInvoice Then Return True
+            Next
+            Return False
+        End Get
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property SubmitOutOfPriceRangeInvoice As Boolean
+        Get
+            For Each objRole In Roles
+                If CType(objRole, ApplicationRole).SubmitOutOfPriceRangeInvoice Then Return True
+            Next
+            Return False
+        End Get
+    End Property
 End Class
