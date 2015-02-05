@@ -14,7 +14,7 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for StockMutation.FromInventory <> ToInventory", DefaultContexts.Save, "FromInventory <> ToInventory")>
-<RuleCriteria("Rule Criteria for StockMutation.Quantity > 0", DefaultContexts.Save, "Quantity > 0")>
+<RuleCriteria("Rule Criteria for StockMutation.BaseUnitQuantity > 0", DefaultContexts.Save, "BaseUnitQuantity > 0")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class StockMutation
@@ -32,7 +32,7 @@ Public Class StockMutation
     Private _toInventory As Inventory
     Private _transDate As Date
     Private _item As Item
-    Private _quantity As Integer
+    Private _baseUnitQuantity As Integer
     <RuleRequiredField("Rule Required for StockMutation.No", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for StockMutation.No", DefaultContexts.Save)>
     Public Property No As String
@@ -87,12 +87,12 @@ Public Class StockMutation
             SetPropertyValue("Item", _item, value)
         End Set
     End Property
-    Public Property Quantity As Integer
+    Public Property BaseUnitQuantity As Integer
         Get
-            Return _quantity
+            Return _baseUnitQuantity
         End Get
         Set(ByVal value As Integer)
-            SetPropertyValue("Quantity", _quantity, value)
+            SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
         End Set
     End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
@@ -102,13 +102,13 @@ Public Class StockMutation
     End Property
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        If Quantity > 0 Then
+        If BaseUnitQuantity > 0 Then
 
         End If
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
-        If Quantity > 0 Then
+        If BaseUnitQuantity > 0 Then
 
         End If
     End Sub

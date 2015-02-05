@@ -15,6 +15,7 @@ Imports DevExpress.Persistent.Validation
 <CreatableItem(False)> _
 <RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for ItemUnit", DefaultContexts.Save, "Item, Unit")>
 <RuleCriteria("Rule Criteria for ItemUnit.ConversionRate > 0", DefaultContexts.Save, "ConversionRate > 0")>
+<RuleCriteria("Rule Criteria for ItemUnit.Unit <> @Item.BaseUnit", DefaultContexts.Save, "Unit <> @Item.BaseUnit")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class ItemUnit
@@ -29,6 +30,7 @@ Public Class ItemUnit
     Private fItem As Item
     Private fUnit As Unit
     Private fConversionRate As Double
+    <Association("Item-ItemUnit")>
     <RuleRequiredField("Rule Required for ItemUnit.Item", DefaultContexts.Save)>
     Public Property Item As Item
         Get

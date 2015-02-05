@@ -31,6 +31,7 @@ Public Class SalesReturn
     Public Overrides Sub AfterConstruction()
         MyBase.AfterConstruction()
         TransDate = Today
+        Inventory = SysConfig.ReturnItemInventory
     End Sub
 
     Private _no As String
@@ -115,8 +116,12 @@ Public Class SalesReturn
         MyBase.OnSubmitted()
         For Each objDetail In Details
             If objDetail.SalesInvoiceDetail.SalesInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Sales Invoice with No {0} has not been submitted", objDetail.SalesInvoiceDetail.SalesInvoice.No))
-            If objDetail.SalesInvoiceDetail.ReturnOutstandingQuantity < objDetail.Quantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
-            objDetail.SalesInvoiceDetail.ReturnedQuantity += objDetail.Quantity
+            If objDetail.SalesInvoiceDetail.ReturnOutstandingBaseUnitQuantity < objDetail.BaseUnitQuantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
+            objDetail.SalesInvoiceDetail.ReturnedBaseUnitQuantity += objDetail.BaseUnitQuantity
+            For Each obj In objDetail.SalesInvoiceDetail.BalanceSheetInventoryItemDeductTransaction.Details
+
+            Next
+            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.SalesInvoiceDetail.Item, TransDate, objDetail.BaseUnitQuantity, 0, New Date)
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
         Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
@@ -126,7 +131,7 @@ Public Class SalesReturn
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            objDetail.SalesInvoiceDetail.ReturnedQuantity -= objDetail.Quantity
+            objDetail.SalesInvoiceDetail.ReturnedBaseUnitQuantity -= objDetail.BaseUnitQuantity
         Next
         Dim tmp = CreditNote
         CreditNote = Nothing

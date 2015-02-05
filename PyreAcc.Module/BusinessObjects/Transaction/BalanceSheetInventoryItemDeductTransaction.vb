@@ -29,7 +29,7 @@ Public Class BalanceSheetInventoryItemDeductTransaction
     Private _item As Item
     Private _transDate As Date
     Private _type As BalanceSheetInventoryItemDeductTransactionType
-    Private _quantity As Decimal
+    Private _baseUnitQuantity As Decimal
     <Association("BalanceSheet-BalanceSheetInventoryItemDeductTransaction")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItemDeductTransaction.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
@@ -76,12 +76,12 @@ Public Class BalanceSheetInventoryItemDeductTransaction
             SetPropertyValue("Type", _type, value)
         End Set
     End Property
-    Public Property Quantity As Decimal
+    Public Property BaseUnitQuantity As Decimal
         Get
-            Return _quantity
+            Return _baseUnitQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("Quantity", _quantity, value)
+            SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
         End Set
     End Property
     <Association("BalanceSheetInventoryItemDeductTransaction-BalanceSheetInventoryItemDeductTransactionDetail"), DevExpress.Xpo.Aggregated()>
@@ -92,7 +92,7 @@ Public Class BalanceSheetInventoryItemDeductTransaction
     End Property
     Public Sub ResetDetail()
         For Each obj In Details
-            obj.BalanceSheetInventoryItem.DeductedQuantity -= obj.DeductedQuantity
+            obj.BalanceSheetInventoryItem.DeductedBaseUnitQuantity -= obj.DeductedBaseUnitQuantity
         Next
         For i = 0 To Details.Count - 1
             Details(0).Delete()
@@ -104,7 +104,7 @@ Public Class BalanceSheetInventoryItemDeductTransaction
                                                                                                  New BinaryOperator("Inventory", Inventory), _
                                                                                                  New BinaryOperator("TransDate", TransDate, BinaryOperatorType.LessOrEqual), _
                                                                                                  New BinaryOperator("Item", Item), _
-                                                                                                 New BinaryOperator("RemainingQuantity", 0, BinaryOperatorType.Greater), _
+                                                                                                 New BinaryOperator("RemainingBaseUnitQuantity", 0, BinaryOperatorType.Greater), _
                                                                                                  New BinaryOperator("IsDeleted", False), _
                                                                                                  GroupOperator.Or(New BinaryOperator("Item.HasExpiryDate", False), _
                                                                                                                   New BinaryOperator("ExpiryDate", TransDate, BinaryOperatorType.GreaterOrEqual)))) _
@@ -113,20 +113,21 @@ Public Class BalanceSheetInventoryItemDeductTransaction
         For Each obj In tmpInventoryItem
             xpInventoryItem.Add(obj)
         Next
-        Dim availableQuantity As Decimal = Quantity
+        Dim availableBaseUnitQuantity As Decimal = BaseUnitQuantity
         For Each obj In xpInventoryItem
-            If availableQuantity = 0 Then Exit For
-            Dim tmpDeductQuantity = availableQuantity
-            If tmpDeductQuantity > obj.RemainingQuantity Then tmpDeductQuantity = obj.RemainingQuantity
-            Dim objDeductDetail As New BalanceSheetInventoryItemDeductTransactionDetail(Session) With {.BalanceSheetInventoryItem = obj, .DeductedQuantity = tmpDeductQuantity, .BalanceSheetInventoryItemDeductTransaction = Me}
-            objDeductDetail.BalanceSheetInventoryItem.DeductedQuantity += tmpDeductQuantity
-            availableQuantity -= tmpDeductQuantity
+            If availableBaseUnitQuantity = 0 Then Exit For
+            Dim tmpDeductBaseUnitQuantity = availableBaseUnitQuantity
+            If tmpDeductBaseUnitQuantity > obj.RemainingBaseUnitQuantity Then tmpDeductBaseUnitQuantity = obj.RemainingBaseUnitQuantity
+            Dim objDeductDetail As New BalanceSheetInventoryItemDeductTransactionDetail(Session) With {.BalanceSheetInventoryItem = obj, .DeductedBaseUnitQuantity = tmpDeductBaseUnitQuantity, .BalanceSheetInventoryItemDeductTransaction = Me}
+            objDeductDetail.BalanceSheetInventoryItem.DeductedBaseUnitQuantity += tmpDeductBaseUnitQuantity
+            availableBaseUnitQuantity -= tmpDeductBaseUnitQuantity
         Next
-        If availableQuantity > 0 Then Throw New Exception("Not enough balance")
+        If availableBaseUnitQuantity > 0 Then Throw New Exception("Not enough balance")
     End Sub
 End Class
 
 Public Enum BalanceSheetInventoryItemDeductTransactionType
     Adjustment
     Sale
+    Returned
 End Enum

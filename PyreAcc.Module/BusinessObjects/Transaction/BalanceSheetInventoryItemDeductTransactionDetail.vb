@@ -27,7 +27,7 @@ Public Class BalanceSheetInventoryItemDeductTransactionDetail
     End Sub
     Private _balanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
-    Private _deductedQuantity As Decimal
+    Private _deductedBaseUnitQuantity As Decimal
     <Association("BalanceSheetInventoryItemDeductTransaction-BalanceSheetInventoryItemDeductTransactionDetail")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItemDeductTransactionDetail.BalanceSheetInventoryItemDeductTransaction", DefaultContexts.Save)>
     Public Property BalanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
@@ -48,12 +48,12 @@ Public Class BalanceSheetInventoryItemDeductTransactionDetail
             SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
         End Set
     End Property
-    Public Property DeductedQuantity As Decimal
+    Public Property DeductedBaseUnitQuantity As Decimal
         Get
-            Return _deductedQuantity
+            Return _deductedBaseUnitQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("DeductedQuantity", _deductedQuantity, value)
+            SetPropertyValue("DeductedBaseUnitQuantity", _deductedBaseUnitQuantity, value)
         End Set
     End Property
 

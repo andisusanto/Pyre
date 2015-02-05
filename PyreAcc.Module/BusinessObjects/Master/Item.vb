@@ -160,13 +160,38 @@ Public Class Item
         End Get
     End Property
 
+    <Association("Item-ItemUnit"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Units As XPCollection(Of ItemUnit)
+        Get
+            Return GetCollection(Of ItemUnit)("Units")
+        End Get
+    End Property
+
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return Name
         End Get
     End Property
 
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property UnitSource As XPCollection(Of Unit)
+        Get
+            Dim xp As New XPCollection(Of Unit)(Session, False)
+            xp.Add(BaseUnit)
+            For Each objUnit In Units
+                xp.Add(objUnit.Unit)
+            Next
+            Return xp
+        End Get
+    End Property
+
     Public Function GetPrice(ByVal prmTransDate As Date) As ItemPrice
         Return Session.FindObject(Of ItemPrice)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("Item", Me), New BinaryOperator("Since", prmTransDate, BinaryOperatorType.LessOrEqual), GroupOperator.Or(New NullOperator("Until"), New BinaryOperator("Until", prmTransDate, BinaryOperatorType.GreaterOrEqual))))
+    End Function
+    Public Function GetUnitRate(ByVal prmUnit As Unit) As Decimal
+        If prmUnit Is BaseUnit Then Return 1
+        Dim objItemUnit As ItemUnit = Session.FindObject(Of ItemUnit)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("Item", Me), New BinaryOperator("Unit", prmUnit)))
+        If objItemUnit Is Nothing Then Return 0
+        Return objItemUnit.ConversionRate
     End Function
 End Class

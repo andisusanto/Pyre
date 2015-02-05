@@ -199,14 +199,14 @@ Public Class PurchaseInvoice
     targetobjectscriteria:="PaymentOutstandingStatus = 'Cleared'", _
    ImageName:="Recalculate")>
     Public Sub UpdatePaymentOutstandingStatus()
-        Dim totalQuantity As Double = 0
-        Dim totalOutstandingQuantity As Double = 0
+        Dim totalBaseUnitQuantity As Double = 0
+        Dim totalOutstandingBaseUnitQuantity As Double = 0
         For Each objDetail In Details
-            totalQuantity += objDetail.Quantity
-            totalOutstandingQuantity += objDetail.PaymentOutstandingQuantity
+            totalBaseUnitQuantity += objDetail.BaseUnitQuantity
+            totalOutstandingBaseUnitQuantity += objDetail.PaymentOutstandingBaseUnitQuantity
         Next
-        If totalQuantity <> totalOutstandingQuantity Then
-            If totalOutstandingQuantity = 0 Then
+        If totalBaseUnitQuantity <> totalOutstandingBaseUnitQuantity Then
+            If totalOutstandingBaseUnitQuantity = 0 Then
                 PaymentOutstandingStatus = OutstandingStatus.Cleared
             Else
                 PaymentOutstandingStatus = OutstandingStatus.PartiallyPaid
@@ -224,14 +224,14 @@ Public Class PurchaseInvoice
         PaymentOutstandingStatus = OutstandingStatus.Cleared
     End Sub
     Public Sub UpdateReturnOutstandingStatus()
-        Dim totalQuantity As Double = 0
-        Dim totalOutstandingQuantity As Double = 0
+        Dim totalBaseUnitQuantity As Double = 0
+        Dim totalOutstandingBaseUnitQuantity As Double = 0
         For Each objDetail In Details
-            totalQuantity += objDetail.Quantity
-            totalOutstandingQuantity += objDetail.ReturnOutstandingQuantity
+            totalBaseUnitQuantity += objDetail.BaseUnitQuantity
+            totalOutstandingBaseUnitQuantity += objDetail.ReturnOutstandingBaseUnitQuantity
         Next
-        If totalQuantity <> totalOutstandingQuantity Then
-            If totalOutstandingQuantity = 0 Then
+        If totalBaseUnitQuantity <> totalOutstandingBaseUnitQuantity Then
+            If totalOutstandingBaseUnitQuantity = 0 Then
                 ReturnOutstandingStatus = OutstandingStatus.Cleared
             Else
                 ReturnOutstandingStatus = OutstandingStatus.PartiallyPaid
@@ -243,7 +243,8 @@ Public Class PurchaseInvoice
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.Quantity, objDetail.UnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date))
+            Dim tmpUnitPrice As Decimal = objDetail.UnitPrice * objDetail.Quantity / objDetail.BaseUnitQuantity
+            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date))
         Next
     End Sub
     Protected Overrides Sub OnCanceled()

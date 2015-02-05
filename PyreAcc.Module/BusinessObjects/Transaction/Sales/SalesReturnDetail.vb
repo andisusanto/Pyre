@@ -34,7 +34,10 @@ Public Class SalesReturnDetail
     Private _salesReturn As SalesReturn
     Private _salesInvoiceDetail As SalesInvoiceDetail
     Private _quantity As Decimal
+    Private _unit As Unit
+    Private _baseUnitQuantity As Decimal
     Private _total As Decimal
+    Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -66,6 +69,7 @@ Public Class SalesReturnDetail
             End If
         End Set
     End Property
+    <ImmediatePostData(True)>
     <DataSourceProperty("SalesInvoiceDetailDatasource")>
     <RuleRequiredField("Rule Required for SalesReturnDetail.SalesInvoiceDetail", DefaultContexts.Save)>
     Public Property SalesInvoiceDetail As SalesInvoiceDetail
@@ -76,19 +80,48 @@ Public Class SalesReturnDetail
             SetPropertyValue("SalesInvoiceDetail", _salesInvoiceDetail, value)
             If Not IsLoading Then
                 If SalesInvoiceDetail IsNot Nothing Then
-                    Quantity = SalesInvoiceDetail.Quantity - SalesInvoiceDetail.PaidQuantity
+                    'BaseUnitQuantity = SalesInvoiceDetail.BaseUnitQuantity - SalesInvoiceDetail.PaidBaseUnitQuantity
                 Else
                     Total = 0
                 End If
             End If
         End Set
     End Property
+    <ImmediatePostData(True)>
     Public Property Quantity As Decimal
         Get
             Return _quantity
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("Quantity", _quantity, value)
+            If Not IsLoading Then CalculateBaseUnitQuantity()
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <DataSourceProperty("SalesInvoiceDetail.Item.UnitSource")>
+    Public Property Unit As Unit
+        Get
+            Return _unit
+        End Get
+        Set(ByVal value As Unit)
+            SetPropertyValue("Unit", _unit, value)
+            If Not IsLoading Then CalculateBaseUnitQuantity()
+        End Set
+    End Property
+    Private Sub CalculateBaseUnitQuantity()
+        If Unit IsNot Nothing AndAlso SalesInvoiceDetail IsNot Nothing Then
+            Dim tmpRate As Decimal = SalesInvoiceDetail.Item.GetUnitRate(Unit)
+            BaseUnitQuantity = Quantity * tmpRate
+        Else
+            BaseUnitQuantity = 0
+        End If
+    End Sub
+    Public Property BaseUnitQuantity As Decimal
+        Get
+            Return _baseUnitQuantity
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
             If Not IsLoading Then
                 CalculateTotal()
             End If
@@ -109,14 +142,22 @@ Public Class SalesReturnDetail
             End If
         End Set
     End Property
-
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
+        Get
+            Return _balanceSheetInventoryItem
+        End Get
+        Set(ByVal value As BalanceSheetInventoryItem)
+            SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
+        End Set
+    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property SalesInvoiceDetailDatasource As XPCollection(Of SalesInvoiceDetail)
         Get
-            Return New XPCollection(Of SalesInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("SalesInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("SalesInvoice.PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("SalesInvoice.Customer", SalesReturn.Customer), New BinaryOperator("ReturnOutstandingQuantity", 0, BinaryOperatorType.Greater))))
+            Return New XPCollection(Of SalesInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("SalesInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("SalesInvoice.PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("SalesInvoice.Customer", SalesReturn.Customer), New BinaryOperator("ReturnOutstandingBaseUnitQuantity", 0, BinaryOperatorType.Greater))))
         End Get
     End Property
     Private Sub CalculateTotal()
-        Total = SalesInvoiceDetail.UnitPrice * Quantity
+        Total = SalesInvoiceDetail.UnitPrice * BaseUnitQuantity
     End Sub
 End Class

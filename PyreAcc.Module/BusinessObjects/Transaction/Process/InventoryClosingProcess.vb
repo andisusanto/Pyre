@@ -67,7 +67,7 @@ Public Class InventoryClosingProcess
         For Each objInventoryItem In BalanceSheet.InventoryItems
             Dim tmpInventoryItem As New BalanceSheetInventoryItem(Session) With {.BalanceSheet = nextBalanceSheet, _
                                                                                  .TransDate = objInventoryItem.TransDate, _
-                                                                                 .Quantity = objInventoryItem.RemainingQuantity, _
+                                                                                 .BaseUnitQuantity = objInventoryItem.RemainingBaseUnitQuantity, _
                                                                                  .ExpiryDate = objInventoryItem.ExpiryDate, _
                                                                                  .UnitPrice = objInventoryItem.UnitPrice, _
                                                                                  .Inventory = objInventoryItem.Inventory, _

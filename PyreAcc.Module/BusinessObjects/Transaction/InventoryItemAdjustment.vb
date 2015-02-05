@@ -13,7 +13,7 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
-<Appearance("Appearance for InventoryItemAdjusment.Quantity < 0", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="UnitPrice, ExpiryDate", criteria:="Quantity < 0")>
+<Appearance("Appearance for InventoryItemAdjusment.BaseUnitQuantity < 0", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="UnitPrice, ExpiryDate", criteria:="BaseUnitQuantity < 0")>
 <Appearance("Appearance for InventoryItemAdjusment.Item.HasExpiryDate = FALSE", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="ExpiryDate", criteria:="Item.HasExpiryDate = FALSE")>
 <Appearance("Appearance Default Disabled for InventoryItemAdjustment", AppearanceItemType:="ViewItem", targetitems:="Total", enabled:=False)>
 <DeferredDeletion(False)>
@@ -33,7 +33,7 @@ Public Class InventoryItemAdjustment
     Private _inventory As Inventory
     Private _item As Item
     Private _transDate As Date
-    Private _quantity As Integer
+    Private _baseUnitQuantity As Integer
     Private _unitPrice As Double
     Private _expiryDate As Date
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
@@ -77,12 +77,12 @@ Public Class InventoryItemAdjustment
         End Set
     End Property
     <ImmediatePostData(True)>
-    Public Property Quantity As Integer
+    Public Property BaseUnitQuantity As Integer
         Get
-            Return _quantity
+            Return _baseUnitQuantity
         End Get
         Set(ByVal value As Integer)
-            SetPropertyValue("Quantity", _quantity, value)
+            SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
         End Set
     End Property
     Public Property UnitPrice As Double
@@ -93,7 +93,7 @@ Public Class InventoryItemAdjustment
             SetPropertyValue("UnitPrice", _unitPrice, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for InventoryItemAdjustment.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate AND Quantity > 0")>
+    <RuleRequiredField("Rule Required for InventoryItemAdjustment.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate AND BaseUnitQuantity > 0")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate
@@ -127,15 +127,15 @@ Public Class InventoryItemAdjustment
     End Property
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        If Quantity > 0 Then
-            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, Quantity, UnitPrice, ExpiryDate)
+        If BaseUnitQuantity > 0 Then
+            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, UnitPrice, ExpiryDate)
         Else
-            BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * Quantity, BalanceSheetInventoryItemDeductTransactionType.Adjustment)
+            BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, BalanceSheetInventoryItemDeductTransactionType.Adjustment)
         End If
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
-        If Quantity > 0 Then
+        If BaseUnitQuantity > 0 Then
             Dim tmp = BalanceSheetInventoryItem
             BalanceSheetInventoryItem = Nothing
             BalanceSheetService.DeleteBalanceSheetInventoryItem(tmp)

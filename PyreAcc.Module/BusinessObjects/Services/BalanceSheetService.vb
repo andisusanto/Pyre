@@ -1,12 +1,12 @@
 ﻿Imports DevExpress.Xpo
 Imports DevExpress.Data.Filtering
 Public Class BalanceSheetService
-    Public Shared Function CreateBalanceSheetInventoryItem(ByVal Inventory As Inventory, ByVal Item As Item, ByVal TransDate As Date, ByVal Quantity As Decimal, ByVal UnitPrice As Double, ByVal ExpiryDate As Date) As BalanceSheetInventoryItem
+    Public Shared Function CreateBalanceSheetInventoryItem(ByVal Inventory As Inventory, ByVal Item As Item, ByVal TransDate As Date, ByVal BaseUnitQuantity As Decimal, ByVal UnitPrice As Double, ByVal ExpiryDate As Date) As BalanceSheetInventoryItem
         Dim session As Session = Inventory.Session
         Dim period As Period = session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
         If period Is Nothing OrElse period.Closed Then Throw New Exception("Not in open period")
         Dim BalanceSheet As BalanceSheet = session.FindObject(Of BalanceSheet)(New BinaryOperator("Period", period))
-        Dim objBalanceSheetInventoryItem As New BalanceSheetInventoryItem(session) With {.BalanceSheet = BalanceSheet, .Inventory = Inventory, .Item = Item, .TransDate = TransDate, .Quantity = Quantity, .UnitPrice = UnitPrice, .ExpiryDate = ExpiryDate}
+        Dim objBalanceSheetInventoryItem As New BalanceSheetInventoryItem(session) With {.BalanceSheet = BalanceSheet, .Inventory = Inventory, .Item = Item, .TransDate = TransDate, .BaseUnitQuantity = BaseUnitQuantity, .UnitPrice = UnitPrice, .ExpiryDate = ExpiryDate}
         Dim xpInventoryDeductTransaction As New XPCollection(Of BalanceSheetInventoryItemDeductTransaction)(PersistentCriteriaEvaluationBehavior.InTransaction, session, _
                                                                                                             GroupOperator.And(New BinaryOperator("BalanceSheet", BalanceSheet), _
                                                                                                                               New BinaryOperator("Inventory", Inventory), _
@@ -29,7 +29,7 @@ Public Class BalanceSheetService
         If period.Closed Then Throw New Exception("Not in open period")
 
         'Dim currentBalance As Decimal = BalanceSheetService.GetBalance(BalanceSheetInventoryItem.BalanceSheet, BalanceSheetInventoryItem.TransDate, BalanceSheetInventoryItem.Inventory, BalanceSheetInventoryItem.Item)
-        'If currentBalance < BalanceSheetInventoryItem.Quantity Then Throw New Exception("Balance is not enough")
+        'If currentBalance < BalanceSheetInventoryItem.BaseUnitQuantity Then Throw New Exception("Balance is not enough")
 
         Dim xpInventoryDeductTransaction As New XPCollection(Of BalanceSheetInventoryItemDeductTransaction)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
                                                                                                             GroupOperator.And(New BinaryOperator("BalanceSheet", BalanceSheetInventoryItem.BalanceSheet), _
@@ -46,14 +46,14 @@ Public Class BalanceSheetService
             obj.DistributeDeduction()
         Next
     End Sub
-    Public Shared Function CreateBalanceSheetInventoryItemDeductTransaction(ByVal Inventory As Inventory, ByVal Item As Item, ByVal TransDate As Date, ByVal Quantity As Decimal, ByVal Type As BalanceSheetInventoryItemDeductTransactionType) As BalanceSheetInventoryItemDeductTransaction
+    Public Shared Function CreateBalanceSheetInventoryItemDeductTransaction(ByVal Inventory As Inventory, ByVal Item As Item, ByVal TransDate As Date, ByVal BaseUnitQuantity As Decimal, ByVal Type As BalanceSheetInventoryItemDeductTransactionType) As BalanceSheetInventoryItemDeductTransaction
         Dim session As Session = Inventory.Session
         Dim period As Period = session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
         If period Is Nothing OrElse period.Closed Then Throw New Exception("Not in open period")
         Dim BalanceSheet As BalanceSheet = session.FindObject(Of BalanceSheet)(New BinaryOperator("Period", period))
         'Dim currentBalance As Decimal = BalanceSheetService.GetBalance(BalanceSheet, TransDate, Inventory, Item)
-        'If currentBalance < Quantity Then Throw New Exception("Balance is not enough")
-        Dim objBalanceSheetInventoryItemDeductTransaction As New BalanceSheetInventoryItemDeductTransaction(session) With {.BalanceSheet = BalanceSheet, .Inventory = Inventory, .Item = Item, .TransDate = TransDate, .Quantity = Quantity, .Type = Type}
+        'If currentBalance < BaseUnitQuantity Then Throw New Exception("Balance is not enough")
+        Dim objBalanceSheetInventoryItemDeductTransaction As New BalanceSheetInventoryItemDeductTransaction(session) With {.BalanceSheet = BalanceSheet, .Inventory = Inventory, .Item = Item, .TransDate = TransDate, .BaseUnitQuantity = BaseUnitQuantity, .Type = Type}
         Dim xpInventoryDeductTransaction As New XPCollection(Of BalanceSheetInventoryItemDeductTransaction)(PersistentCriteriaEvaluationBehavior.InTransaction, session, _
                                                                                                             GroupOperator.And(New BinaryOperator("BalanceSheet", BalanceSheet), _
                                                                                                                               New BinaryOperator("Inventory", Inventory), _
@@ -105,11 +105,11 @@ Public Class BalanceSheetService
 
         Dim tmpBalance As Decimal = 0
         For Each objInventoryItem In BalanceSheet.InventoryItems
-            tmpBalance += objInventoryItem.Quantity
-            If objInventoryItem.Item.HasExpiryDate AndAlso objInventoryItem.ExpiryDate < TransDate Then tmpBalance -= objInventoryItem.RemainingQuantity
+            tmpBalance += objInventoryItem.BaseUnitQuantity
+            If objInventoryItem.Item.HasExpiryDate AndAlso objInventoryItem.ExpiryDate < TransDate Then tmpBalance -= objInventoryItem.RemainingBaseUnitQuantity
         Next
         For Each objInventoryItemDeductTransaction In BalanceSheet.InventoryItemDeductTransactions
-            tmpBalance -= objInventoryItemDeductTransaction.Quantity
+            tmpBalance -= objInventoryItemDeductTransaction.BaseUnitQuantity
         Next
         Return tmpBalance
     End Function

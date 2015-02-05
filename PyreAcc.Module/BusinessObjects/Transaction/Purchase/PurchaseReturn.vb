@@ -115,8 +115,9 @@ Public Class PurchaseReturn
         MyBase.OnSubmitted()
         For Each objDetail In Details
             If objDetail.PurchaseInvoiceDetail.PurchaseInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Purchase Invoice with No {0} has not been submitted", objDetail.PurchaseInvoiceDetail.PurchaseInvoice.No))
-            If objDetail.PurchaseInvoiceDetail.ReturnOutstandingQuantity < objDetail.Quantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
-            objDetail.PurchaseInvoiceDetail.ReturnedQuantity += objDetail.Quantity
+            If objDetail.PurchaseInvoiceDetail.ReturnOutstandingBaseUnitQuantity < objDetail.BaseUnitQuantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
+            objDetail.PurchaseInvoiceDetail.ReturnedBaseUnitQuantity += objDetail.BaseUnitQuantity
+            objDetail.BalanceSheetInventoryDeductionTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(objDetail.PurchaseInvoiceDetail.BalanceSheetInventoryItem.Inventory, objDetail.PurchaseInvoiceDetail.BalanceSheetInventoryItem.Item, TransDate, objDetail.BaseUnitQuantity, BalanceSheetInventoryItemDeductTransactionType.Returned)
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.DebitNote"), New BinaryOperator("IsActive", True)))
         Dim objDebitNote As New DebitNote(Session) With {.FromSupplier = Supplier, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
@@ -126,7 +127,8 @@ Public Class PurchaseReturn
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            objDetail.PurchaseInvoiceDetail.ReturnedQuantity -= objDetail.Quantity
+            objDetail.PurchaseInvoiceDetail.ReturnedBaseUnitQuantity -= objDetail.BaseUnitQuantity
+            BalanceSheetService.DeleteBalanceSheetInventoryItemDeductTransaction(objDetail.BalanceSheetInventoryDeductionTransaction)
         Next
         Dim tmp = DebitNote
         DebitNote = Nothing

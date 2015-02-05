@@ -29,6 +29,7 @@ Public Class SystemConfig
     End Sub
     Private fDefaultUnit As Unit
     Private fReportPath As String
+    Private fReturnItemInventory As Inventory
 
     Public Property DefaultUnit As Unit
         Get
@@ -45,6 +46,14 @@ Public Class SystemConfig
         End Get
         Set(value As String)
             SetPropertyValue("ReportPath", fReportPath, value)
+        End Set
+    End Property
+    Public Property ReturnItemInventory As Inventory
+        Get
+            Return fReturnItemInventory
+        End Get
+        Set(value As Inventory)
+            SetPropertyValue("ReturnItemInventory", fReturnItemInventory, value)
         End Set
     End Property
 

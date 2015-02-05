@@ -14,7 +14,7 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
-<Appearance("Appearance Default Disabled for PurchaseInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="ReturnedQuantity, PaidQuantity, Total")>
+<Appearance("Appearance Default Disabled for PurchaseInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, ReturnedBaseUnitQuantity, PaidBaseUnitQuantity, Total")>
 <RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseInvoiceDetail", DefaultContexts.Save, "PurchaseInvoice, Item")>
 <RuleCriteria("Rule Criteria for PurchaseInvoiceDetail.Total > 0", DefaultContexts.Save, "Total > 0", "Total must be greater than zero")>
 <DeferredDeletion(False)>
@@ -34,10 +34,11 @@ Public Class PurchaseInvoiceDetail
     Private _sequence As Integer
     Private _purchaseInvoice As PurchaseInvoice
     Private _item As Item
-    Private _expiryDate As Date
+    Private _unit As Unit
     Private _quantity As Decimal
-    Private _paidQuantity As Decimal
-    Private _returnedQuantity As Decimal
+    Private _expiryDate As Date
+    Private _baseUnitQuantity As Decimal
+    Private _returnedBaseUnitQuantity As Decimal
     Private _unitPrice As Decimal
     Private _total As Decimal
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
@@ -72,6 +73,7 @@ Public Class PurchaseInvoiceDetail
             End If
         End Set
     End Property
+    <ImmediatePostData(True)>
     <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.Item", DefaultContexts.Save)>
     Public Property Item As Item
         Get
@@ -79,8 +81,49 @@ Public Class PurchaseInvoiceDetail
         End Get
         Set(ByVal value As Item)
             SetPropertyValue("Item", _item, value)
+            If Not IsLoading Then
+                If Item IsNot Nothing Then
+                    Unit = Item.BaseUnit
+                Else
+                    Unit = Nothing
+                End If
+            End If
         End Set
     End Property
+    <ImmediatePostData(True)>
+    <DataSourceProperty("Item.UnitSource")>
+    Public Property Unit As Unit
+        Get
+            Return _unit
+        End Get
+        Set(ByVal value As Unit)
+            SetPropertyValue("Unit", _unit, value)
+            If Not IsLoading Then
+                CalculateBaseUnit()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property Quantity As Decimal
+        Get
+            Return _quantity
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("Quantity", _quantity, value)
+            If Not IsLoading Then
+                CalculateBaseUnit()
+                CalculateTotal()
+            End If
+        End Set
+    End Property
+    Private Sub CalculateBaseUnit()
+        If Unit IsNot Nothing AndAlso Item IsNot Nothing Then
+            Dim tmpRate As Decimal = Item.GetUnitRate(Unit)
+            BaseUnitQuantity = Quantity * tmpRate
+        Else
+            BaseUnitQuantity = 0
+        End If
+    End Sub
     <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
     Public Property ExpiryDate As Date
         Get
@@ -90,50 +133,36 @@ Public Class PurchaseInvoiceDetail
             SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
-    Public Property Quantity As Decimal
+    Public Property BaseUnitQuantity As Decimal
         Get
-            Return _quantity
+            Return _baseUnitQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("Quantity", _quantity, value)
-            If Not IsLoading Then
-                CalculateTotal()
-            End If
+            SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
         End Set
     End Property
-    Public Property PaidQuantity As Decimal
+    Public Property ReturnedBaseUnitQuantity As Decimal
         Get
-            Return _paidQuantity
+            Return _returnedBaseUnitQuantity
         End Get
         Set(value As Decimal)
-            SetPropertyValue("PaidQuantity", _paidQuantity, value)
-            If Not IsLoading Then
-                PurchaseInvoice.UpdatePaymentOutstandingStatus()
-            End If
-        End Set
-    End Property
-    Public Property ReturnedQuantity As Decimal
-        Get
-            Return _returnedQuantity
-        End Get
-        Set(value As Decimal)
-            SetPropertyValue("ReturnedQuantity", _returnedQuantity, value)
+            SetPropertyValue("ReturnedBaseUnitQuantity", _returnedBaseUnitQuantity, value)
             If Not IsLoading Then
                 PurchaseInvoice.UpdateReturnOutstandingStatus()
             End If
         End Set
     End Property
-    <PersistentAlias("Quantity - PaidQuantity")>
-    Public ReadOnly Property PaymentOutstandingQuantity As Decimal
+    <PersistentAlias("BaseUnitQuantity - PaidBaseUnitQuantity")>
+    Public ReadOnly Property PaymentOutstandingBaseUnitQuantity As Decimal
         Get
-            Return EvaluateAlias("PaymentOutstandingQuantity")
+            Return EvaluateAlias("PaymentOutstandingBaseUnitQuantity")
         End Get
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    <PersistentAlias("Quantity - ReturnedQuantity")>
-    Public ReadOnly Property ReturnOutstandingQuantity As Decimal
+    <PersistentAlias("BaseUnitQuantity - ReturnedBaseUnitQuantity")>
+    Public ReadOnly Property ReturnOutstandingBaseUnitQuantity As Decimal
         Get
-            Return EvaluateAlias("ReturnOutstandingQuantity")
+            Return EvaluateAlias("ReturnOutstandingBaseUnitQuantity")
         End Get
     End Property
     Public Property UnitPrice As Decimal

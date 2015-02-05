@@ -31,9 +31,9 @@ Public Class BalanceSheetInventoryItem
     Private _transDate As Date
     Private _unitPrice As Decimal
     Private _expiryDate As Date
-    Private _quantity As Decimal
-    Private _deductedQuantity As Decimal
-    Private _remainingQuantity As Decimal
+    Private _baseUnitQuantity As Decimal
+    Private _deductedBaseUnitQuantity As Decimal
+    Private _remainingBaseUnitQuantity As Decimal
     <Association("BalanceSheet-BalanceSheetInventoryItem")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
@@ -88,38 +88,38 @@ Public Class BalanceSheetInventoryItem
             SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
-    Public Property Quantity As Decimal
+    Public Property BaseUnitQuantity As Decimal
         Get
-            Return _quantity
+            Return _baseUnitQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("Quantity", _quantity, value)
+            SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
             If Not IsLoading Then
-                CalculateRemainingQuantity()
+                CalculateRemainingBaseUnitQuantity()
             End If
         End Set
     End Property
-    Public Property DeductedQuantity As Decimal
+    Public Property DeductedBaseUnitQuantity As Decimal
         Get
-            Return _deductedQuantity
+            Return _deductedBaseUnitQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("DeductedQuantity", _deductedQuantity, value)
+            SetPropertyValue("DeductedBaseUnitQuantity", _deductedBaseUnitQuantity, value)
             If Not IsLoading Then
-                CalculateRemainingQuantity()
+                CalculateRemainingBaseUnitQuantity()
             End If
         End Set
     End Property
-    Public Property RemainingQuantity As Decimal
+    Public Property RemainingBaseUnitQuantity As Decimal
         Get
-            Return _remainingQuantity
+            Return _remainingBaseUnitQuantity
         End Get
         Set(ByVal value As Decimal)
-            SetPropertyValue("RemainingQuantity", _remainingQuantity, value)
+            SetPropertyValue("RemainingBaseUnitQuantity", _remainingBaseUnitQuantity, value)
         End Set
     End Property
-    Private Sub CalculateRemainingQuantity()
-        RemainingQuantity = Quantity - DeductedQuantity
+    Private Sub CalculateRemainingBaseUnitQuantity()
+        RemainingBaseUnitQuantity = BaseUnitQuantity - DeductedBaseUnitQuantity
     End Sub
     <Association("BalanceSheetInventoryItem-BalanceSheetInventoryItemDeductTransactionDetail")>
     Public ReadOnly Property DeductDetails As XPCollection(Of BalanceSheetInventoryItemDeductTransactionDetail)
