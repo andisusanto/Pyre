@@ -80,7 +80,8 @@ Public Class SalesReturnDetail
             SetPropertyValue("SalesInvoiceDetail", _salesInvoiceDetail, value)
             If Not IsLoading Then
                 If SalesInvoiceDetail IsNot Nothing Then
-                    'BaseUnitQuantity = SalesInvoiceDetail.BaseUnitQuantity - SalesInvoiceDetail.PaidBaseUnitQuantity
+                    Unit = SalesInvoiceDetail.Unit
+                    Quantity = SalesInvoiceDetail.ReturnedBaseUnitQuantity * SalesInvoiceDetail.Quantity / SalesInvoiceDetail.ReturnedBaseUnitQuantity
                 Else
                     Total = 0
                 End If

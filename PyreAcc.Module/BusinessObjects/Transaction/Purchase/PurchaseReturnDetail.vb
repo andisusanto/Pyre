@@ -80,7 +80,8 @@ Public Class PurchaseReturnDetail
             SetPropertyValue("PurchaseInvoiceDetail", _purchaseInvoiceDetail, value)
             If Not IsLoading Then
                 If PurchaseInvoiceDetail IsNot Nothing Then
-                    'BaseUnitQuantity = PurchaseInvoiceDetail.BaseUnitQuantity - PurchaseInvoiceDetail.PaidBaseUnitQuantity
+                    Unit = PurchaseInvoiceDetail.Unit
+                    Quantity = PurchaseInvoiceDetail.ReturnedBaseUnitQuantity * PurchaseInvoiceDetail.Quantity / PurchaseInvoiceDetail.ReturnedBaseUnitQuantity
                 Else
                     Total = 0
                 End If
