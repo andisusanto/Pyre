@@ -13,7 +13,7 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 <CreatableItem(False)> _
-<RuleObjectExists("Rule Object Exist for ItemPriceMutation for ItemPrice", "Submit", "Item = @Item AND Since = @EffectiveDate", invertresult:=False, LooksFor:=GetType(ItemPrice))>
+<RuleObjectExists("Rule Object Exist for ItemPriceMutation for ItemPrice", "Submit", "@Item = Item AND @Since = EffectiveDate", invertresult:=False, LooksFor:=GetType(ItemPrice))>
 <RuleCriteria("Rule Criteria for ItemPriceMutation.MinimumPrice > 0", DefaultContexts.Save, "MinimumPrice > 0")>
 <RuleCriteria("Rule Criteria for ItemPriceMutation.MaximumPrice > 0", DefaultContexts.Save, "MaximumPrice > 0")>
 <DeferredDeletion(False)>
