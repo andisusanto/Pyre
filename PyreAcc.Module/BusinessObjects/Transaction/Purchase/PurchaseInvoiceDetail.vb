@@ -152,12 +152,6 @@ Public Class PurchaseInvoiceDetail
             End If
         End Set
     End Property
-    <PersistentAlias("BaseUnitQuantity - PaidBaseUnitQuantity")>
-    Public ReadOnly Property PaymentOutstandingBaseUnitQuantity As Decimal
-        Get
-            Return EvaluateAlias("PaymentOutstandingBaseUnitQuantity")
-        End Get
-    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     <PersistentAlias("BaseUnitQuantity - ReturnedBaseUnitQuantity")>
     Public ReadOnly Property ReturnOutstandingBaseUnitQuantity As Decimal

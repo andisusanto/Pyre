@@ -205,14 +205,13 @@ Public Class SalesInvoice
      targetobjectscriteria:="PaymentOutstandingStatus = 'Cleared'", _
     ImageName:="Recalculate")>
     Public Sub UpdatePaymentOutstandingStatus()
-        Dim totalBaseUnitQuantity As Decimal = 0
-        Dim totalOutstandingBaseUnitQuantity As Decimal = 0
-        For Each objDetail In Details
-            totalBaseUnitQuantity += objDetail.BaseUnitQuantity
-            totalOutstandingBaseUnitQuantity += objDetail.PaymentOutstandingBaseUnitQuantity
+        Dim tmpTotalOutstandingPayment As Decimal = Total
+        Dim xp As New XPCollection(Of SalesPaymentDetail)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, GroupOperator.And(New BinaryOperator("SalesInvoice", Me), New BinaryOperator("Status", TransactionStatus.Submitted)))
+        For Each objPaymentDetail In xp
+            tmpTotalOutstandingPayment -= objPaymentDetail.Amount
         Next
-        If totalBaseUnitQuantity <> totalOutstandingBaseUnitQuantity Then
-            If totalOutstandingBaseUnitQuantity = 0 Then
+        If tmpTotalOutstandingPayment <> Total Then
+            If tmpTotalOutstandingPayment = 0 Then
                 PaymentOutstandingStatus = OutstandingStatus.Cleared
             Else
                 PaymentOutstandingStatus = OutstandingStatus.PartiallyPaid
