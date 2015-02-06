@@ -91,7 +91,7 @@ Public Class SalesInvoiceDetail
         Set(ByVal value As Unit)
             SetPropertyValue("Unit", _unit, value)
             If Not IsLoading Then
-                CalculateBaseUnit()
+                CalculateBaseUnitQuantity()
                 CalculateUnitPrice()
             End If
         End Set
@@ -104,12 +104,12 @@ Public Class SalesInvoiceDetail
         Set(ByVal value As Decimal)
             SetPropertyValue("Quantity", _quantity, value)
             If Not IsLoading Then
-                CalculateBaseUnit()
+                CalculateBaseUnitQuantity()
                 CalculateTotal()
             End If
         End Set
     End Property
-    Private Sub CalculateBaseUnit()
+    Private Sub CalculateBaseUnitQuantity()
         If Unit IsNot Nothing AndAlso Item IsNot Nothing Then
             Dim tmpRate As Decimal = Item.GetUnitRate(Unit)
             BaseUnitQuantity = Quantity * tmpRate

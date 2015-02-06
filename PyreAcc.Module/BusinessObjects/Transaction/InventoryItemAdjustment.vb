@@ -15,7 +15,8 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <Appearance("Appearance for InventoryItemAdjusment.BaseUnitQuantity < 0", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="UnitPrice, ExpiryDate", criteria:="BaseUnitQuantity < 0")>
 <Appearance("Appearance for InventoryItemAdjusment.Item.HasExpiryDate = FALSE", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="ExpiryDate", criteria:="Item.HasExpiryDate = FALSE")>
-<Appearance("Appearance Default Disabled for InventoryItemAdjustment", AppearanceItemType:="ViewItem", targetitems:="Total", enabled:=False)>
+<Appearance("Appearance Default Disabled for InventoryItemAdjustment", AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, Total", enabled:=False)>
+<RuleCriteria("Rule Criteria for InventoryItemAdjustment.BaseUnitQuantity <> 0", "Submit", "BaseUnitQuantity <> 0")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class InventoryItemAdjustment
@@ -32,6 +33,8 @@ Public Class InventoryItemAdjustment
     Private _no As String
     Private _inventory As Inventory
     Private _item As Item
+    Private _quantity As Decimal
+    Private _unit As Unit
     Private _transDate As Date
     Private _baseUnitQuantity As Integer
     Private _unitPrice As Double
@@ -65,8 +68,39 @@ Public Class InventoryItemAdjustment
         End Get
         Set(ByVal value As Item)
             SetPropertyValue("Item", _item, value)
+            If Not IsLoading Then CalculateBaseUnitQuantity()
         End Set
     End Property
+    <ImmediatePostData(True)>
+    Public Property Quantity As Decimal
+        Get
+            Return _quantity
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("Quantity", _quantity, value)
+            If Not IsLoading Then CalculateBaseUnitQuantity()
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <RuleRequiredField("Rule Required for InventoryItemAdjustment.Unit", DefaultContexts.Save)>
+    Public Property Unit As Unit
+        Get
+            Return _unit
+        End Get
+        Set(ByVal value As Unit)
+            SetPropertyValue("Unit", _unit, value)
+            If Not IsLoading Then CalculateBaseUnitQuantity()
+        End Set
+    End Property
+
+    Private Sub CalculateBaseUnitQuantity()
+        If Unit IsNot Nothing AndAlso Item IsNot Nothing Then
+            Dim tmpRate As Decimal = Item.GetUnitRate(Unit)
+            BaseUnitQuantity = Quantity * tmpRate
+        Else
+            BaseUnitQuantity = 0
+        End If
+    End Sub
     <RuleRequiredField("Rule Required for InventoryItemAdjustment.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
@@ -76,7 +110,6 @@ Public Class InventoryItemAdjustment
             SetPropertyValue("TransDate", _transDate, value)
         End Set
     End Property
-    <ImmediatePostData(True)>
     Public Property BaseUnitQuantity As Integer
         Get
             Return _baseUnitQuantity
@@ -128,7 +161,8 @@ Public Class InventoryItemAdjustment
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         If BaseUnitQuantity > 0 Then
-            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, UnitPrice, ExpiryDate)
+            Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
+            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate)
         Else
             BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, BalanceSheetInventoryItemDeductTransactionType.Adjustment)
         End If
