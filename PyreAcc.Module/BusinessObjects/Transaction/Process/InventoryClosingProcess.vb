@@ -45,6 +45,7 @@ Public Class InventoryClosingProcess
             nextPeriod.Description = tmpStartDate.ToString("MMMM yyyy")
             nextPeriod.Year = tmpStartDate.Year
             nextPeriod.Month = tmpStartDate.Month
+            nextPeriod.StartDate = tmpStartDate
             nextPeriod.EndDate = tmpStartDate.AddMonths(1).AddDays(-1)
         End If
         Dim nextBalanceSheet As BalanceSheet = Session.FindObject(Of BalanceSheet)(PersistentCriteriaEvaluationBehavior.InTransaction, New BinaryOperator("Period", nextPeriod))
