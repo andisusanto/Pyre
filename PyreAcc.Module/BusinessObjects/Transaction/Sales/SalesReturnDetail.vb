@@ -36,6 +36,8 @@ Public Class SalesReturnDetail
     Private _quantity As Decimal
     Private _unit As Unit
     Private _baseUnitQuantity As Decimal
+    Private _expiryDate As Date
+    Private _unitPrice As Decimal
     Private _total As Decimal
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
     Public Property Sequence As Integer
@@ -128,6 +130,23 @@ Public Class SalesReturnDetail
             End If
         End Set
     End Property
+    <RuleRequiredField("Rule Required for SalesReturnDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="SalesInvoiceDetail.Item.HasExpiryDate = TRUE")>
+    Public Property ExpiryDate As Date
+        Get
+            Return _expiryDate
+        End Get
+        Set(ByVal value As Date)
+            SetPropertyValue("ExpiryDate", _expiryDate, value)
+        End Set
+    End Property
+    Public Property UnitPrice As Decimal
+        Get
+            Return _unitPrice
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("UnitPrice", _unitPrice, value)
+        End Set
+    End Property
     Public Property Total As Decimal
         Get
             Return _total
@@ -159,6 +178,6 @@ Public Class SalesReturnDetail
         End Get
     End Property
     Private Sub CalculateTotal()
-        Total = SalesInvoiceDetail.UnitPrice * BaseUnitQuantity
+        Total = UnitPrice * BaseUnitQuantity
     End Sub
 End Class

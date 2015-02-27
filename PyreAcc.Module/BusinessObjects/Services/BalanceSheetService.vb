@@ -1,7 +1,7 @@
 ﻿Imports DevExpress.Xpo
 Imports DevExpress.Data.Filtering
 Public Class BalanceSheetService
-    Public Shared Function CreateBalanceSheetInventoryItem(ByVal Inventory As Inventory, ByVal Item As Item, ByVal TransDate As Date, ByVal BaseUnitQuantity As Decimal, ByVal UnitPrice As Double, ByVal ExpiryDate As Date) As BalanceSheetInventoryItem
+    Public Shared Function CreateBalanceSheetInventoryItem(ByVal Inventory As Inventory, ByVal Item As Item, ByVal TransDate As Date, ByVal BaseUnitQuantity As Decimal, ByVal UnitPrice As Decimal, ByVal ExpiryDate As Date) As BalanceSheetInventoryItem
         Dim session As Session = Inventory.Session
         Dim period As Period = session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
         If period Is Nothing OrElse period.Closed Then Throw New Exception("Not in open period")
