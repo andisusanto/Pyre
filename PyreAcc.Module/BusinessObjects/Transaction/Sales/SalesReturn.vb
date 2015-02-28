@@ -129,6 +129,9 @@ Public Class SalesReturn
         MyBase.OnCanceled()
         For Each objDetail In Details
             objDetail.SalesInvoiceDetail.ReturnedBaseUnitQuantity -= objDetail.BaseUnitQuantity
+            Dim tmpBalanceSheetInventoryItem = objDetail.BalanceSheetInventoryItem
+            objDetail.BalanceSheetInventoryItem = Nothing
+            BalanceSheetService.DeleteBalanceSheetInventoryItem(tmpBalanceSheetInventoryItem)
         Next
         Dim tmp = CreditNote
         CreditNote = Nothing
