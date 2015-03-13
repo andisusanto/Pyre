@@ -15,8 +15,8 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
-<RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
-<RuleCriteria("Rule Criteria for Cancel SalesInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
+<RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
+<RuleCriteria("Rule Criteria for Cancel SalesInvoice.HasReturnedItem = FALSE", "Cancel", "HasReturnedItem = FALSE")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
@@ -229,6 +229,17 @@ Public Class SalesInvoice
             If CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitExceedMaximumOutstandingPaymentInvoice Then Return False
             If Customer.MaximumOutstandingPaymentAmount < Customer.OutstandingPaymentAmount + PaymentOutstandingAmount Then Return True
             Return False
+        End Get
+    End Property
+
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property HasReturnedItem As Boolean
+        Get
+            Dim hasReturned As Boolean = False
+            For Each objDetail In Details
+                If objDetail.ReturnedBaseUnitQuantity > 0 Then hasReturned = True
+            Next
+            Return hasReturned
         End Get
     End Property
     Private Sub CalculateDiscount()

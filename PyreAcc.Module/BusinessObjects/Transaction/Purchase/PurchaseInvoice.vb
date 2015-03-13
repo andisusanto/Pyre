@@ -15,8 +15,8 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
-<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaymentOutstandingStatus", "Cancel", "PaymentOutstandingStatus = 'Full'")>
-<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
+<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
+<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.HasReturnedItem = FALSE", "Cancel", "HasReturnedItem = FALSE")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
@@ -221,6 +221,17 @@ Public Class PurchaseInvoice
             Dim period As Period = Session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
             If period Is Nothing Then Return True
             Return period.Closed
+        End Get
+    End Property
+
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property HasReturnedItem As Boolean
+        Get
+            Dim hasReturned As Boolean = False
+            For Each objDetail In Details
+                If objDetail.ReturnedBaseUnitQuantity > 0 Then hasReturned = True
+            Next
+            Return hasReturned
         End Get
     End Property
     Private Sub CalculateDiscount()
