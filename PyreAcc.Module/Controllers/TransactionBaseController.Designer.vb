@@ -29,6 +29,8 @@ Partial Class TransactionBaseController
         Me.components = New System.ComponentModel.Container()
         Me.SubmitAction = New DevExpress.ExpressApp.Actions.PopupWindowShowAction(Me.components)
         Me.CancelSubmitAction = New DevExpress.ExpressApp.Actions.PopupWindowShowAction(Me.components)
+        Me.TransactionTransDateFilter = New DevExpress.ExpressApp.Actions.SingleChoiceAction(Me.components)
+        Me.TransactionStatusFilter = New DevExpress.ExpressApp.Actions.SingleChoiceAction(Me.components)
         '
         'SubmitAction
         '
@@ -56,6 +58,30 @@ Partial Class TransactionBaseController
         Me.CancelSubmitAction.TargetViewNesting = DevExpress.ExpressApp.Nesting.Root
         Me.CancelSubmitAction.ToolTip = Nothing
         '
+        'TransactionTransDateFilter
+        '
+        Me.TransactionTransDateFilter.Caption = "Date"
+        Me.TransactionTransDateFilter.Category = "Filters"
+        Me.TransactionTransDateFilter.ConfirmationMessage = Nothing
+        Me.TransactionTransDateFilter.Id = "TransactionBaseFilter"
+        Me.TransactionTransDateFilter.TargetObjectType = GetType(PyreAcc.[Module].TransactionBase)
+        Me.TransactionTransDateFilter.TargetViewNesting = DevExpress.ExpressApp.Nesting.Root
+        Me.TransactionTransDateFilter.TargetViewType = DevExpress.ExpressApp.ViewType.ListView
+        Me.TransactionTransDateFilter.ToolTip = Nothing
+        Me.TransactionTransDateFilter.TypeOfView = GetType(DevExpress.ExpressApp.ListView)
+        '
+        'TransactionStatusFilter
+        '
+        Me.TransactionStatusFilter.Caption = "Status"
+        Me.TransactionStatusFilter.Category = "Filters"
+        Me.TransactionStatusFilter.ConfirmationMessage = Nothing
+        Me.TransactionStatusFilter.Id = "TransactionStatusFilter"
+        Me.TransactionStatusFilter.TargetObjectType = GetType(PyreAcc.[Module].TransactionBase)
+        Me.TransactionStatusFilter.TargetViewNesting = DevExpress.ExpressApp.Nesting.Root
+        Me.TransactionStatusFilter.TargetViewType = DevExpress.ExpressApp.ViewType.ListView
+        Me.TransactionStatusFilter.ToolTip = Nothing
+        Me.TransactionStatusFilter.TypeOfView = GetType(DevExpress.ExpressApp.ListView)
+        '
         'TransactionBaseController
         '
         Me.TargetObjectType = GetType(PyreAcc.[Module].TransactionBase)
@@ -65,5 +91,7 @@ Partial Class TransactionBaseController
     End Sub
     Friend WithEvents SubmitAction As DevExpress.ExpressApp.Actions.PopupWindowShowAction
     Friend WithEvents CancelSubmitAction As DevExpress.ExpressApp.Actions.PopupWindowShowAction
+    Friend WithEvents TransactionTransDateFilter As DevExpress.ExpressApp.Actions.SingleChoiceAction
+    Friend WithEvents TransactionStatusFilter As DevExpress.ExpressApp.Actions.SingleChoiceAction
 
 End Class

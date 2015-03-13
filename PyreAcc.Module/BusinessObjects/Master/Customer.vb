@@ -31,6 +31,7 @@ Public Class Customer
 
     Private fCode As String
     Private fName As String
+    Private fAddress As String
     Private fLocation As Location
     Private fActive As Boolean
     Private fMaximumOutstandingPaymentAmount As Decimal
@@ -61,6 +62,14 @@ Public Class Customer
         End Get
         Set(ByVal value As String)
             SetPropertyValue("Name", fName, value)
+        End Set
+    End Property
+    Public Property Address As String
+        Get
+            Return fAddress
+        End Get
+        Set(ByVal value As String)
+            SetPropertyValue("Address", fAddress, value)
         End Set
     End Property
     <DataSourceCriteria("Active = TRUE")>

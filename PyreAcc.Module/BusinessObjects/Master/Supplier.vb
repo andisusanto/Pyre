@@ -29,6 +29,7 @@ Public Class Supplier
 
     Private fCode As String
     Private fName As String
+    Private fAddress As String
     Private fActive As Boolean
     <RuleRequiredField("Rule Required for Supplier.Code", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for Supplier.Code", DefaultContexts.Save)>
@@ -47,6 +48,14 @@ Public Class Supplier
         End Get
         Set(ByVal value As String)
             SetPropertyValue("Name", fName, value)
+        End Set
+    End Property
+    Public Property Address As String
+        Get
+            Return fAddress
+        End Get
+        Set(ByVal value As String)
+            SetPropertyValue("Address", fAddress, value)
         End Set
     End Property
     Public Property Active As Boolean

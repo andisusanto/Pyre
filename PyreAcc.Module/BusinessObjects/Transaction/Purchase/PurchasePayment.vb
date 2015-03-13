@@ -16,6 +16,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for PurchasePayment.Total > 0", DefaultContexts.Save, "Total > 0")>
+<Appearance("Appearance Actions for PurchasePayment.EnableDetails = FALSE", appearanceitemtype:="Action", enabled:=False, targetitems:="btnPurchasePaymentWizardPurchaseInvoiceForPayment; btnPurchasePaymentWizardDebitNoteForPayment", criteria:="EnableDetails = FALSE")>
 <RuleCriteria("Rule Criteria for PurchasePayment.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, DebitNoteAmount, RemainingAmount")>
 <Appearance("Appearance for PurchasePayment.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
@@ -156,7 +157,6 @@ Public Class PurchasePayment
         MyBase.OnSubmitted()
         For Each objDetail In Details
             If objDetail.PurchaseInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Purchase Invoice with No {0} has not been submitted", objDetail.PurchaseInvoice.No))
-            If objDetail.PurchaseInvoice.PaymentOutstandingStatus = OutstandingStatus.Cleared Then Throw New Exception(String.Format("Purchase Invoice with No {0} already set as cleared", objDetail.PurchaseInvoice.No))
             If objDetail.PurchaseInvoice.PaymentOutstandingAmount < objDetail.Amount Then Throw New Exception(String.Format("Invalid amount for submitting Invoice. Invalid line : {0}", objDetail.ToString))
             objDetail.PurchaseInvoice.PaidAmount += objDetail.Amount
         Next

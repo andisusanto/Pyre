@@ -16,7 +16,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
 <Appearance("Appearance Default Disabled for PurchaseReturnDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, Total")>
 <RuleCriteria("Rule Criteria for PurchaseReturnDetail.Total > 0", DefaultContexts.Save, "Total > 0")>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseReturnDetail", DefaultContexts.Save, "PurchaseReturn, PurchaseInvoiceDetail")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseReturnDetail", DefaultContexts.Save, "PurchaseReturn, PurchaseInvoiceDetail, BaseUnitQuantity")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PurchaseReturnDetail
@@ -81,7 +81,7 @@ Public Class PurchaseReturnDetail
             If Not IsLoading Then
                 If PurchaseInvoiceDetail IsNot Nothing Then
                     Unit = PurchaseInvoiceDetail.Unit
-                    Quantity = PurchaseInvoiceDetail.ReturnedBaseUnitQuantity * PurchaseInvoiceDetail.Quantity / PurchaseInvoiceDetail.ReturnedBaseUnitQuantity
+                    Quantity = PurchaseInvoiceDetail.ReturnedBaseUnitQuantity * PurchaseInvoiceDetail.Quantity / PurchaseInvoiceDetail.BaseUnitQuantity
                 Else
                     Total = 0
                 End If
@@ -161,7 +161,7 @@ Public Class PurchaseReturnDetail
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property PurchaseInvoiceDetailDatasource As XPCollection(Of PurchaseInvoiceDetail)
         Get
-            Return New XPCollection(Of PurchaseInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("PurchaseInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("PurchaseInvoice.PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("PurchaseInvoice.Supplier", PurchaseReturn.Supplier), New BinaryOperator("ReturnOutstandingBaseUnitQuantity", 0, BinaryOperatorType.Greater))))
+            Return New XPCollection(Of PurchaseInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("PurchaseInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("PurchaseInvoice.Supplier", PurchaseReturn.Supplier), New BinaryOperator("ReturnOutstandingBaseUnitQuantity", 0, BinaryOperatorType.Greater))))
         End Get
     End Property
     Private Sub CalculateTotal()

@@ -9,7 +9,7 @@ Public Class GlobalFunction
         Return Session.ExecuteScalar("SELECT GETDATE()")
     End Function
     Public Shared Function GetExecuteRunTimeDirectoryPath() As String
-        Return System.Reflection.Assembly.GetAssembly(GetType(AutoNo)).Location
+        Return New IO.FileInfo(System.Reflection.Assembly.GetAssembly(GetType(AutoNo)).Location).Directory.FullName & "\"
     End Function
     Public Shared Function ExecuteRunTimeFormula(ByVal Formula As String, ByVal ParamArray Objects As Object()) As Object
         Dim source As New StringBuilder()

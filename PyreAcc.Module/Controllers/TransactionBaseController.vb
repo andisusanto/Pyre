@@ -26,6 +26,17 @@ Partial Public Class TransactionBaseController
     End Sub
     Protected Overrides Sub OnActivated()
         MyBase.OnActivated()
+        If TypeOf View Is ListView Then
+            SetTransDateFilterAction()
+            SetStatusFilterAction()
+            TransactionTransDateFilter.SelectedIndex = 0
+            TransactionStatusFilter.SelectedIndex = 0
+            TransactionTransDateFilter.Caption = "Date:"
+            TransactionStatusFilter.Caption = "Status:"
+            ExecuteTransDateFilter()
+            ExecuteStatusFilter()
+        End If
+
         ' Perform various tasks depending on the target View.
     End Sub
     Protected Overrides Sub OnViewControlsCreated()
@@ -102,22 +113,52 @@ Partial Public Class TransactionBaseController
         End Try
         
     End Sub
-    Private Sub View_CurrentObjectChanged(sender As Object, e As System.EventArgs)
-        CheckCurrentItem()
+
+#Region "Filtering"
+    Private Sub SetTransDateFilterAction()
+        With TransactionTransDateFilter.Items
+            .Add(New ChoiceActionItem("Today", 0))
+            .Add(New ChoiceActionItem("Last One Week", 1))
+            .Add(New ChoiceActionItem("Last One Month", 2))
+            .Add(New ChoiceActionItem("All", 3))
+        End With
     End Sub
-    Private Sub CheckCurrentItem()
-        If TypeOf View Is DetailView Then
-            If View.CurrentObject Is Nothing OrElse CType(View.CurrentObject, TransactionBase).Status <> TransactionStatus.Submitted Then
-                SubmitAction.Active("SubmitAction") = True
-                CancelSubmitAction.Active("CancelSubmitAction") = False
-            Else
-                SubmitAction.Active("SubmitAction") = False
-                CancelSubmitAction.Active("CancelSubmitAction") = True
-            End If
-        Else
-            SubmitAction.Active("SubmitAction") = True
-            CancelSubmitAction.Active("CancelSubmitAction") = True
-        End If
-     
+
+    Private Sub SetStatusFilterAction()
+        With TransactionStatusFilter.Items
+            .Add(New ChoiceActionItem("Submitted", 0))
+            .Add(New ChoiceActionItem("Entry", 1))
+            .Add(New ChoiceActionItem("All", 2))
+        End With
     End Sub
+    Private Sub TransactionBaseFilter_Execute(sender As Object, e As SingleChoiceActionExecuteEventArgs) Handles TransactionTransDateFilter.Execute
+        ExecuteTransDateFilter()
+    End Sub
+    Private Sub ExecuteTransDateFilter()
+        Select Case TransactionTransDateFilter.SelectedIndex
+            Case 0
+                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BinaryOperator("TransDate", Today.Date)
+            Case 1
+                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BetweenOperator("TransDate", DateAdd(DateInterval.Weekday, -1, Today.Date), Today.Date)
+            Case 2
+                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BetweenOperator("TransDate", DateAdd(DateInterval.Month, -1, Today.Date), Today.Date)
+            Case 3
+                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = Nothing
+        End Select
+    End Sub
+
+    Private Sub TransactionStatusFilter_Execute(sender As Object, e As SingleChoiceActionExecuteEventArgs) Handles TransactionStatusFilter.Execute
+        ExecuteStatusFilter()
+    End Sub
+    Private Sub ExecuteStatusFilter()
+        Select Case TransactionStatusFilter.SelectedIndex
+            Case 0
+                CType(View, ListView).CollectionSource.Criteria("StatusFilter") = New BinaryOperator("Status", TransactionStatus.Submitted)
+            Case 1
+                CType(View, ListView).CollectionSource.Criteria("StatusFilter") = New BinaryOperator("Status", TransactionStatus.Entered)
+            Case 2
+                CType(View, ListView).CollectionSource.Criteria("StatusFilter") = Nothing
+        End Select
+    End Sub
+#End Region
 End Class

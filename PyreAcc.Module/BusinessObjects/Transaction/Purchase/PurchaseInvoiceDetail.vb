@@ -14,7 +14,7 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
-<Appearance("Appearance Default Disabled for PurchaseInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, ReturnedBaseUnitQuantity, Total")>
+<Appearance("Appearance Default Disabled for PurchaseInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, ReturnedBaseUnitQuantity, Total, Discount, GrandTotal")>
 <RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseInvoiceDetail", DefaultContexts.Save, "PurchaseInvoice, Item")>
 <RuleCriteria("Rule Criteria for PurchaseInvoiceDetail.Total > 0", DefaultContexts.Save, "Total > 0", "Total must be greater than zero")>
 <DeferredDeletion(False)>
@@ -41,6 +41,10 @@ Public Class PurchaseInvoiceDetail
     Private _returnedBaseUnitQuantity As Decimal
     Private _unitPrice As Decimal
     Private _total As Decimal
+    Private _discountType As DiscountType
+    Private _discountValue As Decimal
+    Private _discount As Decimal
+    Private _grandTotal As Decimal
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
     Public Property Sequence As Integer
         Get
@@ -61,7 +65,7 @@ Public Class PurchaseInvoiceDetail
             SetPropertyValue("PurchaseInvoice", _purchaseInvoice, value)
             If Not IsLoading Then
                 If PurchaseInvoice IsNot Nothing Then
-                    PurchaseInvoice.Total += Total
+                    PurchaseInvoice.Total += GrandTotal
                     If PurchaseInvoice.Details.Count = 0 Then
                         Sequence = 0
                     Else
@@ -69,7 +73,7 @@ Public Class PurchaseInvoiceDetail
                         Sequence = PurchaseInvoice.Details(PurchaseInvoice.Details.Count - 1).Sequence + 1
                     End If
                 End If
-                If oldValue IsNot Nothing Then oldValue.Total -= Total
+                If oldValue IsNot Nothing Then oldValue.Total -= GrandTotal
             End If
         End Set
     End Property
@@ -147,9 +151,6 @@ Public Class PurchaseInvoiceDetail
         End Get
         Set(value As Decimal)
             SetPropertyValue("ReturnedBaseUnitQuantity", _returnedBaseUnitQuantity, value)
-            If Not IsLoading Then
-                PurchaseInvoice.UpdateReturnOutstandingStatus()
-            End If
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
@@ -175,12 +176,60 @@ Public Class PurchaseInvoiceDetail
             Return _total
         End Get
         Set(ByVal value As Decimal)
-            Dim oldValue = Total
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property DiscountType As DiscountType
+        Get
+            Return _discountType
+        End Get
+        Set(ByVal value As DiscountType)
+            SetPropertyValue("DiscountType", _discountType, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
+    Public Property DiscountValue As Decimal
+        Get
+            Return _discountValue
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DiscountValue", _discountValue, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property Discount As Decimal
+        Get
+            Return _discount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("Discount", _discount, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property GrandTotal As Decimal
+        Get
+            Return _grandTotal
+        End Get
+        Set(ByVal value As Decimal)
+            Dim oldValue = GrandTotal
+            SetPropertyValue("GrandTotal", _grandTotal, value)
             If Not IsLoading Then
                 If PurchaseInvoice IsNot Nothing Then
                     PurchaseInvoice.Total -= oldValue
-                    PurchaseInvoice.Total += Total
+                    PurchaseInvoice.Total += GrandTotal
                 End If
             End If
         End Set
@@ -196,6 +245,17 @@ Public Class PurchaseInvoiceDetail
     End Property
     Private Sub CalculateTotal()
         Total = UnitPrice * Quantity
+    End Sub
+    Private Sub CalculateDiscount()
+        Select Case DiscountType
+            Case [Module].DiscountType.ByAmount
+                Discount = DiscountValue
+            Case [Module].DiscountType.ByPercentage
+                Discount = Total * DiscountValue / 100
+        End Select
+    End Sub
+    Private Sub CalculateGrandTotal()
+        GrandTotal = Total - Discount
     End Sub
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get

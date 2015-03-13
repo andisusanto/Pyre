@@ -198,7 +198,6 @@
     <Compile Include="BusinessObjects\Transaction\Sales\SalesPaymentDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\Sales\SalesReturn.vb" />
     <Compile Include="BusinessObjects\Transaction\Sales\SalesReturnDetail.vb" />
-    <Compile Include="BusinessObjects\Transaction\StockMutation.vb" />
     <Compile Include="Controllers\AutoNoController.Designer.vb">
       <DependentUpon>AutoNoController.vb</DependentUpon>
     </Compile>
@@ -211,12 +210,25 @@
     <Compile Include="Controllers\ProcessBaseViewController.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controllers\PurchasePaymentViewController.Designer.vb">
+      <DependentUpon>PurchasePaymentViewController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PurchasePaymentViewController.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\SalesPaymentViewController.Designer.vb">
+      <DependentUpon>SalesPaymentViewController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\SalesPaymentViewController.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controllers\TransactionBaseController.Designer.vb">
       <DependentUpon>TransactionBaseController.vb</DependentUpon>
     </Compile>
     <Compile Include="Controllers\TransactionBaseController.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Global\GlobalEnum.vb" />
     <Compile Include="Global\GlobalFunction.vb" />
     <Compile Include="Global\GlobalVar.vb" />
     <Compile Include="Module.Designer.vb">
@@ -249,6 +261,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\ProcessBaseViewController.resx">
       <DependentUpon>ProcessBaseViewController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PurchasePaymentViewController.resx">
+      <DependentUpon>PurchasePaymentViewController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\SalesPaymentViewController.resx">
+      <DependentUpon>SalesPaymentViewController.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\TransactionBaseController.resx">
       <DependentUpon>TransactionBaseController.vb</DependentUpon>

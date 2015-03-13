@@ -19,7 +19,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.ReturnOutstandingStatus", "Cancel", "ReturnOutstandingStatus = 'Full'")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, PaymentOutstandingStatus, ReturnOutstandingStatus, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PurchaseInvoice
@@ -41,10 +41,12 @@ Public Class PurchaseInvoice
     Private _supplier As Supplier
     Private _inventory As Inventory
     Private _total As Decimal
+    Private _discountType As DiscountType
+    Private _discountValue As Decimal
+    Private _discount As Decimal
+    Private _grandTotal As Decimal
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
-    Private _paymentOutstandingStatus As OutstandingStatus
-    Private _returnOutstandingStatus As OutstandingStatus
     <RuleUniqueValue("Rule Unique for PurchaseInvoice.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for PurchaseInvoice.No", DefaultContexts.Save)>
     Public Property No As String
@@ -123,12 +125,61 @@ Public Class PurchaseInvoice
             SetPropertyValue("Inventory", _inventory, value)
         End Set
     End Property
+    <ImmediatePostData(True)>
     Public Property Total As Decimal
         Get
             Return _total
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property DiscountType As DiscountType
+        Get
+            Return _discountType
+        End Get
+        Set(ByVal value As DiscountType)
+            SetPropertyValue("DiscountType", _discountType, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
+    Public Property DiscountValue As Decimal
+        Get
+            Return _discountValue
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DiscountValue", _discountValue, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property Discount As Decimal
+        Get
+            Return _discount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("Discount", _discount, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property GrandTotal As Decimal
+        Get
+            Return _grandTotal
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("GrandTotal", _grandTotal, value)
             If Not IsLoading Then
                 CalculatePaymentOutstandingAmount()
             End If
@@ -153,24 +204,6 @@ Public Class PurchaseInvoice
             SetPropertyValue("PaymentOutstandingAmount", _paymentOutstandingAmount, value)
         End Set
     End Property
-
-    Public Property PaymentOutstandingStatus As OutstandingStatus
-        Get
-            Return _paymentOutstandingStatus
-        End Get
-        Set(value As OutstandingStatus)
-            SetPropertyValue("PaymentOutstandingStatus", _paymentOutstandingStatus, value)
-        End Set
-    End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property ReturnOutstandingStatus As OutstandingStatus
-        Get
-            Return _returnOutstandingStatus
-        End Get
-        Set(value As OutstandingStatus)
-            SetPropertyValue("ReturnOutstandingStatus", _returnOutstandingStatus, value)
-        End Set
-    End Property
     <Association("PurchaseInvoice-PurchaseInvoiceDetail"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property Details As XPCollection(Of PurchaseInvoiceDetail)
         Get
@@ -190,54 +223,19 @@ Public Class PurchaseInvoice
             Return period.Closed
         End Get
     End Property
+    Private Sub CalculateDiscount()
+        Select Case DiscountType
+            Case [Module].DiscountType.ByAmount
+                Discount = DiscountValue
+            Case [Module].DiscountType.ByPercentage
+                Discount = Total * DiscountValue / 100
+        End Select
+    End Sub
+    Private Sub CalculateGrandTotal()
+        GrandTotal = Total - Discount
+    End Sub
     Private Sub CalculatePaymentOutstandingAmount()
-        PaymentOutstandingAmount = Total - PaidAmount
-    End Sub
-    <Action(autoCommit:=False, Caption:="Recalculate Outstanding Status", _
-   confirmationMessage:="Are you really want to recalculate these transactions' PaymentOutstandingStatus?", _
-   selectiondependencytype:=MethodActionSelectionDependencyType.RequireMultipleObjects, _
-    targetobjectscriteria:="PaymentOutstandingStatus = 'Cleared'", _
-   ImageName:="Recalculate")>
-    Public Sub UpdatePaymentOutstandingStatus()
-        Dim tmpTotalOutstandingPayment As Decimal = Total
-        Dim xp As New XPCollection(Of PurchasePaymentDetail)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, GroupOperator.And(New BinaryOperator("PurchaseInvoice", Me), New BinaryOperator("Status", TransactionStatus.Submitted)))
-        For Each objPaymentDetail In xp
-            tmpTotalOutstandingPayment -= objPaymentDetail.Amount
-        Next
-        If tmpTotalOutstandingPayment <> Total Then
-            If tmpTotalOutstandingPayment = 0 Then
-                PaymentOutstandingStatus = OutstandingStatus.Cleared
-            Else
-                PaymentOutstandingStatus = OutstandingStatus.PartiallyPaid
-            End If
-        Else
-            PaymentOutstandingStatus = OutstandingStatus.Full
-        End If
-    End Sub
-    <Action(autoCommit:=False, Caption:="Set as clear", _
-     confirmationMessage:="Are you sure want to set these transactions' PaymentOutstandingStatus as cleared?", _
-     selectiondependencytype:=MethodActionSelectionDependencyType.RequireMultipleObjects, _
-     targetobjectscriteria:="PaymentOutstandingStatus <> 'Cleared'", _
-     imageName:="SetAsClear")>
-    Public Sub SetAsClear()
-        PaymentOutstandingStatus = OutstandingStatus.Cleared
-    End Sub
-    Public Sub UpdateReturnOutstandingStatus()
-        Dim totalBaseUnitQuantity As Double = 0
-        Dim totalOutstandingBaseUnitQuantity As Double = 0
-        For Each objDetail In Details
-            totalBaseUnitQuantity += objDetail.BaseUnitQuantity
-            totalOutstandingBaseUnitQuantity += objDetail.ReturnOutstandingBaseUnitQuantity
-        Next
-        If totalBaseUnitQuantity <> totalOutstandingBaseUnitQuantity Then
-            If totalOutstandingBaseUnitQuantity = 0 Then
-                ReturnOutstandingStatus = OutstandingStatus.Cleared
-            Else
-                ReturnOutstandingStatus = OutstandingStatus.PartiallyPaid
-            End If
-        Else
-            ReturnOutstandingStatus = OutstandingStatus.Full
-        End If
+        PaymentOutstandingAmount = GrandTotal - PaidAmount
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()

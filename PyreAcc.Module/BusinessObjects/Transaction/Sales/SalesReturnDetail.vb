@@ -16,7 +16,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
 <Appearance("Appearance Default Disabled for SalesReturnDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total")>
 <RuleCriteria("Rule Criteria for SalesReturnDetail.Total > 0", DefaultContexts.Save, "Total > 0")>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesReturnDetail", DefaultContexts.Save, "SalesReturn, SalesInvoiceDetail")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesReturnDetail", DefaultContexts.Save, "SalesReturn, SalesInvoiceDetail, BaseUnitQuantity")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesReturnDetail
@@ -83,7 +83,7 @@ Public Class SalesReturnDetail
             If Not IsLoading Then
                 If SalesInvoiceDetail IsNot Nothing Then
                     Unit = SalesInvoiceDetail.Unit
-                    Quantity = SalesInvoiceDetail.ReturnedBaseUnitQuantity * SalesInvoiceDetail.Quantity / SalesInvoiceDetail.ReturnedBaseUnitQuantity
+                    Quantity = SalesInvoiceDetail.ReturnedBaseUnitQuantity * SalesInvoiceDetail.Quantity / SalesInvoiceDetail.BaseUnitQuantity
                 Else
                     Total = 0
                 End If
@@ -145,6 +145,9 @@ Public Class SalesReturnDetail
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("UnitPrice", _unitPrice, value)
+            If Not IsLoading Then
+                CalculateTotal()
+            End If
         End Set
     End Property
     Public Property Total As Decimal
@@ -174,7 +177,7 @@ Public Class SalesReturnDetail
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property SalesInvoiceDetailDatasource As XPCollection(Of SalesInvoiceDetail)
         Get
-            Return New XPCollection(Of SalesInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("SalesInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("SalesInvoice.PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("SalesInvoice.Customer", SalesReturn.Customer), New BinaryOperator("ReturnOutstandingBaseUnitQuantity", 0, BinaryOperatorType.Greater))))
+            Return New XPCollection(Of SalesInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("SalesInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("SalesInvoice.Customer", SalesReturn.Customer), New BinaryOperator("ReturnOutstandingBaseUnitQuantity", 0, BinaryOperatorType.Greater))))
         End Get
     End Property
     Private Sub CalculateTotal()
