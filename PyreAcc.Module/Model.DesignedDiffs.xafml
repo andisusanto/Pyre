@@ -229,7 +229,71 @@
         <ColumnInfo Id="Note" PropertyName="Note" Width="70" Index="6" IsNewNode="True" />
       </Columns>
     </ListView>
-    <ListView Id="PurchaseInvoice_Details_ListView" AllowEdit="True" NewItemRowPosition="Top" />
+    <DetailView Id="InventoryItemAdjustment_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="InventoryItemAdjustment" ShowCaption="True" Caption="Inventory Item Adjustment" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="InventoryItemAdjustment_col1" ShowCaption="False" Index="0" RelativeSize="100" IsNewNode="True">
+                  <LayoutItem Id="No" ViewItem="No" SizeConstraintsType="Default" Index="0" RelativeSize="7.1748878923766819" IsNewNode="True" />
+                  <LayoutItem Id="TransDate" ViewItem="TransDate" SizeConstraintsType="Default" Index="1" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="Inventory" ViewItem="Inventory" SizeConstraintsType="Default" Index="2" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="Item" ViewItem="Item" SizeConstraintsType="Default" Index="3" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="BatchNo" ViewItem="BatchNo" SizeConstraintsType="Default" Index="4" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="ExpiryDate" ViewItem="ExpiryDate" SizeConstraintsType="Default" Index="5" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="Quantity" ViewItem="Quantity" SizeConstraintsType="Default" Index="6" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="Unit" ViewItem="Unit" SizeConstraintsType="Default" Index="7" RelativeSize="5.3811659192825116" IsNewNode="True" />
+                  <LayoutItem Id="UnitPrice" ViewItem="UnitPrice" SizeConstraintsType="Default" Index="8" RelativeSize="55.156950672645742" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="TransactionBase" ShowCaption="True" Caption="Transaction Base" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="TransactionBase_col1" ShowCaption="False" Index="0" RelativeSize="100" IsNewNode="True">
+                  <LayoutItem Id="Status" ViewItem="Status" SizeConstraintsType="Default" Index="0" RelativeSize="7.1748878923766819" IsNewNode="True" />
+                  <LayoutGroup Id="Autod024b126-9b5a-4474-8432-d96737ac96e9" ShowCaption="False" Caption="" Direction="Horizontal" Index="1" RelativeSize="92.825112107623312" IsNewNode="True">
+                    <LayoutGroup Id="Auto71f3de9e-f509-44a8-b127-57abf22ea816" ShowCaption="False" Caption="" Index="0" RelativeSize="50.70422535211268" IsNewNode="True">
+                      <LayoutItem Id="SubmittedBy" ViewItem="SubmittedBy" SizeConstraintsType="Default" Index="0" RelativeSize="5.7971014492753623" IsNewNode="True" />
+                      <LayoutItem Id="EnteredBy" ViewItem="EnteredBy" SizeConstraintsType="Default" Index="1" RelativeSize="5.7971014492753623" IsNewNode="True" />
+                      <LayoutItem Id="CanceledBy" ViewItem="CanceledBy" SizeConstraintsType="Default" Index="2" RelativeSize="5.7971014492753623" IsNewNode="True" />
+                      <LayoutItem Id="SubmitNote" ViewItem="SubmitNote" SizeConstraintsType="Default" Index="3" RelativeSize="82.6086956521739" IsNewNode="True" />
+                    </LayoutGroup>
+                    <LayoutGroup Id="Auto0d880394-ab0c-4b75-a4fa-ba16059fe885" ShowCaption="False" Caption="" Index="1" RelativeSize="49.29577464788732" IsNewNode="True">
+                      <LayoutItem Id="SubmitDateTime" ViewItem="SubmitDateTime" SizeConstraintsType="Default" Index="0" RelativeSize="5.7971014492753623" IsNewNode="True" />
+                      <LayoutItem Id="EntryDateTime" ViewItem="EntryDateTime" SizeConstraintsType="Default" Index="1" RelativeSize="5.7971014492753623" IsNewNode="True" />
+                      <LayoutItem Id="CancelDateTime" ViewItem="CancelDateTime" SizeConstraintsType="Default" Index="2" RelativeSize="5.7971014492753623" IsNewNode="True" />
+                      <LayoutItem Id="CancelNote" ViewItem="CancelNote" SizeConstraintsType="Default" Index="3" RelativeSize="82.6086956521739" IsNewNode="True" />
+                    </LayoutGroup>
+                  </LayoutGroup>
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="InventoryItemAdjustment" Removed="True" />
+            <LayoutGroup Id="TransactionBase" RelativeSize="76.533333333333331" Removed="True">
+              <LayoutGroup Id="TransactionBase_col1" RelativeSize="50">
+                <LayoutItem Id="CancelDateTime" SizeConstraintsType="Default" RelativeSize="4.4362292051756009" />
+                <LayoutItem Id="EnteredBy" SizeConstraintsType="Default" RelativeSize="80.776340110905736" />
+                <LayoutItem Id="EntryDateTime" SizeConstraintsType="Default" RelativeSize="4.4362292051756009" />
+                <LayoutItem Id="Status" SizeConstraintsType="Default" RelativeSize="5.9149722735674679" />
+                <LayoutItem Id="SubmitDateTime" SizeConstraintsType="Default" RelativeSize="4.4362292051756009" />
+              </LayoutGroup>
+              <LayoutGroup Id="TransactionBase_col2" RelativeSize="50">
+                <LayoutItem Id="CanceledBy" SizeConstraintsType="Default" RelativeSize="4.4362292051756009" />
+                <LayoutItem Id="CancelNote" SizeConstraintsType="Default" RelativeSize="85.212569316081328" />
+                <LayoutItem Id="SubmitNote" SizeConstraintsType="Default" RelativeSize="4.4362292051756009" />
+                <LayoutItem Id="SubmittedBy" SizeConstraintsType="Default" RelativeSize="5.9149722735674679" />
+              </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="PurchaseInvoice_Details_ListView" AllowEdit="True" NewItemRowPosition="Top">
+      <Columns>
+        <ColumnInfo Id="BaseUnitQuantity" Index="-1" />
+        <ColumnInfo Id="ReturnedBaseUnitQuantity" Index="-1" />
+        <ColumnInfo Id="Sequence" Index="-1" />
+      </Columns>
+    </ListView>
     <DetailView Id="PurchaseInvoice_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -344,7 +408,6 @@
                 </LayoutGroup>
                 <LayoutItem Id="Discount" ViewItem="Discount" SizeConstraintsType="Default" Index="7" RelativeSize="5.298013245033113" IsNewNode="True" />
                 <LayoutItem Id="GrandTotal" ViewItem="GrandTotal" SizeConstraintsType="Default" Index="8" RelativeSize="55.849889624724064" IsNewNode="True" />
-                <LayoutItem Id="ReturnedBaseUnitQuantity" Removed="True" />
                 <LayoutItem Id="Sequence" Removed="True" />
               </LayoutGroup>
               <LayoutGroup Id="PurchaseInvoiceDetail_col2" RelativeSize="50" Caption="PurchaseInvoiceDetail_col2" Direction="Horizontal" Removed="True">
@@ -359,7 +422,94 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="SalesInvoice_Details_ListView" NewItemRowPosition="Top" AllowEdit="True" />
+    <ListView Id="PurchasePayment_Details_ListView">
+      <Columns>
+        <ColumnInfo Id="Sequence" Index="-1" />
+      </Columns>
+    </ListView>
+    <DetailView Id="PurchasePayment_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="46.558704453441294">
+            <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="PurchasePayment" ShowCaption="True" Caption="Purchase Payment" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="PurchasePayment_col1" ShowCaption="False" Index="0" RelativeSize="100" IsNewNode="True">
+                  <LayoutItem Id="No" ViewItem="No" SizeConstraintsType="Default" Index="0" RelativeSize="17.391304347826086" IsNewNode="True" />
+                  <LayoutItem Id="TransDate" ViewItem="TransDate" SizeConstraintsType="Default" Index="1" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="Supplier" ViewItem="Supplier" SizeConstraintsType="Default" Index="2" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="FromAccount" ViewItem="FromAccount" SizeConstraintsType="Default" Index="3" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="Total" ViewItem="Total" SizeConstraintsType="Default" Index="4" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="DebitNoteAmount" ViewItem="DebitNoteAmount" SizeConstraintsType="Default" Index="5" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="RemainingAmount" ViewItem="RemainingAmount" SizeConstraintsType="Default" Index="6" RelativeSize="17.391304347826086" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="TransactionBase" ShowCaption="True" Caption="Transaction Base" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="TransactionBase_col1" ShowCaption="False" Index="0" RelativeSize="100" IsNewNode="True">
+                  <LayoutItem Id="Status" ViewItem="Status" SizeConstraintsType="Default" Index="0" RelativeSize="17.391304347826086" IsNewNode="True" />
+                  <LayoutGroup Id="Autoee9644f0-26a5-422e-91c0-8ccd6fca0a59" ShowCaption="False" Caption="" Direction="Horizontal" Index="1" RelativeSize="82.6086956521739" IsNewNode="True">
+                    <LayoutGroup Id="Auto3709847c-9f0a-4394-8d99-27031dce5e41" ShowCaption="False" Caption="" Index="0" RelativeSize="50.70422535211268" IsNewNode="True">
+                      <LayoutItem Id="EnteredBy" ViewItem="EnteredBy" SizeConstraintsType="Default" Index="0" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="SubmittedBy" ViewItem="SubmittedBy" SizeConstraintsType="Default" Index="1" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="CanceledBy" ViewItem="CanceledBy" SizeConstraintsType="Default" Index="2" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="SubmitNote" ViewItem="SubmitNote" SizeConstraintsType="Default" Index="3" RelativeSize="52.631578947368418" IsNewNode="True" />
+                    </LayoutGroup>
+                    <LayoutGroup Id="Autoaba46680-c133-4a61-b37b-563b760bdc8f" ShowCaption="False" Caption="" Index="1" RelativeSize="49.29577464788732" IsNewNode="True">
+                      <LayoutItem Id="EntryDateTime" ViewItem="EntryDateTime" SizeConstraintsType="Default" Index="0" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="SubmitDateTime" ViewItem="SubmitDateTime" SizeConstraintsType="Default" Index="1" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="CancelDateTime" ViewItem="CancelDateTime" SizeConstraintsType="Default" Index="2" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="CancelNote" ViewItem="CancelNote" SizeConstraintsType="Default" Index="3" RelativeSize="52.631578947368418" IsNewNode="True" />
+                    </LayoutGroup>
+                  </LayoutGroup>
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="PurchasePayment" Removed="True" />
+            <LayoutGroup Id="TransactionBase" RelativeSize="52.351097178683382" Removed="True">
+              <LayoutGroup Id="TransactionBase_col1" RelativeSize="50">
+                <LayoutItem Id="CancelDateTime" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="EnteredBy" SizeConstraintsType="Default" RelativeSize="23.529411764705884" />
+                <LayoutItem Id="EntryDateTime" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="Status" SizeConstraintsType="Default" RelativeSize="23.529411764705884" />
+                <LayoutItem Id="SubmitDateTime" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+              </LayoutGroup>
+              <LayoutGroup Id="TransactionBase_col2" RelativeSize="50">
+                <LayoutItem Id="CanceledBy" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="CancelNote" SizeConstraintsType="Default" RelativeSize="41.1764705882353" />
+                <LayoutItem Id="SubmitNote" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="SubmittedBy" SizeConstraintsType="Default" RelativeSize="23.529411764705884" />
+              </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+          <TabbedGroup Id="Tabs" RelativeSize="53.441295546558706">
+            <LayoutGroup Id="Details" RelativeSize="100">
+              <LayoutItem Id="Details" SizeConstraintsType="Default" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="DebitNotes" RelativeSize="100">
+              <LayoutItem Id="DebitNotes" SizeConstraintsType="Default" RelativeSize="100" />
+            </LayoutGroup>
+          </TabbedGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="PurchasePaymentDetail_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="PurchasePaymentDetail" RelativeSize="100">
+              <LayoutItem Id="PurchaseInvoice" SizeConstraintsType="Default" Index="0" RelativeSize="4.2666666666666666" />
+              <LayoutItem Id="Amount" SizeConstraintsType="Default" Index="1" RelativeSize="95.733333333333334" />
+              <LayoutItem Id="Sequence" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="SalesInvoice_Details_ListView" NewItemRowPosition="Top" AllowEdit="True">
+      <Columns>
+        <ColumnInfo Id="BaseUnitQuantity" Index="-1" />
+        <ColumnInfo Id="ReturnedBaseUnitQuantity" Index="-1" />
+      </Columns>
+    </ListView>
     <DetailView Id="SalesInvoice_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -482,6 +632,88 @@
                 <LayoutItem Id="Total" Removed="True" />
                 <LayoutItem Id="UnitPrice" Removed="True" />
               </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="SalesPayment_Details_ListView">
+      <Columns>
+        <ColumnInfo Id="Sequence" Index="-1" />
+      </Columns>
+    </ListView>
+    <DetailView Id="SalesPayment_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="46.558704453441294">
+            <TabbedGroup Id="Item1" CaptionLocation="Top" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutGroup Id="SalesPayment" ShowCaption="True" Caption="Sales Payment" Direction="Vertical" Index="0" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="SalesPayment_col1" ShowCaption="False" Index="0" RelativeSize="100" IsNewNode="True">
+                  <LayoutItem Id="No" ViewItem="No" SizeConstraintsType="Default" Index="0" RelativeSize="17.391304347826086" IsNewNode="True" />
+                  <LayoutItem Id="TransDate" ViewItem="TransDate" SizeConstraintsType="Default" Index="1" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="Customer" ViewItem="Customer" SizeConstraintsType="Default" Index="2" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="ToAccount" ViewItem="ToAccount" SizeConstraintsType="Default" Index="3" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="Total" ViewItem="Total" SizeConstraintsType="Default" Index="4" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="CreditNoteAmount" ViewItem="CreditNoteAmount" SizeConstraintsType="Default" Index="5" RelativeSize="13.043478260869565" IsNewNode="True" />
+                  <LayoutItem Id="RemainingAmount" ViewItem="RemainingAmount" SizeConstraintsType="Default" Index="6" RelativeSize="17.391304347826086" IsNewNode="True" />
+                </LayoutGroup>
+              </LayoutGroup>
+              <LayoutGroup Id="TransactionBase" ShowCaption="True" Caption="Transaction Base" Direction="Vertical" Index="1" RelativeSize="100" IsNewNode="True">
+                <LayoutGroup Id="TransactionBase_col1" ShowCaption="False" Index="0" RelativeSize="100" IsNewNode="True">
+                  <LayoutItem Id="Status" ViewItem="Status" SizeConstraintsType="Default" Index="0" RelativeSize="17.391304347826086" IsNewNode="True" />
+                  <LayoutGroup Id="Autoc4ffa940-d49c-4fc6-8045-1fc90d2b8a2f" ShowCaption="False" Caption="" Direction="Horizontal" Index="1" RelativeSize="82.6086956521739" IsNewNode="True">
+                    <LayoutGroup Id="Auto2d812b56-283c-49b5-82e4-9b73ae51b8fd" ShowCaption="False" Caption="" Index="0" RelativeSize="50.70422535211268" IsNewNode="True">
+                      <LayoutItem Id="SubmittedBy" ViewItem="SubmittedBy" SizeConstraintsType="Default" Index="0" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="EnteredBy" ViewItem="EnteredBy" SizeConstraintsType="Default" Index="1" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="CanceledBy" ViewItem="CanceledBy" SizeConstraintsType="Default" Index="2" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="SubmitNote" ViewItem="SubmitNote" SizeConstraintsType="Default" Index="3" RelativeSize="52.631578947368418" IsNewNode="True" />
+                    </LayoutGroup>
+                    <LayoutGroup Id="Auto3e450fd0-297e-46e9-92a5-5a734cd35f06" ShowCaption="False" Caption="" Index="1" RelativeSize="49.29577464788732" IsNewNode="True">
+                      <LayoutItem Id="SubmitDateTime" ViewItem="SubmitDateTime" SizeConstraintsType="Default" Index="0" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="EntryDateTime" ViewItem="EntryDateTime" SizeConstraintsType="Default" Index="1" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="CancelDateTime" ViewItem="CancelDateTime" SizeConstraintsType="Default" Index="2" RelativeSize="15.789473684210526" IsNewNode="True" />
+                      <LayoutItem Id="CancelNote" ViewItem="CancelNote" SizeConstraintsType="Default" Index="3" RelativeSize="52.631578947368418" IsNewNode="True" />
+                    </LayoutGroup>
+                  </LayoutGroup>
+                </LayoutGroup>
+              </LayoutGroup>
+            </TabbedGroup>
+            <LayoutGroup Id="SalesPayment" Removed="True" />
+            <LayoutGroup Id="TransactionBase" RelativeSize="52.351097178683382" Removed="True">
+              <LayoutGroup Id="TransactionBase_col1" RelativeSize="50">
+                <LayoutItem Id="CancelDateTime" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="EnteredBy" SizeConstraintsType="Default" RelativeSize="23.529411764705884" />
+                <LayoutItem Id="EntryDateTime" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="Status" SizeConstraintsType="Default" RelativeSize="23.529411764705884" />
+                <LayoutItem Id="SubmitDateTime" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+              </LayoutGroup>
+              <LayoutGroup Id="TransactionBase_col2" RelativeSize="50">
+                <LayoutItem Id="CanceledBy" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="CancelNote" SizeConstraintsType="Default" RelativeSize="41.1764705882353" />
+                <LayoutItem Id="SubmitNote" SizeConstraintsType="Default" RelativeSize="17.647058823529413" />
+                <LayoutItem Id="SubmittedBy" SizeConstraintsType="Default" RelativeSize="23.529411764705884" />
+              </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+          <TabbedGroup Id="Tabs" RelativeSize="53.441295546558706">
+            <LayoutGroup Id="Details" RelativeSize="100">
+              <LayoutItem Id="Details" SizeConstraintsType="Default" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="CreditNotes" RelativeSize="100">
+              <LayoutItem Id="CreditNotes" SizeConstraintsType="Default" RelativeSize="100" />
+            </LayoutGroup>
+          </TabbedGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="SalesPaymentDetail_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="SalesPaymentDetail" RelativeSize="100">
+              <LayoutItem Id="SalesInvoice" SizeConstraintsType="Default" Index="0" RelativeSize="4.2666666666666666" />
+              <LayoutItem Id="Amount" SizeConstraintsType="Default" Index="1" RelativeSize="95.733333333333334" />
+              <LayoutItem Id="Sequence" Removed="True" />
             </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>

@@ -121,6 +121,7 @@ Public Class PurchaseInvoiceDetail
             End If
         End Set
     End Property
+    <NonCloneable()>
     Public Property BatchNo As String
         Get
             Return _batchNo

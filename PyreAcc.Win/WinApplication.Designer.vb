@@ -28,14 +28,17 @@ Partial Public Class PyreAccWindowsFormsApplication
         Me.module1 = New DevExpress.ExpressApp.SystemModule.SystemModule()
         Me.module2 = New DevExpress.ExpressApp.Win.SystemModule.SystemWindowsFormsModule()
         Me.SecurityStrategyComplex1 = New DevExpress.ExpressApp.Security.SecurityStrategyComplex()
-        Me.SecurityModule1 = New DevExpress.ExpressApp.Security.SecurityModule()
         Me.AuthenticationStandard1 = New DevExpress.ExpressApp.Security.AuthenticationStandard()
+        Me.SecurityModule1 = New DevExpress.ExpressApp.Security.SecurityModule()
         Me.CloneObjectModule1 = New DevExpress.ExpressApp.CloneObject.CloneObjectModule()
         Me.ConditionalAppearanceModule1 = New DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule()
         Me.ValidationModule1 = New DevExpress.ExpressApp.Validation.ValidationModule()
         Me.AuditTrailModule1 = New DevExpress.ExpressApp.AuditTrail.AuditTrailModule()
         Me.module3 = New PyreAcc.[Module].PyreAccModule()
         Me.module4 = New PyreAcc.[Module].Win.PyreAccWindowsFormsModule()
+        Me.TreeListEditorsModuleBase1 = New DevExpress.ExpressApp.TreeListEditors.TreeListEditorsModuleBase()
+        Me.TreeListEditorsWindowsFormsModule1 = New DevExpress.ExpressApp.TreeListEditors.Win.TreeListEditorsWindowsFormsModule()
+        Me.ValidationWindowsFormsModule1 = New DevExpress.ExpressApp.Validation.Win.ValidationWindowsFormsModule()
         CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
         '
         'SecurityStrategyComplex1
@@ -68,6 +71,9 @@ Partial Public Class PyreAccWindowsFormsApplication
         Me.Modules.Add(Me.AuditTrailModule1)
         Me.Modules.Add(Me.SecurityModule1)
         Me.Modules.Add(Me.module3)
+        Me.Modules.Add(Me.TreeListEditorsModuleBase1)
+        Me.Modules.Add(Me.TreeListEditorsWindowsFormsModule1)
+        Me.Modules.Add(Me.ValidationWindowsFormsModule1)
         Me.Modules.Add(Me.module4)
         Me.Security = Me.SecurityStrategyComplex1
         CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
@@ -87,4 +93,7 @@ Partial Public Class PyreAccWindowsFormsApplication
     Friend WithEvents ConditionalAppearanceModule1 As DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule
     Friend WithEvents ValidationModule1 As DevExpress.ExpressApp.Validation.ValidationModule
     Friend WithEvents AuditTrailModule1 As DevExpress.ExpressApp.AuditTrail.AuditTrailModule
+    Friend WithEvents TreeListEditorsModuleBase1 As DevExpress.ExpressApp.TreeListEditors.TreeListEditorsModuleBase
+    Friend WithEvents TreeListEditorsWindowsFormsModule1 As DevExpress.ExpressApp.TreeListEditors.Win.TreeListEditorsWindowsFormsModule
+    Friend WithEvents ValidationWindowsFormsModule1 As DevExpress.ExpressApp.Validation.Win.ValidationWindowsFormsModule
 End Class

@@ -13,6 +13,15 @@ Partial Public Class PyreAccAspNetApplication
     Private module1 As DevExpress.ExpressApp.SystemModule.SystemModule
     Private module2 As DevExpress.ExpressApp.Web.SystemModule.SystemAspNetModule
     Private module3 As PyreAcc.Module.PyreAccModule
+    Friend WithEvents CloneObjectModule1 As DevExpress.ExpressApp.CloneObject.CloneObjectModule
+    Friend WithEvents ConditionalAppearanceModule1 As DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule
+    Friend WithEvents ValidationModule1 As DevExpress.ExpressApp.Validation.ValidationModule
+    Friend WithEvents AuditTrailModule1 As DevExpress.ExpressApp.AuditTrail.AuditTrailModule
+    Friend WithEvents SecurityModule1 As DevExpress.ExpressApp.Security.SecurityModule
+    Friend WithEvents TreeListEditorsModuleBase1 As DevExpress.ExpressApp.TreeListEditors.TreeListEditorsModuleBase
+    Friend WithEvents TreeListEditorsAspNetModule1 As DevExpress.ExpressApp.TreeListEditors.Web.TreeListEditorsAspNetModule
+    Friend WithEvents SecurityStrategyComplex1 As DevExpress.ExpressApp.Security.SecurityStrategyComplex
+    Friend WithEvents AuthenticationStandard1 As DevExpress.ExpressApp.Security.AuthenticationStandard
     Private module4 As PyreAcc.Module.Web.PyreAccAspNetModule
 
     Public Sub New()
@@ -53,20 +62,55 @@ Partial Public Class PyreAccAspNetApplication
     Private Sub InitializeComponent()
         Me.module1 = New DevExpress.ExpressApp.SystemModule.SystemModule()
         Me.module2 = New DevExpress.ExpressApp.Web.SystemModule.SystemAspNetModule()
-        Me.module3 = New PyreAcc.Module.PyreAccModule()
-        Me.module4 = New PyreAcc.Module.Web.PyreAccAspNetModule()
+        Me.module3 = New PyreAcc.[Module].PyreAccModule()
+        Me.module4 = New PyreAcc.[Module].Web.PyreAccAspNetModule()
+        Me.CloneObjectModule1 = New DevExpress.ExpressApp.CloneObject.CloneObjectModule()
+        Me.ConditionalAppearanceModule1 = New DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule()
+        Me.ValidationModule1 = New DevExpress.ExpressApp.Validation.ValidationModule()
+        Me.AuditTrailModule1 = New DevExpress.ExpressApp.AuditTrail.AuditTrailModule()
+        Me.SecurityModule1 = New DevExpress.ExpressApp.Security.SecurityModule()
+        Me.TreeListEditorsModuleBase1 = New DevExpress.ExpressApp.TreeListEditors.TreeListEditorsModuleBase()
+        Me.TreeListEditorsAspNetModule1 = New DevExpress.ExpressApp.TreeListEditors.Web.TreeListEditorsAspNetModule()
+        Me.SecurityStrategyComplex1 = New DevExpress.ExpressApp.Security.SecurityStrategyComplex()
+        Me.AuthenticationStandard1 = New DevExpress.ExpressApp.Security.AuthenticationStandard()
         CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
-        ' 
-        ' PyreAccAspNetApplication
-        ' 
+        '
+        'ValidationModule1
+        '
+        Me.ValidationModule1.AllowValidationDetailsAccess = True
+        Me.ValidationModule1.IgnoreWarningAndInformationRules = False
+        '
+        'AuditTrailModule1
+        '
+        Me.AuditTrailModule1.AuditDataItemPersistentType = GetType(DevExpress.Persistent.BaseImpl.AuditDataItemPersistent)
+        '
+        'SecurityStrategyComplex1
+        '
+        Me.SecurityStrategyComplex1.Authentication = Me.AuthenticationStandard1
+        Me.SecurityStrategyComplex1.RoleType = GetType(PyreAcc.[Module].ApplicationRole)
+        Me.SecurityStrategyComplex1.UserType = GetType(PyreAcc.[Module].ApplicationUser)
+        '
+        'AuthenticationStandard1
+        '
+        Me.AuthenticationStandard1.LogonParametersType = GetType(DevExpress.ExpressApp.Security.AuthenticationStandardLogonParameters)
+        '
+        'PyreAccAspNetApplication
+        '
         Me.ApplicationName = "PyreAcc"
         Me.Modules.Add(Me.module1)
         Me.Modules.Add(Me.module2)
+        Me.Modules.Add(Me.CloneObjectModule1)
+        Me.Modules.Add(Me.ConditionalAppearanceModule1)
+        Me.Modules.Add(Me.ValidationModule1)
+        Me.Modules.Add(Me.AuditTrailModule1)
+        Me.Modules.Add(Me.SecurityModule1)
         Me.Modules.Add(Me.module3)
+        Me.Modules.Add(Me.TreeListEditorsModuleBase1)
+        Me.Modules.Add(Me.TreeListEditorsAspNetModule1)
         Me.Modules.Add(Me.module4)
-
-        AddHandler Me.DatabaseVersionMismatch, AddressOf PyreAccAspNetApplication_DatabaseVersionMismatch
+        Me.Security = Me.SecurityStrategyComplex1
         CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
+
     End Sub
 End Class
 
