@@ -12,6 +12,8 @@ Imports System.Collections.Generic
 Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
+Imports DevExpress.ExpressApp.ConditionalAppearance
+<Appearance("Appearance Default for BalanceSheet", enabled:=False, targetitems:="*")>
 <CreatableItem(False)>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _

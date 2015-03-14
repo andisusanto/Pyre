@@ -72,7 +72,8 @@ Public Class InventoryClosingProcess
                                                                                  .ExpiryDate = objInventoryItem.ExpiryDate, _
                                                                                  .UnitPrice = objInventoryItem.UnitPrice, _
                                                                                  .Inventory = objInventoryItem.Inventory, _
-                                                                                 .Item = objInventoryItem.Item}
+                                                                                 .Item = objInventoryItem.Item, _
+                                                                                 .BatchNo = objInventoryItem.BatchNo}
         Next
         For Each objInventoryItemDeductTransaction In nextBalanceSheet.InventoryItemDeductTransactions
             objInventoryItemDeductTransaction.DistributeDeduction()

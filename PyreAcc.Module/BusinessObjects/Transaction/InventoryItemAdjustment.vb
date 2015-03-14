@@ -39,6 +39,7 @@ Public Class InventoryItemAdjustment
     Private _baseUnitQuantity As Integer
     Private _unitPrice As Double
     Private _expiryDate As Date
+    Private _batchNo As String
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
     Private _balanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
     <RuleRequiredField("Rule Required for InventoryItemAdjustment.No", DefaultContexts.Save)>
@@ -135,6 +136,14 @@ Public Class InventoryItemAdjustment
             SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
+    Public Property BatchNo As String
+        Get
+            Return _batchNo
+        End Get
+        Set(value As String)
+            SetPropertyValue("BatchNo", _batchNo, value)
+        End Set
+    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
         Get
@@ -162,7 +171,7 @@ Public Class InventoryItemAdjustment
         MyBase.OnSubmitted()
         If BaseUnitQuantity > 0 Then
             Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
-            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate)
+            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
         Else
             BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, BalanceSheetInventoryItemDeductTransactionType.Adjustment)
         End If

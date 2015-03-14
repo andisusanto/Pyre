@@ -37,6 +37,7 @@ Public Class SalesReturnDetail
     Private _unit As Unit
     Private _baseUnitQuantity As Decimal
     Private _expiryDate As Date
+    Private _batchNo As String
     Private _unitPrice As Decimal
     Private _total As Decimal
     Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
@@ -137,6 +138,14 @@ Public Class SalesReturnDetail
         End Get
         Set(ByVal value As Date)
             SetPropertyValue("ExpiryDate", _expiryDate, value)
+        End Set
+    End Property
+    Public Property BatchNo As String
+        Get
+            Return _batchNo
+        End Get
+        Set(value As String)
+            SetPropertyValue("BatchNo", _batchNo, value)
         End Set
     End Property
     Public Property UnitPrice As Decimal

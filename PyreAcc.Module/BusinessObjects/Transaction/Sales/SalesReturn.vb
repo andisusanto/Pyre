@@ -118,7 +118,7 @@ Public Class SalesReturn
             If objDetail.SalesInvoiceDetail.SalesInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Sales Invoice with No {0} has not been submitted", objDetail.SalesInvoiceDetail.SalesInvoice.No))
             If objDetail.SalesInvoiceDetail.ReturnOutstandingBaseUnitQuantity < objDetail.BaseUnitQuantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
             objDetail.SalesInvoiceDetail.ReturnedBaseUnitQuantity += objDetail.BaseUnitQuantity
-            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.SalesInvoiceDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, objDetail.ExpiryDate)
+            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.SalesInvoiceDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, If(objDetail.SalesInvoiceDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
         Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}

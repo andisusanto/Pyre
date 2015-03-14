@@ -252,7 +252,7 @@ Public Class PurchaseInvoice
         MyBase.OnSubmitted()
         For Each objDetail In Details
             Dim tmpUnitPrice As Decimal = objDetail.UnitPrice * objDetail.Quantity / objDetail.BaseUnitQuantity
-            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date))
+            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
         Next
     End Sub
     Protected Overrides Sub OnCanceled()

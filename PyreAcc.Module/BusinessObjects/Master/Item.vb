@@ -14,6 +14,8 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)> _
+<Appearance("Appearance for Item.Type = 'WithWarning'", targetitems:="*", backcolor:="Yellow", criteria:="Type = 'WithWarning'", context:="ListView")>
+<Appearance("Appearance for Item.Type = 'Restricted'", targetitems:="*", backcolor:="Red", criteria:="Type = 'Restricted'", context:="ListView")>
 <Appearance("Appearance Default Disabled for Item", enabled:=False, targetitems:="PriceHistory")>
 <Appearance("Appearance for Item.PriceHistory.Count > 1", enabled:=False, visibility:=Editors.ViewItemVisibility.Hide, criteria:="@PriceHistory.Count > 1", targetitems:="Since, MinimumPrice, MaximumPrice")>
 <DeferredDeletion(False)>
@@ -40,6 +42,7 @@ Public Class Item
     Private fBaseUnit As Unit
     Private fHasExpiryDate As Boolean
     Private fActive As Boolean
+    Private fType As ItemType
 
     Private fSince As Date
     Private fMinimumPrice As Decimal
@@ -115,7 +118,14 @@ Public Class Item
             SetPropertyValue("Active", fActive, value)
         End Set
     End Property
-
+    Public Property Type As ItemType
+        Get
+            Return fType
+        End Get
+        Set(value As ItemType)
+            SetPropertyValue("Type", fType, value)
+        End Set
+    End Property
     <RuleRequiredField("Rule Required for Item.Since", DefaultContexts.Save)>
     Public Property Since As Date
         Get
@@ -195,3 +205,9 @@ Public Class Item
         Return objItemUnit.ConversionRate
     End Function
 End Class
+
+Public Enum ItemType
+    FreeDistributed
+    WithWarning
+    Restricted
+End Enum

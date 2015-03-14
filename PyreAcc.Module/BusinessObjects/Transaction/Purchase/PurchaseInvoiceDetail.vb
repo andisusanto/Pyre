@@ -15,7 +15,7 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
 <Appearance("Appearance Default Disabled for PurchaseInvoiceDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, ReturnedBaseUnitQuantity, Total, Discount, GrandTotal")>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseInvoiceDetail", DefaultContexts.Save, "PurchaseInvoice, Item")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for PurchaseInvoiceDetail", DefaultContexts.Save, "PurchaseInvoice, Item, BatchNo")>
 <RuleCriteria("Rule Criteria for PurchaseInvoiceDetail.Total > 0", DefaultContexts.Save, "Total > 0", "Total must be greater than zero")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
@@ -36,6 +36,7 @@ Public Class PurchaseInvoiceDetail
     Private _item As Item
     Private _unit As Unit
     Private _quantity As Decimal
+    Private _batchNo As String
     Private _expiryDate As Date
     Private _baseUnitQuantity As Decimal
     Private _returnedBaseUnitQuantity As Decimal
@@ -118,6 +119,14 @@ Public Class PurchaseInvoiceDetail
                 CalculateBaseUnitQuantity()
                 CalculateTotal()
             End If
+        End Set
+    End Property
+    Public Property BatchNo As String
+        Get
+            Return _batchNo
+        End Get
+        Set(value As String)
+            SetPropertyValue("BatchNo", _batchNo, value)
         End Set
     End Property
     Private Sub CalculateBaseUnitQuantity()

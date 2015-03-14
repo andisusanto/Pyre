@@ -34,6 +34,7 @@ Public Class BalanceSheetInventoryItem
     Private _baseUnitQuantity As Decimal
     Private _deductedBaseUnitQuantity As Decimal
     Private _remainingBaseUnitQuantity As Decimal
+    Private _batchNo As String
     <Association("BalanceSheet-BalanceSheetInventoryItem")>
     <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.BalanceSheet", DefaultContexts.Save)>
     Public Property BalanceSheet As BalanceSheet
@@ -116,6 +117,14 @@ Public Class BalanceSheetInventoryItem
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("RemainingBaseUnitQuantity", _remainingBaseUnitQuantity, value)
+        End Set
+    End Property
+    Public Property BatchNo As String
+        Get
+            Return _batchNo
+        End Get
+        Set(value As String)
+            SetPropertyValue("BatchNo", _batchNo, value)
         End Set
     End Property
     Private Sub CalculateRemainingBaseUnitQuantity()

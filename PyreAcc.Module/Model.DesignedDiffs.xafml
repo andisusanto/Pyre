@@ -20,9 +20,9 @@
     <Class Name="PyreAcc.Module.ItemPrice" ImageName="BO_Sale_v92" />
     <Class Name="PyreAcc.Module.ItemPriceMutation" ImageName="BO_Sale_Item_v92" />
     <Class Name="PyreAcc.Module.PurchaseInvoice" ImageName="BO_Invoice" />
-    <Class Name="PyreAcc.Module.PurchaseInvoiceDetail" ImageName="BO_Invoice" />
+    <Class Name="PyreAcc.Module.PurchaseInvoiceDetail" ImageName="BO_Invoice" IsCloneable="True" />
     <Class Name="PyreAcc.Module.SalesInvoice" ImageName="BO_Invoice" />
-    <Class Name="PyreAcc.Module.SalesInvoiceDetail" ImageName="BO_Invoice" />
+    <Class Name="PyreAcc.Module.SalesInvoiceDetail" ImageName="BO_Invoice" IsCloneable="True" />
     <Class Name="PyreAcc.Module.Salesman" ImageName="BO_Employee" />
     <Class Name="PyreAcc.Module.Supplier" ImageName="BO_Lead" />
     <Class Name="PyreAcc.Module.SupplierContactInformation" ImageName="BO_Contact" />
@@ -309,7 +309,6 @@
         <ColumnInfo Id="EnteredBy" PropertyName="EnteredBy" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="EntryDateTime" PropertyName="EntryDateTime" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="Inventory" PropertyName="Inventory" Width="70" Index="-1" IsNewNode="True" />
-        <ColumnInfo Id="PaymentOutstandingStatus" PropertyName="PaymentOutstandingStatus" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="Status" PropertyName="Status" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="SubmitDateTime" PropertyName="SubmitDateTime" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="SubmitNote" PropertyName="SubmitNote" Width="70" Index="-1" IsNewNode="True" />
@@ -440,7 +439,6 @@
         <ColumnInfo Id="EnteredBy" PropertyName="EnteredBy" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="EntryDateTime" PropertyName="EntryDateTime" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="Inventory" PropertyName="Inventory" Width="70" Index="-1" IsNewNode="True" />
-        <ColumnInfo Id="PaymentOutstandingStatus" PropertyName="PaymentOutstandingStatus" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="Salesman" PropertyName="Salesman" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="Status" PropertyName="Status" Width="70" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="SubmitDateTime" PropertyName="SubmitDateTime" Width="70" Index="-1" IsNewNode="True" />
