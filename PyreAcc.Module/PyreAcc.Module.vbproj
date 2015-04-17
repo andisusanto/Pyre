@@ -169,14 +169,13 @@
     <Compile Include="BusinessObjects\System\Security\ApplicationRole.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationUser.vb" />
     <Compile Include="BusinessObjects\System\SystemConfig.vb" />
-    <Compile Include="BusinessObjects\Transaction\Journal.vb" />
-    <Compile Include="BusinessObjects\Transaction\JournalCredit.vb" />
-    <Compile Include="BusinessObjects\Transaction\JournalDebit.vb" />
+    <Compile Include="BusinessObjects\Transaction\PeriodCutOffJournal.vb" />
+    <Compile Include="BusinessObjects\Transaction\PeriodCutOffJournalCredit.vb" />
+    <Compile Include="BusinessObjects\Transaction\PeriodCutOffJournalDebit.vb" />
     <Compile Include="BusinessObjects\Transaction\JournalEntryCredit.vb" />
     <Compile Include="BusinessObjects\Transaction\JournalEntryDebit.vb" />
     <Compile Include="BusinessObjects\Transaction\PeriodCutOff.vb" />
     <Compile Include="BusinessObjects\Transaction\PeriodCutOffAccount.vb" />
-    <Compile Include="BusinessObjects\Transaction\PeriodCutOffAccountMutation.vb" />
     <Compile Include="BusinessObjects\Transaction\PeriodCutOffInventoryItem.vb" />
     <Compile Include="BusinessObjects\Transaction\PeriodCutOffInventoryItemDeductTransaction.vb" />
     <Compile Include="BusinessObjects\Transaction\PeriodCutOffInventoryItemDeductTransactionDetail.vb" />

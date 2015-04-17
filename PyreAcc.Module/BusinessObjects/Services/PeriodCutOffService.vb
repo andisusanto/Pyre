@@ -133,25 +133,25 @@ Public Class PeriodCutOffService
         Return tmpBalance
     End Function
 
-    Public Shared Function CreatePeriodCutOffAccountMutation(ByVal Account As Account, ByVal TransDate As Date, ByVal Amount As Decimal, ByVal Note As String) As PeriodCutOffAccountMutation
-        Dim session As Session = Account.Session
-        If TransactionConfig.IsInClosedPeriod(session, TransDate) Then Throw New Exception("Not in open period")
-        Dim PeriodCutOff As PeriodCutOff = session.FindObject(Of PeriodCutOff)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), GroupOperator.Or(New NullOperator("EndDate"), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual))))
-        If PeriodCutOff Is Nothing Then Throw New Exception("Cut off period not found")
-        If PeriodCutOff.Closed Then Throw New Exception("Cut off period already closed")
-        Dim PeriodCutOffAccount As PeriodCutOffAccount = session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOff), New BinaryOperator("Account", Account)))
-        If PeriodCutOffAccount Is Nothing Then
-             PeriodCutOffAccount = New PeriodCutOffAccount(session) With {.Account = Account, .PeriodCutOff = PeriodCutOff}
-        End If
-        Dim PeriodCutOffAccountMutation As New PeriodCutOffAccountMutation(session) With {.PeriodCutOffAccount = PeriodCutOffAccount, .TransDate = TransDate, .Amount = Amount, .Note = Note}
-        PeriodCutOffAccount.LastBalance += Amount
-        Return PeriodCutOffAccountMutation
-    End Function
+    'Public Shared Function CreatePeriodCutOffAccountMutation(ByVal Account As Account, ByVal TransDate As Date, ByVal Amount As Decimal, ByVal Note As String) As PeriodCutOffAccountMutation
+    '    Dim session As Session = Account.Session
+    '    If TransactionConfig.IsInClosedPeriod(session, TransDate) Then Throw New Exception("Not in open period")
+    '    Dim PeriodCutOff As PeriodCutOff = session.FindObject(Of PeriodCutOff)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), GroupOperator.Or(New NullOperator("EndDate"), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual))))
+    '    If PeriodCutOff Is Nothing Then Throw New Exception("Cut off period not found")
+    '    If PeriodCutOff.Closed Then Throw New Exception("Cut off period already closed")
+    '    Dim PeriodCutOffAccount As PeriodCutOffAccount = session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOff), New BinaryOperator("Account", Account)))
+    '    If PeriodCutOffAccount Is Nothing Then
+    '         PeriodCutOffAccount = New PeriodCutOffAccount(session) With {.Account = Account, .PeriodCutOff = PeriodCutOff}
+    '    End If
+    '    Dim PeriodCutOffAccountMutation As New PeriodCutOffAccountMutation(session) With {.PeriodCutOffAccount = PeriodCutOffAccount, .TransDate = TransDate, .Amount = Amount, .Note = Note}
+    '    PeriodCutOffAccount.LastBalance += Amount
+    '    Return PeriodCutOffAccountMutation
+    'End Function
 
-    Public Shared Sub DeletePeriodCutOffAccountMutation(ByVal PeriodCutOffAccountMutation As PeriodCutOffAccountMutation)
-        If PeriodCutOffAccountMutation.PeriodCutOffAccount.PeriodCutOff.Closed Then Throw New Exception("Cut off period already closed")
-        PeriodCutOffAccountMutation.PeriodCutOffAccount.LastBalance -= PeriodCutOffAccountMutation.Amount
-        PeriodCutOffAccountMutation.Delete()
-    End Sub
+    'Public Shared Sub DeletePeriodCutOffAccountMutation(ByVal PeriodCutOffAccountMutation As PeriodCutOffAccountMutation)
+    '    If PeriodCutOffAccountMutation.PeriodCutOffAccount.PeriodCutOff.Closed Then Throw New Exception("Cut off period already closed")
+    '    PeriodCutOffAccountMutation.PeriodCutOffAccount.LastBalance -= PeriodCutOffAccountMutation.Amount
+    '    PeriodCutOffAccountMutation.Delete()
+    'End Sub
 
 End Class

@@ -64,10 +64,4 @@ Public Class PeriodCutOffAccount
             SetPropertyValue("LastBalance", _lastBalance, value)
         End Set
     End Property
-    <Association("PeriodCutOffAccount-PeriodCutOffAccountMutation"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Mutations As XPCollection(Of PeriodCutOffAccountMutation)
-        Get
-            Return GetCollection(Of PeriodCutOffAccountMutation)("Mutations")
-        End Get
-    End Property
 End Class

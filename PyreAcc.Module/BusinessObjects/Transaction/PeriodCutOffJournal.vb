@@ -12,10 +12,10 @@ Imports System.Collections.Generic
 Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
-<RuleCriteria("Rule Criteria for Journal.IsAmountBalance = True", DefaultContexts.Save, "IsAmountBalance = True")>
+<RuleCriteria("Rule Criteria for PeriodCutOffJournal.IsAmountBalance = True", DefaultContexts.Save, "IsAmountBalance = True")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
-Public Class Journal
+Public Class PeriodCutOffJournal
     Inherits BaseObject
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -24,11 +24,21 @@ Public Class Journal
         MyBase.AfterConstruction()
 
     End Sub
-
+    Private _periodCutOff As PeriodCutOff
     Private _transDate As Date
     Private _entryDate As Date
     Private _description As String
-    <RuleRequiredField("Rule Required for Journal.TransDate", DefaultContexts.Save)>
+    <Association("PeriodCutOff-PeriodCutOffJournal")>
+    <RuleRequiredField("Rule Required for PeriodCutOffJournal.PeriodCutOff", DefaultContexts.Save)>
+    Public Property PeriodCutOff As PeriodCutOff
+        Get
+            Return _periodCutOff
+        End Get
+        Set(value As PeriodCutOff)
+            SetPropertyValue("PeriodCutOff", _periodCutOff, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for PeriodCutOffJournal.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
             Return _transDate
@@ -37,7 +47,7 @@ Public Class Journal
             SetPropertyValue("TransDate", _transDate, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for Journal.EntryDate", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffJournal.EntryDate", DefaultContexts.Save)>
     Public Property EntryDate As Date
         Get
             Return _entryDate
@@ -46,7 +56,7 @@ Public Class Journal
             SetPropertyValue("EntryDate", _entryDate, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for Journal.Description", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffJournal.Description", DefaultContexts.Save)>
     Public Property Description As String
         Get
             Return _description
@@ -56,16 +66,16 @@ Public Class Journal
         End Set
     End Property
 
-    <Association("Journal-JournalDebit"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Debits As XPCollection(Of JournalDebit)
+    <Association("PeriodCutOffJournal-PeriodCutOffJournalDebit"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Debits As XPCollection(Of PeriodCutOffJournalDebit)
         Get
-            Return GetCollection(Of JournalDebit)("Debits")
+            Return GetCollection(Of PeriodCutOffJournalDebit)("Debits")
         End Get
     End Property
-    <Association("Journal-JournalCredit"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Credits As XPCollection(Of JournalCredit)
+    <Association("PeriodCutOffJournal-PeriodCutOffJournalCredit"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Credits As XPCollection(Of PeriodCutOffJournalCredit)
         Get
-            Return GetCollection(Of JournalCredit)("Credits")
+            Return GetCollection(Of PeriodCutOffJournalCredit)("Credits")
         End Get
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>

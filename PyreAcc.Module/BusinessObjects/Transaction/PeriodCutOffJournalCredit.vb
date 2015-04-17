@@ -13,10 +13,10 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
-<RuleCriteria("Rule Criteria for JournalDebit.Amount > 0", DefaultContexts.Save, "Amount > 0")>
+<RuleCriteria("Rule Criteria for PeriodCutOffJournalCredit.Amount > 0", DefaultContexts.Save, "Amount > 0")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
-Public Class JournalDebit
+Public Class PeriodCutOffJournalCredit
     Inherits BaseObject
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -27,7 +27,7 @@ Public Class JournalDebit
     End Sub
 
     Private _sequence As Integer
-    Private _journal As Journal
+    Private _journal As PeriodCutOffJournal
     Private _account As Account
     Private _amount As Decimal
 
@@ -39,27 +39,27 @@ Public Class JournalDebit
             SetPropertyValue("Sequence", _sequence, value)
         End Set
     End Property
-    <Association("Journal-JournalDebit")>
-    <RuleRequiredField("Rule Required for JournalDebit.Journal", DefaultContexts.Save)>
-    Public Property Journal As Journal
+    <Association("PeriodCutOffJournal-PeriodCutOffJournalCredit")>
+    <RuleRequiredField("Rule Required for PeriodCutOffJournalCredit.PeriodCutOffJournal", DefaultContexts.Save)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
         Get
             Return _journal
         End Get
-        Set(ByVal value As Journal)
-            SetPropertyValue("Journal", _journal, value)
+        Set(ByVal value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _journal, value)
             If Not IsLoading Then
-                If Journal IsNot Nothing Then
-                    If Journal.Debits.Count = 0 Then
+                If PeriodCutOffJournal IsNot Nothing Then
+                    If PeriodCutOffJournal.Credits.Count = 0 Then
                         Sequence = 0
                     Else
-                        Journal.Debits.Sorting = New SortingCollection(New SortProperty("Sequence", DB.SortingDirection.Ascending))
-                        Sequence = Journal.Debits(Journal.Debits.Count - 1).Sequence + 1
+                        PeriodCutOffJournal.Credits.Sorting = New SortingCollection(New SortProperty("Sequence", DB.SortingDirection.Ascending))
+                        Sequence = PeriodCutOffJournal.Credits(PeriodCutOffJournal.Credits.Count - 1).Sequence + 1
                     End If
                 End If
             End If
         End Set
     End Property
-    <RuleRequiredField("Rule Required for JournalDebit.Account", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffJournalCredit.Account", DefaultContexts.Save)>
     Public Property Account As Account
         Get
             Return _account

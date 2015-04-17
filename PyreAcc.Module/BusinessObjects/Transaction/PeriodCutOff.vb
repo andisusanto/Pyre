@@ -73,6 +73,12 @@ Public Class PeriodCutOff
             Return GetCollection(Of PeriodCutOffInventoryItemDeductTransaction)("InventoryItemDeductTransactions")
         End Get
     End Property
+    <Association("PeriodCutOff-PeriodCutOffJournal"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Journals As XPCollection(Of PeriodCutOffJournal)
+        Get
+            Return GetCollection(Of PeriodCutOffJournal)("Journals")
+        End Get
+    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get

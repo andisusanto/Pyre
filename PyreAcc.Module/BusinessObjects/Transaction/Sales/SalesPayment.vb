@@ -41,7 +41,6 @@ Public Class SalesPayment
     Private _creditNoteAmount As Decimal
     Private _remainingAmount As Decimal
     Private _toAccount As Account
-    Private _periodCutOffAccountMutation As PeriodCutOffAccountMutation
     <RuleUniqueValue("Rule Unique for SalesPayment.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for SalesPayment.No", DefaultContexts.Save)>
     Public Property No As String
@@ -110,15 +109,6 @@ Public Class SalesPayment
             SetPropertyValue("ToAccount", _toAccount, value)
         End Set
     End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property PeriodCutOffAccountMutation As PeriodCutOffAccountMutation
-        Get
-            Return _periodCutOffAccountMutation
-        End Get
-        Set(value As PeriodCutOffAccountMutation)
-            SetPropertyValue("PeriodCutOffAccountMutation", _periodCutOffAccountMutation, value)
-        End Set
-    End Property
     Private Sub CalculateRemainingAmount()
         RemainingAmount = Total - CreditNoteAmount
     End Sub
@@ -162,7 +152,6 @@ Public Class SalesPayment
             If obj.CreditNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Credit note with no {0} has no enough balance", obj.CreditNote.No))
             obj.CreditNote.UsedAmount += obj.Amount
         Next
-        PeriodCutOffAccountMutation = PeriodCutOffService.CreatePeriodCutOffAccountMutation(ToAccount, TransDate, RemainingAmount, "Sales")
         Customer.OutstandingPaymentAmount -= Total
     End Sub
     Protected Overrides Sub OnCanceled()
@@ -173,9 +162,6 @@ Public Class SalesPayment
         For Each obj In CreditNotes
             obj.CreditNote.UsedAmount -= obj.Amount
         Next
-        Dim tmp = PeriodCutOffAccountMutation
-        PeriodCutOffAccountMutation = Nothing
-        If tmp IsNot Nothing Then PeriodCutOffService.DeletePeriodCutOffAccountMutation(tmp)
         Customer.OutstandingPaymentAmount += Total
     End Sub
 End Class

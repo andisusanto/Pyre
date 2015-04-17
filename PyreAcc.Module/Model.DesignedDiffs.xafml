@@ -27,14 +27,14 @@
     <Class Name="PyreAcc.Module.Item" ImageName="BO_Product" />
     <Class Name="PyreAcc.Module.ItemPrice" ImageName="BO_Sale_v92" />
     <Class Name="PyreAcc.Module.ItemPriceMutation" ImageName="BO_Sale_Item_v92" />
-    <Class Name="PyreAcc.Module.Journal" ImageName="Journal" />
-    <Class Name="PyreAcc.Module.JournalCredit" ImageName="Journal" />
-    <Class Name="PyreAcc.Module.JournalDebit" ImageName="Journal" />
     <Class Name="PyreAcc.Module.JournalEntry" ImageName="Journal" />
     <Class Name="PyreAcc.Module.JournalEntryCredit" ImageName="Journal" />
     <Class Name="PyreAcc.Module.JournalEntryDebit" ImageName="Journal" />
     <Class Name="PyreAcc.Module.Location" ImageName="Location" />
     <Class Name="PyreAcc.Module.PeriodCutOff" ImageName="CutOff" />
+    <Class Name="PyreAcc.Module.PeriodCutOffJournal" ImageName="Journal" />
+    <Class Name="PyreAcc.Module.PeriodCutOffJournalCredit" ImageName="Journal" />
+    <Class Name="PyreAcc.Module.PeriodCutOffJournalDebit" ImageName="Journal" />
     <Class Name="PyreAcc.Module.PurchaseInvoice" ImageName="BO_Invoice" />
     <Class Name="PyreAcc.Module.PurchaseInvoiceDetail" ImageName="BO_Invoice" IsCloneable="True" />
     <Class Name="PyreAcc.Module.PurchasePayment" ImageName="Payment" />
@@ -77,7 +77,6 @@
           <Item Id="InventoryItemAdjustment_ListView" Removed="True" />
           <Item Id="Item_ListView" Removed="True" />
           <Item Id="ItemPriceMutation_ListView" Removed="True" />
-          <Item Id="Journal_ListView" Removed="True" />
           <Item Id="JournalEntry_ListView" Removed="True" />
           <Item Id="Location_ListView" Removed="True" />
           <Item Id="PeriodCutOff_ListView" Removed="True" />

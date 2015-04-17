@@ -28,7 +28,7 @@ Public Class JournalEntry
     Private _transDate As Date
     Private _description As String
 
-    Private _journal As Journal
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleRequiredField("Rule Required for JournalEntry.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
@@ -48,12 +48,12 @@ Public Class JournalEntry
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property Journal As Journal
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
         Get
-            Return _journal
+            Return _periodCutOffJournal
         End Get
-        Set(value As Journal)
-            SetPropertyValue("Journal", _journal, value)
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
         End Set
     End Property
     <Association("JournalEntry-JournalEntryDebit"), DevExpress.Xpo.Aggregated()>
