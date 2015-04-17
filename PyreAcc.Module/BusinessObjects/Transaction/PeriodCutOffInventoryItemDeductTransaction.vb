@@ -123,7 +123,7 @@ Public Class PeriodCutOffInventoryItemDeductTransaction
                                                                                                  New BinaryOperator("IsDeleted", False), _
                                                                                                  GroupOperator.Or(New BinaryOperator("Item.HasExpiryDate", False), _
                                                                                                                   New BinaryOperator("ExpiryDate", TransDate, BinaryOperatorType.GreaterOrEqual)))) _
-        With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+        With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending), New SortProperty("EntryDate", DB.SortingDirection.Ascending))}
         Dim xpInventoryItem As New XPCollection(Of PeriodCutOffInventoryItem)(Session, False)
         For Each obj In tmpInventoryItem
             xpInventoryItem.Add(obj)

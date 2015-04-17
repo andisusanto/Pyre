@@ -97,6 +97,7 @@ Public Class ItemPriceMutation
         End Set
     End Property
 
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return No
@@ -105,7 +106,7 @@ Public Class ItemPriceMutation
 
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        ItemPrice = PyreAcc.Module.ItemPrice.CreateItemPrice(Session, Item, EffectiveDate, MinimumPrice, MaximumPrice)
+        ItemPrice = PyreAcc.Module.ItemPrice.CreateItemPrice(Session, Item, EffectiveDate, MinimumPrice, StandardPrice, MaximumPrice)
     End Sub
 
     Protected Overrides Sub OnCanceled()

@@ -33,6 +33,7 @@ Public Class ItemPrice
     Private _since As Date
     Private _until As Date
     Private _minimumPrice As Decimal
+    Private _standardPrice As Decimal
     Private _maximumPrice As Decimal
 
     <Association("Item-ItemPrice")>
@@ -70,6 +71,14 @@ Public Class ItemPrice
             SetPropertyValue("MinimumPrice", _minimumPrice, value)
         End Set
     End Property
+    Public Property StandardPrice As Decimal
+        Get
+            Return _standardPrice
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("StandardPrice", _standardPrice, value)
+        End Set
+    End Property
     Public Property MaximumPrice As Decimal
         Get
             Return _maximumPrice
@@ -94,7 +103,7 @@ Public Class ItemPrice
         End Get
     End Property
 
-    Public Shared Function CreateItemPrice(ByVal prmUOW As UnitOfWork, ByVal prmItem As Item, ByVal prmEffectiveDate As Date, ByVal prmMinimumPrice As Decimal, ByVal prmMaximumPrice As Decimal) As ItemPrice
+    Public Shared Function CreateItemPrice(ByVal prmUOW As UnitOfWork, ByVal prmItem As Item, ByVal prmEffectiveDate As Date, ByVal prmMinimumPrice As Decimal, ByVal prmStandardPrice As Decimal, ByVal prmMaximumPrice As Decimal) As ItemPrice
         Dim xpItemPrice As New XPCollection(Of ItemPrice)(prmUOW, GroupOperator.And(New BinaryOperator("Item", prmItem), New BinaryOperator("Since", prmEffectiveDate, BinaryOperatorType.LessOrEqual)))
         xpItemPrice.TopReturnedObjects = 1
         If xpItemPrice.Count = 0 Then Throw New Exception("Previous history not found")
@@ -105,6 +114,7 @@ Public Class ItemPrice
         objItemPrice.Since = prmEffectiveDate
         objItemPrice.Until = tmpUntil
         objItemPrice.MinimumPrice = prmMinimumPrice
+        objItemPrice.StandardPrice = prmStandardPrice
         objItemPrice.MaximumPrice = prmMaximumPrice
         Return objItemPrice
     End Function

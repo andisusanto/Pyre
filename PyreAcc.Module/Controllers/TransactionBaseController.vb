@@ -139,9 +139,9 @@ Partial Public Class TransactionBaseController
             Case 0
                 CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BinaryOperator("TransDate", Today.Date)
             Case 1
-                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BetweenOperator("TransDate", DateAdd(DateInterval.Weekday, -1, Today.Date), Today.Date)
+                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BinaryOperator("TransDate", DateAdd(DateInterval.Weekday, -1, Today.Date), BinaryOperatorType.GreaterOrEqual)
             Case 2
-                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BetweenOperator("TransDate", DateAdd(DateInterval.Month, -1, Today.Date), Today.Date)
+                CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = New BinaryOperator("TransDate", DateAdd(DateInterval.Month, -1, Today.Date), BinaryOperatorType.GreaterOrEqual)
             Case 3
                 CType(View, ListView).CollectionSource.Criteria("TransDateFilter") = Nothing
         End Select

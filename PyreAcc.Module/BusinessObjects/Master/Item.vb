@@ -158,6 +158,9 @@ Public Class Item
         End Get
         Set(value As Decimal)
             SetPropertyValue("StandardPrice", fStandardPrice, value)
+            If Not IsLoading Then
+                PriceHistory(0).StandardPrice = StandardPrice
+            End If
         End Set
     End Property
     <RuleRequiredField("Rule Required for Item.MaximumPrice", DefaultContexts.Save)>

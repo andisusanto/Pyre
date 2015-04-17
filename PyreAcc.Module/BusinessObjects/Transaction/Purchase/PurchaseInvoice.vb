@@ -31,7 +31,7 @@ Public Class PurchaseInvoice
 
     Public Overrides Sub AfterConstruction()
         MyBase.AfterConstruction()
-        TransDate = Now
+        TransDate = GlobalFunction.GetServerNow(Session).Date
     End Sub
     Private _no As String
     Private _referenceNo As String

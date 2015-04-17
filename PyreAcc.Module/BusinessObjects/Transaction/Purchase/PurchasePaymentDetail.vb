@@ -100,7 +100,7 @@ Public Class PurchasePaymentDetail
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property PurchaseInvoiceDatasource As XPCollection(Of PurchaseInvoice)
         Get
-            Return New XPCollection(Of PurchaseInvoice)(Session, (GroupOperator.And(New BinaryOperator("Status", TransactionStatus.Submitted), New BinaryOperator("PaymentOutstandingStatus", OutstandingStatus.Cleared, BinaryOperatorType.NotEqual), New BinaryOperator("Supplier", PurchasePayment.Supplier), New BinaryOperator("PaymentOutstandingAmount", 0, BinaryOperatorType.Greater))))
+            Return New XPCollection(Of PurchaseInvoice)(Session, (GroupOperator.And(New BinaryOperator("Status", TransactionStatus.Submitted), New BinaryOperator("Supplier", PurchasePayment.Supplier), New BinaryOperator("PaymentOutstandingAmount", 0, BinaryOperatorType.Greater))))
         End Get
     End Property
 End Class

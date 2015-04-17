@@ -83,6 +83,13 @@ Public Class SalesInvoiceDetail
         End Get
         Set(ByVal value As Item)
             SetPropertyValue("Item", _item, value)
+            If Not IsLoading Then
+                If Item IsNot Nothing Then
+                    Unit = Item.BaseUnit
+                Else
+                    Unit = Nothing
+                End If
+            End If
         End Set
     End Property
     <ImmediatePostData(True)>
@@ -124,7 +131,7 @@ Public Class SalesInvoiceDetail
         If Unit IsNot Nothing AndAlso Item IsNot Nothing Then
             Dim tmpRate As Decimal = Item.GetUnitRate(Unit)
             Dim tmpItemPrice As ItemPrice = Item.GetPrice(SalesInvoice.TransDate)
-            UnitPrice = tmpItemPrice.MaximumPrice * tmpRate
+            UnitPrice = tmpItemPrice.StandardPrice * tmpRate
         Else
             UnitPrice = 0
         End If
