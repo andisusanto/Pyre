@@ -13,12 +13,12 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
+
 <CreatableItem(False)> _
-<RuleCriteria("Rule Criteria for Cancel SalesReturn.CreditNote.UsedAmount = 0", "Cancel", "CreditNote.UsedAmount = 0")>
+<RuleCriteria("Rule Criteria for Cancel SalesReturn.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for SalesReturn.Total > 0", DefaultContexts.Save, "Total > 0")>
-<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total")>
-<Appearance("Appearance for SalesReturn.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
-<Appearance("Appearance for SalesReturn.Details.Count > 0", AppearanceItemType:="ViewItem", criteria:="@Details.Count > 0", enabled:=False, targetitems:="Customer")>
+<RuleCriteria("Rule Criteria for SalesReturn.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
+<Appearance("Appearance Default Disabled for SalesReturn", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesReturn
@@ -30,23 +30,28 @@ Public Class SalesReturn
 
     Public Overrides Sub AfterConstruction()
         MyBase.AfterConstruction()
-        TransDate = Today
+        TransDate = Now
         Inventory = SysConfig.ReturnItemInventory
     End Sub
-
     Private _no As String
     Private _transDate As Date
+    Private _term As Integer
+    Private _dueDate As Date
     Private _customer As Customer
-    Private _total As Decimal
     Private _inventory As Inventory
+    Private _total As Decimal
+    Private _discountType As DiscountType
+    Private _discountValue As Decimal
+    Private _discount As Decimal
+    Private _grandTotal As Decimal
     Private _creditNote As CreditNote
-    <RuleRequiredField("Rule Required for SalesReturn.No", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for SalesReturn.No", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for SalesReturn.No", DefaultContexts.Save)>
     Public Property No As String
         Get
             Return _no
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             SetPropertyValue("No", _no, value)
         End Set
     End Property
@@ -55,26 +60,49 @@ Public Class SalesReturn
         Get
             Return _transDate
         End Get
-        Set(ByVal value As Date)
+        Set(value As Date)
             SetPropertyValue("TransDate", _transDate, value)
+            If Not IsLoading Then
+                If TransDate.AddDays(Term) <> DueDate Then
+                    DueDate = TransDate.AddDays(Term)
+                End If
+            End If
         End Set
     End Property
-    <ImmediatePostData(True)>
+    Public Property Term As Integer
+        Get
+            Return _term
+        End Get
+        Set(value As Integer)
+            SetPropertyValue("Term", _term, value)
+            If Not IsLoading Then
+                If TransDate.AddDays(Term) <> DueDate Then
+                    DueDate = TransDate.AddDays(Term)
+                End If
+            End If
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for SalesReturn.DueDate", DefaultContexts.Save)>
+    Public Property DueDate As Date
+        Get
+            Return _dueDate
+        End Get
+        Set(value As Date)
+            SetPropertyValue("DueDate", _dueDate, value)
+            If Not IsLoading Then
+                If TransDate.AddDays(Term) <> DueDate Then
+                    Term = DateDiff(DateInterval.Day, TransDate, DueDate)
+                End If
+            End If
+        End Set
+    End Property
     <RuleRequiredField("Rule Required for SalesReturn.Customer", DefaultContexts.Save)>
     Public Property Customer As Customer
         Get
             Return _customer
         End Get
-        Set(ByVal value As Customer)
+        Set(value As Customer)
             SetPropertyValue("Customer", _customer, value)
-        End Set
-    End Property
-    Public Property Total As Decimal
-        Get
-            Return _total
-        End Get
-        Set(value As Decimal)
-            SetPropertyValue("Total", _total, value)
         End Set
     End Property
     <RuleRequiredField("Rule Required for SalesReturn.Inventory", DefaultContexts.Save)>
@@ -84,6 +112,64 @@ Public Class SalesReturn
         End Get
         Set(value As Inventory)
             SetPropertyValue("Inventory", _inventory, value)
+        End Set
+    End Property
+
+    <ImmediatePostData(True)>
+    Public Property Total As Decimal
+        Get
+            Return _total
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property DiscountType As DiscountType
+        Get
+            Return _discountType
+        End Get
+        Set(ByVal value As DiscountType)
+            SetPropertyValue("DiscountType", _discountType, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
+    Public Property DiscountValue As Decimal
+        Get
+            Return _discountValue
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DiscountValue", _discountValue, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property Discount As Decimal
+        Get
+            Return _discount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("Discount", _discount, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property GrandTotal As Decimal
+        Get
+            Return _grandTotal
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("GrandTotal", _grandTotal, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
@@ -106,19 +192,27 @@ Public Class SalesReturn
             Return No
         End Get
     End Property
-    <Browsable(False), VisibleInDetailView(False), VisibleInListView(False)>
-    Public ReadOnly Property EnableDetails As Boolean
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property IsPeriodClosed As Boolean
         Get
-            Return Customer IsNot Nothing
+            Return TransactionConfig.IsInClosedPeriod(Session, TransDate)
         End Get
     End Property
+    Private Sub CalculateDiscount()
+        Select Case DiscountType
+            Case [Module].DiscountType.ByAmount
+                Discount = DiscountValue
+            Case [Module].DiscountType.ByPercentage
+                Discount = Total * DiscountValue / 100
+        End Select
+    End Sub
+    Private Sub CalculateGrandTotal()
+        GrandTotal = Total - Discount
+    End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            If objDetail.SalesInvoiceDetail.SalesInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Sales Invoice with No {0} has not been submitted", objDetail.SalesInvoiceDetail.SalesInvoice.No))
-            If objDetail.SalesInvoiceDetail.ReturnOutstandingBaseUnitQuantity < objDetail.BaseUnitQuantity Then Throw New Exception(String.Format("Invalid return quantity. Invalid line : {0}", objDetail.ToString))
-            objDetail.SalesInvoiceDetail.ReturnedBaseUnitQuantity += objDetail.BaseUnitQuantity
-            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.SalesInvoiceDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, If(objDetail.SalesInvoiceDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
+            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, If(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
         Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
@@ -128,10 +222,9 @@ Public Class SalesReturn
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            objDetail.SalesInvoiceDetail.ReturnedBaseUnitQuantity -= objDetail.BaseUnitQuantity
-            Dim tmpBalanceSheetInventoryItem = objDetail.BalanceSheetInventoryItem
-            objDetail.BalanceSheetInventoryItem = Nothing
-            BalanceSheetService.DeleteBalanceSheetInventoryItem(tmpBalanceSheetInventoryItem)
+            Dim tmpPeriodCutOffInventoryItem = objDetail.PeriodCutOffInventoryItem
+            objDetail.PeriodCutOffInventoryItem = Nothing
+            PeriodCutOffService.DeletePeriodCutOffInventoryItem(tmpPeriodCutOffInventoryItem)
         Next
         Dim tmp = CreditNote
         CreditNote = Nothing

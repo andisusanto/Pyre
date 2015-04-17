@@ -14,9 +14,9 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)>
-<Appearance("Appearance Default Disabled for SalesReturnDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total")>
-<RuleCriteria("Rule Criteria for SalesReturnDetail.Total > 0", DefaultContexts.Save, "Total > 0")>
-<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesReturnDetail", DefaultContexts.Save, "SalesReturn, SalesInvoiceDetail, BaseUnitQuantity")>
+<Appearance("Appearance Default Disabled for SalesReturnDetail", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, ReturnedBaseUnitQuantity, Total, Discount, GrandTotal")>
+<RuleCombinationOfPropertiesIsUnique("Rule Combination Unique for SalesReturnDetail", DefaultContexts.Save, "SalesReturn, Item")>
+<RuleCriteria("Rule Criteria for SalesReturnDetail.Total > 0", DefaultContexts.Save, "Total > 0", "Total must be greater than zero")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesReturnDetail
@@ -30,17 +30,22 @@ Public Class SalesReturnDetail
         MyBase.AfterConstruction()
 
     End Sub
+
     Private _sequence As Integer
     Private _salesReturn As SalesReturn
-    Private _salesInvoiceDetail As SalesInvoiceDetail
-    Private _quantity As Decimal
+    Private _item As Item
     Private _unit As Unit
-    Private _baseUnitQuantity As Decimal
-    Private _expiryDate As Date
+    Private _quantity As Decimal
     Private _batchNo As String
+    Private _expiryDate As Date
+    Private _baseUnitQuantity As Decimal
     Private _unitPrice As Decimal
-    Private _total As Decimal
-    Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
+    Private _total As Double
+    Private _discountType As DiscountType
+    Private _discountValue As Double
+    Private _discount As Double
+    Private _grandTotal As Decimal
+    Private _periodCutOffInventoryItem As PeriodCutOffInventoryItem
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -60,7 +65,7 @@ Public Class SalesReturnDetail
             SetPropertyValue("SalesReturn", _salesReturn, value)
             If Not IsLoading Then
                 If SalesReturn IsNot Nothing Then
-                    SalesReturn.Total += Total
+                    SalesReturn.Total += GrandTotal
                     If SalesReturn.Details.Count = 0 Then
                         Sequence = 0
                     Else
@@ -68,26 +73,31 @@ Public Class SalesReturnDetail
                         Sequence = SalesReturn.Details(SalesReturn.Details.Count - 1).Sequence + 1
                     End If
                 End If
-                If oldValue IsNot Nothing Then oldValue.Total -= Total
+                If oldValue IsNot Nothing Then oldValue.Total -= GrandTotal
             End If
         End Set
     End Property
     <ImmediatePostData(True)>
-    <DataSourceProperty("SalesInvoiceDetailDatasource")>
-    <RuleRequiredField("Rule Required for SalesReturnDetail.SalesInvoiceDetail", DefaultContexts.Save)>
-    Public Property SalesInvoiceDetail As SalesInvoiceDetail
+    <RuleRequiredField("Rule Required for SalesReturnDetail.Item", DefaultContexts.Save)>
+    Public Property Item As Item
         Get
-            Return _salesInvoiceDetail
+            Return _item
         End Get
-        Set(ByVal value As SalesInvoiceDetail)
-            SetPropertyValue("SalesInvoiceDetail", _salesInvoiceDetail, value)
+        Set(ByVal value As Item)
+            SetPropertyValue("Item", _item, value)
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <DataSourceProperty("Item.UnitSource")>
+    Public Property Unit As Unit
+        Get
+            Return _unit
+        End Get
+        Set(ByVal value As Unit)
+            SetPropertyValue("Unit", _unit, value)
             If Not IsLoading Then
-                If SalesInvoiceDetail IsNot Nothing Then
-                    Unit = SalesInvoiceDetail.Unit
-                    Quantity = SalesInvoiceDetail.ReturnedBaseUnitQuantity * SalesInvoiceDetail.Quantity / SalesInvoiceDetail.BaseUnitQuantity
-                Else
-                    Total = 0
-                End If
+                CalculateBaseUnitQuantity()
+                CalculateUnitPrice()
             End If
         End Set
     End Property
@@ -98,26 +108,45 @@ Public Class SalesReturnDetail
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("Quantity", _quantity, value)
-            If Not IsLoading Then CalculateBaseUnitQuantity()
+            If Not IsLoading Then
+                CalculateBaseUnitQuantity()
+                CalculateTotal()
+            End If
         End Set
     End Property
-    <ImmediatePostData(True)>
-    <DataSourceProperty("SalesInvoiceDetail.Item.UnitSource")>
-    Public Property Unit As Unit
+    <NonCloneable()>
+    Public Property BatchNo As String
         Get
-            Return _unit
+            Return _batchNo
         End Get
-        Set(ByVal value As Unit)
-            SetPropertyValue("Unit", _unit, value)
-            If Not IsLoading Then CalculateBaseUnitQuantity()
+        Set(value As String)
+            SetPropertyValue("BatchNo", _batchNo, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for SalesReturnDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
+    Public Property ExpiryDate As Date
+        Get
+            Return _expiryDate
+        End Get
+        Set(value As Date)
+            SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
     Private Sub CalculateBaseUnitQuantity()
-        If Unit IsNot Nothing AndAlso SalesInvoiceDetail IsNot Nothing Then
-            Dim tmpRate As Decimal = SalesInvoiceDetail.Item.GetUnitRate(Unit)
+        If Unit IsNot Nothing AndAlso Item IsNot Nothing Then
+            Dim tmpRate As Decimal = Item.GetUnitRate(Unit)
             BaseUnitQuantity = Quantity * tmpRate
         Else
             BaseUnitQuantity = 0
+        End If
+    End Sub
+    Private Sub CalculateUnitPrice()
+        If Unit IsNot Nothing AndAlso Item IsNot Nothing Then
+            Dim tmpRate As Decimal = Item.GetUnitRate(Unit)
+            Dim tmpItemPrice As ItemPrice = Item.GetPrice(SalesReturn.TransDate)
+            UnitPrice = tmpItemPrice.MaximumPrice * tmpRate
+        Else
+            UnitPrice = 0
         End If
     End Sub
     Public Property BaseUnitQuantity As Decimal
@@ -126,27 +155,14 @@ Public Class SalesReturnDetail
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
-            If Not IsLoading Then
-                CalculateTotal()
-            End If
         End Set
     End Property
-    <RuleRequiredField("Rule Required for SalesReturnDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="SalesInvoiceDetail.Item.HasExpiryDate = TRUE")>
-    Public Property ExpiryDate As Date
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    <PersistentAlias("BaseUnitQuantity - ReturnedBaseUnitQuantity")>
+    Public ReadOnly Property ReturnOutstandingBaseUnitQuantity As Decimal
         Get
-            Return _expiryDate
+            Return EvaluateAlias("ReturnOutstandingBaseUnitQuantity")
         End Get
-        Set(ByVal value As Date)
-            SetPropertyValue("ExpiryDate", _expiryDate, value)
-        End Set
-    End Property
-    Public Property BatchNo As String
-        Get
-            Return _batchNo
-        End Get
-        Set(value As String)
-            SetPropertyValue("BatchNo", _batchNo, value)
-        End Set
     End Property
     Public Property UnitPrice As Decimal
         Get
@@ -159,37 +175,96 @@ Public Class SalesReturnDetail
             End If
         End Set
     End Property
-    Public Property Total As Decimal
+    Public Property Total As Double
         Get
             Return _total
         End Get
-        Set(ByVal value As Decimal)
-            Dim oldValue = Total
+        Set(ByVal value As Double)
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property DiscountType As DiscountType
+        Get
+            Return _discountType
+        End Get
+        Set(ByVal value As DiscountType)
+            SetPropertyValue("DiscountType", _discountType, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
+    Public Property DiscountValue As Double
+        Get
+            Return _discountValue
+        End Get
+        Set(ByVal value As Double)
+            SetPropertyValue("DiscountValue", _discountValue, value)
+            If Not IsLoading Then
+                CalculateDiscount()
+            End If
+        End Set
+    End Property
+    <ImmediatePostData(True)>
+    Public Property Discount As Double
+        Get
+            Return _discount
+        End Get
+        Set(ByVal value As Double)
+            SetPropertyValue("Discount", _discount, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property GrandTotal As Decimal
+        Get
+            Return _grandTotal
+        End Get
+        Set(ByVal value As Decimal)
+            Dim oldValue = GrandTotal
+            SetPropertyValue("GrandTotal", _grandTotal, value)
             If Not IsLoading Then
                 If SalesReturn IsNot Nothing Then
                     SalesReturn.Total -= oldValue
-                    SalesReturn.Total += Total
+                    SalesReturn.Total += GrandTotal
                 End If
             End If
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
+    Public Property PeriodCutOffInventoryItem As PeriodCutOffInventoryItem
         Get
-            Return _balanceSheetInventoryItem
+            Return _periodCutOffInventoryItem
         End Get
-        Set(ByVal value As BalanceSheetInventoryItem)
-            SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
+        Set(ByVal value As PeriodCutOffInventoryItem)
+            SetPropertyValue("PeriodCutOffInventoryItem", _periodCutOffInventoryItem, value)
         End Set
     End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property SalesInvoiceDetailDatasource As XPCollection(Of SalesInvoiceDetail)
+    Private Sub CalculateTotal()
+        Total = UnitPrice * Quantity
+    End Sub
+    Private Sub CalculateDiscount()
+        Select Case DiscountType
+            Case [Module].DiscountType.ByAmount
+                Discount = DiscountValue
+            Case [Module].DiscountType.ByPercentage
+                Discount = Total * DiscountValue / 100
+        End Select
+    End Sub
+    Private Sub CalculateGrandTotal()
+        GrandTotal = Total - Discount
+    End Sub
+    Public Overrides ReadOnly Property DefaultDisplay As String
         Get
-            Return New XPCollection(Of SalesInvoiceDetail)(Session, (GroupOperator.And(New BinaryOperator("SalesInvoice.Status", TransactionStatus.Submitted), New BinaryOperator("SalesInvoice.Customer", SalesReturn.Customer), New BinaryOperator("ReturnOutstandingBaseUnitQuantity", 0, BinaryOperatorType.Greater))))
+            If SalesReturn Is Nothing OrElse Item Is Nothing Then Return Nothing
+            Return SalesReturn.DefaultDisplay & " ~ " & Item.DefaultDisplay
         End Get
     End Property
-    Private Sub CalculateTotal()
-        Total = UnitPrice * BaseUnitQuantity
-    End Sub
 End Class

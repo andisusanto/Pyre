@@ -37,14 +37,13 @@ Public Class SalesInvoiceDetail
     Private _unit As Unit
     Private _quantity As Decimal
     Private _baseUnitQuantity As Decimal
-    Private _returnedBaseUnitQuantity As Decimal
     Private _unitPrice As Decimal
     Private _total As Double
     Private _discountType As DiscountType
     Private _discountValue As Double
     Private _discount As Double
     Private _grandTotal As Decimal
-    Private _balanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
+    Private _periodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -138,14 +137,6 @@ Public Class SalesInvoiceDetail
             SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
         End Set
     End Property
-    Public Property ReturnedBaseUnitQuantity As Decimal
-        Get
-            Return _returnedBaseUnitQuantity
-        End Get
-        Set(value As Decimal)
-            SetPropertyValue("ReturnedBaseUnitQuantity", _returnedBaseUnitQuantity, value)
-        End Set
-    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     <PersistentAlias("BaseUnitQuantity - ReturnedBaseUnitQuantity")>
     Public ReadOnly Property ReturnOutstandingBaseUnitQuantity As Decimal
@@ -228,12 +219,12 @@ Public Class SalesInvoiceDetail
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
+    Public Property PeriodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
         Get
-            Return _balanceSheetInventoryItemDeductTransaction
+            Return _periodCutOffInventoryItemDeductTransaction
         End Get
-        Set(value As BalanceSheetInventoryItemDeductTransaction)
-            SetPropertyValue("BalanceSheetInventoryItemDeductTransaction", _balanceSheetInventoryItemDeductTransaction, value)
+        Set(value As PeriodCutOffInventoryItemDeductTransaction)
+            SetPropertyValue("PeriodCutOffInventoryItemDeductTransaction", _periodCutOffInventoryItemDeductTransaction, value)
         End Set
     End Property
     Private Sub CalculateTotal()

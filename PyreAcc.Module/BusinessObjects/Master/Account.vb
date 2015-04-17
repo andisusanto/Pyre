@@ -33,6 +33,7 @@ Public Class Account
     Private _parent As Account
     Private _isParent As Boolean
     Private _isActive As Boolean
+    Private _accountBehaviour As AccountBehaviour
     <RuleUniqueValue("Rule Unique for Account.Code", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for Account.Code", DefaultContexts.Save)>
     Public Property Code As String
@@ -84,7 +85,14 @@ Public Class Account
             SetPropertyValue("IsParent", _isParent, value)
         End Set
     End Property
-
+    Public Property AccountBehaviour As AccountBehaviour
+        Get
+            Return _accountBehaviour
+        End Get
+        Set(value As AccountBehaviour)
+            SetPropertyValue("AccountBehaviour", _accountBehaviour, value)
+        End Set
+    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property ITreeNode_Children As IBindingList Implements ITreeNode.Children
         Get
@@ -112,3 +120,8 @@ Public Class Account
         End Get
     End Property
 End Class
+
+Public Enum AccountBehaviour
+    Debit
+    Credit
+End Enum

@@ -41,7 +41,7 @@ Public Class PurchasePayment
     Private _debitNoteAmount As Decimal
     Private _remainingAmount As Decimal
     Private _fromAccount As Account
-    Private _balanceSheetAccountMutation As BalanceSheetAccountMutation
+    Private _periodCutOffAccountMutation As PeriodCutOffAccountMutation
     <RuleUniqueValue("Rule Unique for PurchasePayment.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for PurchasePayment.No", DefaultContexts.Save)>
     Public Property No As String
@@ -111,20 +111,18 @@ Public Class PurchasePayment
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetAccountMutation As BalanceSheetAccountMutation
+    Public Property PeriodCutOffAccountMutation As PeriodCutOffAccountMutation
         Get
-            Return _balanceSheetAccountMutation
+            Return _periodCutOffAccountMutation
         End Get
-        Set(value As BalanceSheetAccountMutation)
-            SetPropertyValue("BalanceSheetAccountMutation", _balanceSheetAccountMutation, value)
+        Set(value As PeriodCutOffAccountMutation)
+            SetPropertyValue("PeriodCutOffAccountMutation", _periodCutOffAccountMutation, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property IsPeriodClosed As Boolean
         Get
-            Dim period As Period = Session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
-            If period Is Nothing Then Return True
-            Return period.Closed
+            Return TransactionConfig.IsInClosedPeriod(Session, TransDate)
         End Get
     End Property
     Private Sub CalculateRemainingAmount()
@@ -164,7 +162,7 @@ Public Class PurchasePayment
             If obj.DebitNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Debit note with no {0} has no enough balance", obj.DebitNote.No))
             obj.DebitNote.UsedAmount += obj.Amount
         Next
-        BalanceSheetAccountMutation = BalanceSheetService.CreateBalanceSheetAccountMutation(FromAccount, TransDate, -1 * RemainingAmount, "Purchase")
+        PeriodCutOffAccountMutation = PeriodCutOffService.CreatePeriodCutOffAccountMutation(FromAccount, TransDate, -1 * RemainingAmount, "Purchase")
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -174,8 +172,8 @@ Public Class PurchasePayment
         For Each obj In DebitNotes
             obj.DebitNote.UsedAmount -= obj.Amount
         Next
-        Dim tmp = BalanceSheetAccountMutation
-        BalanceSheetAccountMutation = Nothing
-        If tmp IsNot Nothing Then BalanceSheetService.DeleteBalanceSheetAccountMutation(tmp)
+        Dim tmp = PeriodCutOffAccountMutation
+        PeriodCutOffAccountMutation = Nothing
+        If tmp IsNot Nothing Then PeriodCutOffService.DeletePeriodCutOffAccountMutation(tmp)
     End Sub
 End Class

@@ -40,8 +40,8 @@ Public Class InventoryItemAdjustment
     Private _unitPrice As Double
     Private _expiryDate As Date
     Private _batchNo As String
-    Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
-    Private _balanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
+    Private _periodCutOffInventoryItem As PeriodCutOffInventoryItem
+    Private _periodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
     <RuleRequiredField("Rule Required for InventoryItemAdjustment.No", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for InventoryItemAdjustment.No", DefaultContexts.Save)>
     Public Property No As String
@@ -145,21 +145,21 @@ Public Class InventoryItemAdjustment
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
+    Public Property PeriodCutOffInventoryItem As PeriodCutOffInventoryItem
         Get
-            Return _balanceSheetInventoryItem
+            Return _periodCutOffInventoryItem
         End Get
-        Set(value As BalanceSheetInventoryItem)
-            SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
+        Set(value As PeriodCutOffInventoryItem)
+            SetPropertyValue("PeriodCutOffInventoryItem", _periodCutOffInventoryItem, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetInventoryItemDeductTransaction As BalanceSheetInventoryItemDeductTransaction
+    Public Property PeriodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
         Get
-            Return _balanceSheetInventoryItemDeductTransaction
+            Return _periodCutOffInventoryItemDeductTransaction
         End Get
-        Set(value As BalanceSheetInventoryItemDeductTransaction)
-            SetPropertyValue("BalanceSheetInventoryItemInventoryItemDeductTransaction", _balanceSheetInventoryItemDeductTransaction, value)
+        Set(value As PeriodCutOffInventoryItemDeductTransaction)
+            SetPropertyValue("PeriodCutOffInventoryItemInventoryItemDeductTransaction", _periodCutOffInventoryItemDeductTransaction, value)
         End Set
     End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
@@ -171,21 +171,21 @@ Public Class InventoryItemAdjustment
         MyBase.OnSubmitted()
         If BaseUnitQuantity > 0 Then
             Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
-            BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
+            PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
         Else
-            BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, BalanceSheetInventoryItemDeductTransactionType.Adjustment)
+            PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Adjustment)
         End If
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         If BaseUnitQuantity > 0 Then
-            Dim tmp = BalanceSheetInventoryItem
-            BalanceSheetInventoryItem = Nothing
-            BalanceSheetService.DeleteBalanceSheetInventoryItem(tmp)
+            Dim tmp = PeriodCutOffInventoryItem
+            PeriodCutOffInventoryItem = Nothing
+            PeriodCutOffService.DeletePeriodCutOffInventoryItem(tmp)
         Else
-            Dim tmp = BalanceSheetInventoryItemDeductTransaction
-            BalanceSheetInventoryItemDeductTransaction = Nothing
-            BalanceSheetService.DeleteBalanceSheetInventoryItemDeductTransaction(tmp)
+            Dim tmp = PeriodCutOffInventoryItemDeductTransaction
+            PeriodCutOffInventoryItemDeductTransaction = Nothing
+            PeriodCutOffService.DeletePeriodCutOffInventoryItemDeductTransaction(tmp)
         End If
     End Sub
 End Class

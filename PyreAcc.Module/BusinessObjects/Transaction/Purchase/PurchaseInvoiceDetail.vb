@@ -39,14 +39,13 @@ Public Class PurchaseInvoiceDetail
     Private _batchNo As String
     Private _expiryDate As Date
     Private _baseUnitQuantity As Decimal
-    Private _returnedBaseUnitQuantity As Decimal
     Private _unitPrice As Decimal
     Private _total As Decimal
     Private _discountType As DiscountType
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
-    Private _balanceSheetInventoryItem As BalanceSheetInventoryItem
+    Private _periodCutOffInventoryItem As PeriodCutOffInventoryItem
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -155,14 +154,6 @@ Public Class PurchaseInvoiceDetail
             SetPropertyValue("BaseUnitQuantity", _baseUnitQuantity, value)
         End Set
     End Property
-    Public Property ReturnedBaseUnitQuantity As Decimal
-        Get
-            Return _returnedBaseUnitQuantity
-        End Get
-        Set(value As Decimal)
-            SetPropertyValue("ReturnedBaseUnitQuantity", _returnedBaseUnitQuantity, value)
-        End Set
-    End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     <PersistentAlias("BaseUnitQuantity - ReturnedBaseUnitQuantity")>
     Public ReadOnly Property ReturnOutstandingBaseUnitQuantity As Decimal
@@ -245,12 +236,12 @@ Public Class PurchaseInvoiceDetail
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public Property BalanceSheetInventoryItem As BalanceSheetInventoryItem
+    Public Property PeriodCutOffInventoryItem As PeriodCutOffInventoryItem
         Get
-            Return _balanceSheetInventoryItem
+            Return _periodCutOffInventoryItem
         End Get
-        Set(value As BalanceSheetInventoryItem)
-            SetPropertyValue("BalanceSheetInventoryItem", _balanceSheetInventoryItem, value)
+        Set(value As PeriodCutOffInventoryItem)
+            SetPropertyValue("PeriodCutOffInventoryItem", _periodCutOffInventoryItem, value)
         End Set
     End Property
     Private Sub CalculateTotal()

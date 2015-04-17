@@ -15,8 +15,8 @@ Imports DevExpress.Persistent.Validation
 
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
-<RuleCriteria("Rule Criteria for BalanceSheetAccountMutation.Amount <> 0", DefaultContexts.Save, "Amount <> 0")>
-Public Class BalanceSheetAccountMutation
+<RuleCriteria("Rule Criteria for PeriodCutOffAccountMutation.Amount <> 0", DefaultContexts.Save, "Amount <> 0")>
+Public Class PeriodCutOffAccountMutation
     Inherits BaseObject
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -26,21 +26,21 @@ Public Class BalanceSheetAccountMutation
 
     End Sub
 
-    Private _balanceSheetAccount As BalanceSheetAccount
+    Private _periodCutOffAccount As PeriodCutOffAccount
     Private _transDate As Date
     Private _amount As Decimal
     Private _note As String
-    <Association("BalanceSheetAccount-BalanceSheetAccountMutation")>
-    <RuleRequiredField("Rule Required for BalanceSheetAccountMutation.BalanceSheetAccount", DefaultContexts.Save)>
-    Public Property BalanceSheetAccount As BalanceSheetAccount
+    <Association("PeriodCutOffAccount-PeriodCutOffAccountMutation")>
+    <RuleRequiredField("Rule Required for PeriodCutOffAccountMutation.PeriodCutOffAccount", DefaultContexts.Save)>
+    Public Property PeriodCutOffAccount As PeriodCutOffAccount
         Get
-            Return _balanceSheetAccount
+            Return _periodCutOffAccount
         End Get
-        Set(ByVal value As BalanceSheetAccount)
-            SetPropertyValue("BalanceSheetAccount", _balanceSheetAccount, value)
+        Set(ByVal value As PeriodCutOffAccount)
+            SetPropertyValue("PeriodCutOffAccount", _periodCutOffAccount, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for BalanceSheetAccountMutation.TransDate", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffAccountMutation.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
             Return _transDate

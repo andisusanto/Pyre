@@ -19,7 +19,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.HasReturnedItem = FALSE", "Cancel", "HasReturnedItem = FALSE")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesInvoice
@@ -218,9 +218,7 @@ Public Class SalesInvoice
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property IsPeriodClosed As Boolean
         Get
-            Dim period As Period = Session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
-            If period Is Nothing Then Return True
-            Return period.Closed
+            Return TransactionConfig.IsInClosedPeriod(Session, TransDate)
         End Get
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
@@ -229,17 +227,6 @@ Public Class SalesInvoice
             If CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitExceedMaximumOutstandingPaymentInvoice Then Return False
             If Customer.MaximumOutstandingPaymentAmount < Customer.OutstandingPaymentAmount + PaymentOutstandingAmount Then Return True
             Return False
-        End Get
-    End Property
-
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property HasReturnedItem As Boolean
-        Get
-            Dim hasReturned As Boolean = False
-            For Each objDetail In Details
-                If objDetail.ReturnedBaseUnitQuantity > 0 Then hasReturned = True
-            Next
-            Return hasReturned
         End Get
     End Property
     Private Sub CalculateDiscount()
@@ -266,16 +253,16 @@ Public Class SalesInvoice
                     If Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice Then Throw New Exception(String.Format("Line with item {0}'s price out of range", objDetail.Item.Name))
                 End If
             End If
-            objDetail.BalanceSheetInventoryItemDeductTransaction = BalanceSheetService.CreateBalanceSheetInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, BalanceSheetInventoryItemDeductTransactionType.Sale)
+            objDetail.PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Sale)
         Next
         Customer.OutstandingPaymentAmount += GrandTotal
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            Dim tmp = objDetail.BalanceSheetInventoryItemDeductTransaction
-            objDetail.BalanceSheetInventoryItemDeductTransaction = Nothing
-            BalanceSheetService.DeleteBalanceSheetInventoryItemDeductTransaction(tmp)
+            Dim tmp = objDetail.PeriodCutOffInventoryItemDeductTransaction
+            objDetail.PeriodCutOffInventoryItemDeductTransaction = Nothing
+            PeriodCutOffService.DeletePeriodCutOffInventoryItemDeductTransaction(tmp)
         Next
         Customer.OutstandingPaymentAmount -= GrandTotal
     End Sub

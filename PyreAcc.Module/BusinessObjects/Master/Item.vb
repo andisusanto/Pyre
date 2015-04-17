@@ -17,7 +17,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <Appearance("Appearance for Item.Type = 'WithWarning'", targetitems:="*", backcolor:="Yellow", criteria:="Type = 'WithWarning'", context:="ListView")>
 <Appearance("Appearance for Item.Type = 'Restricted'", targetitems:="*", backcolor:="Red", criteria:="Type = 'Restricted'", context:="ListView")>
 <Appearance("Appearance Default Disabled for Item", enabled:=False, targetitems:="PriceHistory")>
-<Appearance("Appearance for Item.PriceHistory.Count > 1", enabled:=False, visibility:=Editors.ViewItemVisibility.Hide, criteria:="@PriceHistory.Count > 1", targetitems:="Since, MinimumPrice, MaximumPrice")>
+<Appearance("Appearance for Item.PriceHistory.Count > 1", enabled:=False, visibility:=Editors.ViewItemVisibility.Hide, criteria:="@PriceHistory.Count > 1", targetitems:="Since, MinimumPrice, StandardPrice, MaximumPrice")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class Item
@@ -46,6 +46,7 @@ Public Class Item
 
     Private fSince As Date
     Private fMinimumPrice As Decimal
+    Private fStandardPrice As Decimal
     Private fMaximumPrice As Decimal
     <RuleRequiredField("Rule Required for Item.Code", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for Item.Code", DefaultContexts.Save)>
@@ -148,6 +149,15 @@ Public Class Item
             If Not IsLoading Then
                 PriceHistory(0).MinimumPrice = MinimumPrice
             End If
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for Item.StandardPrice", DefaultContexts.Save)>
+    Public Property StandardPrice As Decimal
+        Get
+            Return fStandardPrice
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("StandardPrice", fStandardPrice, value)
         End Set
     End Property
     <RuleRequiredField("Rule Required for Item.MaximumPrice", DefaultContexts.Save)>

@@ -31,6 +31,7 @@ Public Class ItemPriceMutation
     Private _item As Item
     Private _effectiveDate As Date
     Private _minimumPrice As Decimal
+    Private _standardPrice As Decimal
     Private _maximumPrice As Decimal
     Private _itemPrice As ItemPrice
 
@@ -68,6 +69,14 @@ Public Class ItemPriceMutation
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("MinimumPrice", _minimumPrice, value)
+        End Set
+    End Property
+    Public Property StandardPrice As Decimal
+        Get
+            Return _standardPrice
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("StandardPrice", _standardPrice, value)
         End Set
     End Property
     Public Property MaximumPrice As Decimal

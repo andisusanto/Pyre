@@ -19,7 +19,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.HasReturnedItem = FALSE", "Cancel", "HasReturnedItem = FALSE")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for PurchaseInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PurchaseInvoice
@@ -218,20 +218,7 @@ Public Class PurchaseInvoice
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property IsPeriodClosed As Boolean
         Get
-            Dim period As Period = Session.FindObject(Of Period)(GroupOperator.And(New BinaryOperator("StartDate", TransDate, BinaryOperatorType.LessOrEqual), New BinaryOperator("EndDate", TransDate, BinaryOperatorType.GreaterOrEqual)))
-            If period Is Nothing Then Return True
-            Return period.Closed
-        End Get
-    End Property
-
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property HasReturnedItem As Boolean
-        Get
-            Dim hasReturned As Boolean = False
-            For Each objDetail In Details
-                If objDetail.ReturnedBaseUnitQuantity > 0 Then hasReturned = True
-            Next
-            Return hasReturned
+            Return TransactionConfig.IsInClosedPeriod(Session, TransDate)
         End Get
     End Property
     Private Sub CalculateDiscount()
@@ -252,15 +239,15 @@ Public Class PurchaseInvoice
         MyBase.OnSubmitted()
         For Each objDetail In Details
             Dim tmpUnitPrice As Decimal = objDetail.UnitPrice * objDetail.Quantity / objDetail.BaseUnitQuantity
-            objDetail.BalanceSheetInventoryItem = BalanceSheetService.CreateBalanceSheetInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
+            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
         Next
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            Dim tmp = objDetail.BalanceSheetInventoryItem
-            objDetail.BalanceSheetInventoryItem = Nothing
-            BalanceSheetService.DeleteBalanceSheetInventoryItem(tmp)
+            Dim tmp = objDetail.PeriodCutOffInventoryItem
+            objDetail.PeriodCutOffInventoryItem = Nothing
+            PeriodCutOffService.DeletePeriodCutOffInventoryItem(tmp)
         Next
     End Sub
 End Class

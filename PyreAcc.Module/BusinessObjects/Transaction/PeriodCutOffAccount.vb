@@ -13,10 +13,10 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
-<RuleCriteria("Rule Criteria for BalanceSheetAccount.LastBalance >= 0", DefaultContexts.Save, "LastBalance >= 0")>
+<RuleCriteria("Rule Criteria for PeriodCutOffAccount.LastBalance >= 0", DefaultContexts.Save, "LastBalance >= 0")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
-Public Class BalanceSheetAccount
+Public Class PeriodCutOffAccount
     Inherits BaseObject
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -25,21 +25,21 @@ Public Class BalanceSheetAccount
         MyBase.AfterConstruction()
 
     End Sub
-    Private _balanceSheet As BalanceSheet
+    Private _periodCutOff As PeriodCutOff
     Private _account As Account
     Private _initialBalance As Decimal
     Private _lastBalance As Decimal
-    <Association("BalanceSheet-BalanceSheetAccount")>
-    <RuleRequiredField("Rule Required for BalanceSheetAccount.BalanceSheet", DefaultContexts.Save)>
-    Public Property BalanceSheet As BalanceSheet
+    <Association("PeriodCutOff-PeriodCutOffAccount")>
+    <RuleRequiredField("Rule Required for PeriodCutOffAccount.PeriodCutOff", DefaultContexts.Save)>
+    Public Property PeriodCutOff As PeriodCutOff
         Get
-            Return _balanceSheet
+            Return _periodCutOff
         End Get
-        Set(ByVal value As BalanceSheet)
-            SetPropertyValue("BalanceSheet", _balanceSheet, value)
+        Set(ByVal value As PeriodCutOff)
+            SetPropertyValue("PeriodCutOff", _periodCutOff, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for BalanceSheetAccount.Account", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffAccount.Account", DefaultContexts.Save)>
     Public Property Account As Account
         Get
             Return _account
@@ -64,10 +64,10 @@ Public Class BalanceSheetAccount
             SetPropertyValue("LastBalance", _lastBalance, value)
         End Set
     End Property
-    <Association("BalanceSheetAccount-BalanceSheetAccountMutation"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Mutations As XPCollection(Of BalanceSheetAccountMutation)
+    <Association("PeriodCutOffAccount-PeriodCutOffAccountMutation"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property Mutations As XPCollection(Of PeriodCutOffAccountMutation)
         Get
-            Return GetCollection(Of BalanceSheetAccountMutation)("Mutations")
+            Return GetCollection(Of PeriodCutOffAccountMutation)("Mutations")
         End Get
     End Property
 End Class

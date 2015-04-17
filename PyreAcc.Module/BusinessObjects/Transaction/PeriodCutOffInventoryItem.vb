@@ -14,9 +14,9 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
 <DeferredDeletion(False)>
-<RuleCriteria("Rule Criteria for BalanceSheetInventoryItem.UnitPrice > 0", DefaultContexts.Save, "UnitPrice > 0")>
+<RuleCriteria("Rule Criteria for PeriodCutOffInventoryItem.UnitPrice > 0", DefaultContexts.Save, "UnitPrice > 0")>
 <DefaultClassOptions()> _
-Public Class BalanceSheetInventoryItem
+Public Class PeriodCutOffInventoryItem
     Inherits BaseObject
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
@@ -25,27 +25,28 @@ Public Class BalanceSheetInventoryItem
         MyBase.AfterConstruction()
 
     End Sub
-    Private _balanceSheet As BalanceSheet
+    Private _periodCutOff As PeriodCutOff
     Private _inventory As Inventory
     Private _item As Item
     Private _transDate As Date
+    Private _entryDate As Date
     Private _unitPrice As Decimal
     Private _expiryDate As Date
     Private _baseUnitQuantity As Decimal
     Private _deductedBaseUnitQuantity As Decimal
     Private _remainingBaseUnitQuantity As Decimal
     Private _batchNo As String
-    <Association("BalanceSheet-BalanceSheetInventoryItem")>
-    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.BalanceSheet", DefaultContexts.Save)>
-    Public Property BalanceSheet As BalanceSheet
+    <Association("PeriodCutOff-PeriodCutOffInventoryItem")>
+    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.PeriodCutOff", DefaultContexts.Save)>
+    Public Property PeriodCutOff As PeriodCutOff
         Get
-            Return _balanceSheet
+            Return _periodCutOff
         End Get
-        Set(ByVal value As BalanceSheet)
-            SetPropertyValue("BalanceSheet", _balanceSheet, value)
+        Set(ByVal value As PeriodCutOff)
+            SetPropertyValue("PeriodCutOff", _periodCutOff, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.Inventory", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.Inventory", DefaultContexts.Save)>
     Public Property Inventory As Inventory
         Get
             Return _inventory
@@ -54,7 +55,7 @@ Public Class BalanceSheetInventoryItem
             SetPropertyValue("Inventory", _inventory, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.Item", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.Item", DefaultContexts.Save)>
     Public Property Item As Item
         Get
             Return _item
@@ -63,13 +64,23 @@ Public Class BalanceSheetInventoryItem
             SetPropertyValue("Item", _item, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.TransDate", DefaultContexts.Save)>
+    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
             Return _transDate
         End Get
         Set(ByVal value As Date)
             SetPropertyValue("TransDate", _transDate, value)
+        End Set
+    End Property
+    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.EntryDate", DefaultContexts.Save)>
+    <VisibleInDetailView(False), VisibleInListView(False)>
+    Public Property EntryDate As Date
+        Get
+            Return _entryDate
+        End Get
+        Set(value As Date)
+            SetPropertyValue("EntryDate", _entryDate, value)
         End Set
     End Property
     Public Property UnitPrice As Decimal
@@ -80,7 +91,7 @@ Public Class BalanceSheetInventoryItem
             SetPropertyValue("UnitPrice", _unitPrice, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for BalanceSheetInventoryItem.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
+    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate
@@ -130,10 +141,10 @@ Public Class BalanceSheetInventoryItem
     Private Sub CalculateRemainingBaseUnitQuantity()
         RemainingBaseUnitQuantity = BaseUnitQuantity - DeductedBaseUnitQuantity
     End Sub
-    <Association("BalanceSheetInventoryItem-BalanceSheetInventoryItemDeductTransactionDetail")>
-    Public ReadOnly Property DeductDetails As XPCollection(Of BalanceSheetInventoryItemDeductTransactionDetail)
+    <Association("PeriodCutOffInventoryItem-PeriodCutOffInventoryItemDeductTransactionDetail")>
+    Public ReadOnly Property DeductDetails As XPCollection(Of PeriodCutOffInventoryItemDeductTransactionDetail)
         Get
-            Return GetCollection(Of BalanceSheetInventoryItemDeductTransactionDetail)("DeductDetails")
+            Return GetCollection(Of PeriodCutOffInventoryItemDeductTransactionDetail)("DeductDetails")
         End Get
     End Property
 End Class
