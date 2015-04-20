@@ -138,7 +138,13 @@ Public Class PeriodCutOffService
         Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
                                                                           GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOffJournal.TransDate", TransDate, BinaryOperatorType.LessOrEqual))) _
                                                                       With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("EntryDate", DB.SortingDirection.Descending))}
-        If xp.Count > 0 Then Return xp(0).Amount
+        If xp.Count > 0 Then
+            Return xp(0).Amount
+        Else
+            Dim xpPeriodCutOffAccount As New XPCollection(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOff.StartDate", TransDate, BinaryOperatorType.LessOrEqual))) _
+                With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("PeriodCutOff.StartDate", DB.SortingDirection.Descending))}
+            If xpPeriodCutOffAccount.Count > 0 Then Return xpPeriodCutOffAccount(0).InitialBalance
+        End If
         Return 0
     End Function
 

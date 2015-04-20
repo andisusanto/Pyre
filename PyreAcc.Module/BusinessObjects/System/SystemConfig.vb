@@ -31,6 +31,7 @@ Public Class SystemConfig
     Private fReportPath As String
     Private fReturnItemInventory As Inventory
 
+
     Public Property DefaultUnit As Unit
         Get
             Return fDefaultUnit

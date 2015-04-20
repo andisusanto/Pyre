@@ -104,6 +104,7 @@ Public Class PurchaseReturn
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     Public Property DiscountType As DiscountType
         Get
@@ -116,6 +117,7 @@ Public Class PurchaseReturn
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
     Public Property DiscountValue As Decimal
@@ -164,6 +166,7 @@ Public Class PurchaseReturn
             Return GetCollection(Of PurchaseReturnDetail)("Details")
         End Get
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return No

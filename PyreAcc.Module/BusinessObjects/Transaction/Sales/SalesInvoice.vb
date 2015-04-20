@@ -16,7 +16,6 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
-<RuleCriteria("Rule Criteria for Cancel SalesInvoice.HasReturnedItem = FALSE", "Cancel", "HasReturnedItem = FALSE")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
@@ -71,6 +70,7 @@ Public Class SalesInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     Public Property Term As Integer
         Get
             Return _term
@@ -84,6 +84,7 @@ Public Class SalesInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <RuleRequiredField("Rule Required for SalesInvoice.DueDate", DefaultContexts.Save)>
     Public Property DueDate As Date
         Get
@@ -129,6 +130,7 @@ Public Class SalesInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     Public Property DiscountType As DiscountType
         Get
@@ -141,6 +143,7 @@ Public Class SalesInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
     Public Property DiscountValue As Decimal
@@ -188,6 +191,7 @@ Public Class SalesInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     Public Property PaymentOutstandingAmount As Decimal
         Get
             Return _paymentOutstandingAmount

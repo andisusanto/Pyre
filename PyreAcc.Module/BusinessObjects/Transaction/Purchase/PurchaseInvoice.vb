@@ -16,7 +16,6 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
-<RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.HasReturnedItem = FALSE", "Cancel", "HasReturnedItem = FALSE")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for PurchaseInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
@@ -80,6 +79,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     Public Property Term As Integer
         Get
             Return _term
@@ -93,6 +93,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <RuleRequiredField("Rule Required for PurchaseInvoice.DueDate", DefaultContexts.Save)>
     Public Property DueDate As Date
         Get
@@ -137,6 +138,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     Public Property DiscountType As DiscountType
         Get
@@ -149,6 +151,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
     Public Property DiscountValue As Decimal
@@ -185,6 +188,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     Public Property PaidAmount As Decimal
         Get
             Return _paidAmount
@@ -196,6 +200,7 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     Public Property PaymentOutstandingAmount As Decimal
         Get
             Return _paymentOutstandingAmount

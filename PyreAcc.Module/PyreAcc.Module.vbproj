@@ -163,12 +163,14 @@
     <Compile Include="BusinessObjects\Master\SupplierContactPerson.vb" />
     <Compile Include="BusinessObjects\Master\Unit.vb" />
     <Compile Include="BusinessObjects\Services\PeriodCutOffService.vb" />
+    <Compile Include="BusinessObjects\System\AccountLinkingConfig.vb" />
     <Compile Include="BusinessObjects\System\AutoNo.vb" />
     <Compile Include="BusinessObjects\System\AutoNoDetail.vb" />
     <Compile Include="BusinessObjects\System\CompanyInformation.vb" />
     <Compile Include="BusinessObjects\System\Interfaces\IJournalEntry.vb" />
     <Compile Include="BusinessObjects\System\Interfaces\IJournalEntryCredit.vb" />
     <Compile Include="BusinessObjects\System\Interfaces\IJournalEntryDebit.vb" />
+    <Compile Include="BusinessObjects\System\InventoryAccountLinkingConfig.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationRole.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationUser.vb" />
     <Compile Include="BusinessObjects\System\SystemConfig.vb" />
