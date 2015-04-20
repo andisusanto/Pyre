@@ -39,6 +39,7 @@ Public Class Item
     Private fCategory As Category
     Private fBrand As Brand
     Private fMainSupplier As Supplier
+    Private fDefaultCapital As Decimal
     Private fBaseUnit As Unit
     Private fHasExpiryDate As Boolean
     Private fActive As Boolean
@@ -92,6 +93,14 @@ Public Class Item
         End Get
         Set(value As Supplier)
             SetPropertyValue("MainSupplier", fMainSupplier, value)
+        End Set
+    End Property
+    Public Property DefaultCapital As Decimal
+        Get
+            Return fDefaultCapital
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("DefaultCapital", fDefaultCapital, value)
         End Set
     End Property
     <RuleRequiredField("Rule Required for Item.BaseUnit", DefaultContexts.Save)>

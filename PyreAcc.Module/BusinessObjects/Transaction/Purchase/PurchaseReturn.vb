@@ -72,42 +72,10 @@ Public Class PurchaseReturn
         End Get
         Set(value As Date)
             SetPropertyValue("TransDate", _transDate, value)
-            If Not IsLoading Then
-                If TransDate.AddDays(Term) <> DueDate Then
-                    DueDate = TransDate.AddDays(Term)
-                End If
-            End If
-        End Set
-    End Property
-    Public Property Term As Integer
-        Get
-            Return _term
-        End Get
-        Set(value As Integer)
-            SetPropertyValue("Term", _term, value)
-            If Not IsLoading Then
-                If TransDate.AddDays(Term) <> DueDate Then
-                    DueDate = TransDate.AddDays(Term)
-                End If
-            End If
-        End Set
-    End Property
-    <RuleRequiredField("Rule Required for PurchaseReturn.DueDate", DefaultContexts.Save)>
-    Public Property DueDate As Date
-        Get
-            Return _dueDate
-        End Get
-        Set(value As Date)
-            SetPropertyValue("DueDate", _dueDate, value)
-            If Not IsLoading Then
-                If TransDate.AddDays(Term) <> DueDate Then
-                    Term = DateDiff(DateInterval.Day, TransDate, DueDate)
-                End If
-            End If
         End Set
     End Property
     <RuleRequiredField("Rule Required for PurchaseReturn.Supplier", DefaultContexts.Save)>
-    Public Property Supplier As Supplier
+        Public Property Supplier As Supplier
         Get
             Return _supplier
         End Get

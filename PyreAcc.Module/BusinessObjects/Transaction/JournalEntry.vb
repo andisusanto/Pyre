@@ -17,6 +17,7 @@ Imports DevExpress.Persistent.Validation
 <DefaultClassOptions()> _
 Public Class JournalEntry
     Inherits TransactionBase
+    Implements IJournalEntry
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
     End Sub
@@ -30,7 +31,7 @@ Public Class JournalEntry
 
     Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleRequiredField("Rule Required for JournalEntry.TransDate", DefaultContexts.Save)>
-    Public Property TransDate As Date
+    Public Property TransDate As Date Implements IJournalEntry.TransDate
         Get
             Return _transDate
         End Get
@@ -39,7 +40,7 @@ Public Class JournalEntry
         End Set
     End Property
     <RuleRequiredField("Rule Required for JournalEntry.Description", DefaultContexts.Save)>
-    Public Property Description As String
+    Public Property Description As String Implements IJournalEntry.Description
         Get
             Return _description
         End Get
@@ -82,15 +83,22 @@ Public Class JournalEntry
             Return totalDebit = totalCredit
         End Get
     End Property
-
+    Public Function GetDebits() As ICollection(Of IJournalEntryDebit) Implements IJournalEntry.GetDebits
+        Return Debits
+    End Function
+    Public Function GetCredits() As ICollection(Of IJournalEntryCredit) Implements IJournalEntry.GetCredits
+        Return Credits
+    End Function
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, Me)
     End Sub
 
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
-
+        Dim tmp = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmp)
     End Sub
 
 End Class

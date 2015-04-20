@@ -34,6 +34,7 @@ Public Class SalesReturn
         Inventory = SysConfig.ReturnItemInventory
     End Sub
     Private _no As String
+    Private _referenceNo As String
     Private _transDate As Date
     Private _term As Integer
     Private _dueDate As Date
@@ -44,6 +45,7 @@ Public Class SalesReturn
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
+    Private _salesman As Salesman
     Private _creditNote As CreditNote
     <RuleUniqueValue("Rule Unique for SalesReturn.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for SalesReturn.No", DefaultContexts.Save)>
@@ -55,6 +57,14 @@ Public Class SalesReturn
             SetPropertyValue("No", _no, value)
         End Set
     End Property
+    Public Property ReferenceNo As String
+        Get
+            Return _referenceNo
+        End Get
+        Set(value As String)
+            SetPropertyValue("ReferenceNo", _referenceNo, value)
+        End Set
+    End Property
     <RuleRequiredField("Rule Required for SalesReturn.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date
         Get
@@ -62,38 +72,6 @@ Public Class SalesReturn
         End Get
         Set(value As Date)
             SetPropertyValue("TransDate", _transDate, value)
-            If Not IsLoading Then
-                If TransDate.AddDays(Term) <> DueDate Then
-                    DueDate = TransDate.AddDays(Term)
-                End If
-            End If
-        End Set
-    End Property
-    Public Property Term As Integer
-        Get
-            Return _term
-        End Get
-        Set(value As Integer)
-            SetPropertyValue("Term", _term, value)
-            If Not IsLoading Then
-                If TransDate.AddDays(Term) <> DueDate Then
-                    DueDate = TransDate.AddDays(Term)
-                End If
-            End If
-        End Set
-    End Property
-    <RuleRequiredField("Rule Required for SalesReturn.DueDate", DefaultContexts.Save)>
-    Public Property DueDate As Date
-        Get
-            Return _dueDate
-        End Get
-        Set(value As Date)
-            SetPropertyValue("DueDate", _dueDate, value)
-            If Not IsLoading Then
-                If TransDate.AddDays(Term) <> DueDate Then
-                    Term = DateDiff(DateInterval.Day, TransDate, DueDate)
-                End If
-            End If
         End Set
     End Property
     <RuleRequiredField("Rule Required for SalesReturn.Customer", DefaultContexts.Save)>
@@ -170,6 +148,14 @@ Public Class SalesReturn
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("GrandTotal", _grandTotal, value)
+        End Set
+    End Property
+    Public Property Salesman As Salesman
+        Get
+            Return _salesman
+        End Get
+        Set(value As Salesman)
+            SetPropertyValue("Salesman", _salesman, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>

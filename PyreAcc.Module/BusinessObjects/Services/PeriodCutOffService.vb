@@ -133,6 +133,83 @@ Public Class PeriodCutOffService
         Return tmpBalance
     End Function
 
+    Public Shared Function GetAccountAmount(ByVal TransDate As Date, ByVal Account As Account) As Decimal
+        Dim Session As Session = Account.Session
+        Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
+                                                                          GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOffJournal.TransDate", TransDate, BinaryOperatorType.LessOrEqual))) _
+                                                                      With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("EntryDate", DB.SortingDirection.Descending))}
+        If xp.Count > 0 Then Return xp(0).Amount
+        Return 0
+    End Function
+
+    Private Shared Function CreatePeriodCutOffJournalMutation(ByVal PeriodCutOffJournal As PeriodCutOffJournal, ByVal MutationType As AccountBehaviour, ByVal Account As Account, ByVal Amount As Decimal) As PeriodCutOffJournalAccountMutation
+        Dim Session As Session = PeriodCutOffJournal.Session
+        Dim objPeriodCutOffJournalAccountMutation As New PeriodCutOffJournalAccountMutation(Session) _
+            With {.PeriodCutOffJournal = PeriodCutOffJournal, _
+                  .MutationType = AccountBehaviour.Debit, _
+                  .Account = Account}
+        If Account.AccountBehaviour = MutationType Then
+            objPeriodCutOffJournalAccountMutation.Amount = Amount
+        Else
+            objPeriodCutOffJournalAccountMutation.Amount = -1 * Amount
+        End If
+        Dim tmpBalance As Decimal = GetAccountAmount(PeriodCutOffJournal.TransDate, Account)
+        objPeriodCutOffJournalAccountMutation.AfterMutationAmount = tmpBalance + objPeriodCutOffJournalAccountMutation.Amount
+        Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
+                                                                          GroupOperator.And(New BinaryOperator("Account", Account), _
+                                                                                            GroupOperator.Or(New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournal.TransDate, BinaryOperatorType.Greater), _
+                                                                                                             GroupOperator.And(New BinaryOperator("PeriodCutOffJournal.EntryDate", PeriodCutOffJournal.EntryDate, BinaryOperatorType.Greater), _
+                                                                                                                               New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournal.TransDate, BinaryOperatorType.Equal)))))
+        For Each obj In xp
+            obj.Amount += objPeriodCutOffJournalAccountMutation.Amount
+            obj.AfterMutationAmount += objPeriodCutOffJournalAccountMutation.Amount
+        Next
+        Return objPeriodCutOffJournalAccountMutation
+    End Function
+
+    Private Shared Sub DeletePeriodCutOffJournalAccountMutation(ByVal PeriodCutOffJournalAccountMutation As PeriodCutOffJournalAccountMutation)
+        Dim Session As Session = PeriodCutOffJournalAccountMutation.Session
+        Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
+                                                                          GroupOperator.And(New BinaryOperator("Account", PeriodCutOffJournalAccountMutation.Account), _
+                                                                                            GroupOperator.Or(New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.TransDate, BinaryOperatorType.Greater), _
+                                                                                                             GroupOperator.And(New BinaryOperator("PeriodCutOffJournal.EntryDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.EntryDate, BinaryOperatorType.Greater), _
+                                                                                                                               New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.TransDate, BinaryOperatorType.Equal)))))
+        For Each obj In xp
+            obj.Amount -= PeriodCutOffJournalAccountMutation.Amount
+            obj.AfterMutationAmount -= PeriodCutOffJournalAccountMutation.Amount
+        Next
+        PeriodCutOffJournalAccountMutation.Delete()
+    End Sub
+
+    Public Shared Function CreatePeriodCutOffJournal(ByVal session As Session, ByVal JournalEntry As IJournalEntry) As PeriodCutOffJournal
+        If TransactionConfig.IsInClosedPeriod(session, JournalEntry.TransDate) Then Throw New Exception("Not in open period")
+        Dim PeriodCutOff As PeriodCutOff = session.FindObject(Of PeriodCutOff)(GroupOperator.And(New BinaryOperator("StartDate", JournalEntry.TransDate, BinaryOperatorType.LessOrEqual), GroupOperator.Or(New NullOperator("EndDate"), New BinaryOperator("EndDate", JournalEntry.TransDate, BinaryOperatorType.GreaterOrEqual))))
+        If PeriodCutOff Is Nothing Then Throw New Exception("Cut off period not found")
+        If PeriodCutOff.Closed Then Throw New Exception("Cut off period already closed")
+        Dim entryDate As Date = GlobalFunction.GetServerNow(session)
+        Dim periodCutOffJournal As New PeriodCutOffJournal(session) With {.PeriodCutOff = PeriodCutOff, .TransDate = JournalEntry.TransDate, .Description = JournalEntry.Description, .EntryDate = entryDate}
+
+        Dim totalDebit As Decimal = 0
+        Dim totalCredit As Decimal = 0
+        For Each objJournalEntryDebit As IJournalEntryDebit In JournalEntry.GetDebits
+            totalDebit += objJournalEntryDebit.Amount
+            CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountBehaviour.Debit, objJournalEntryDebit.Account, objJournalEntryDebit.Amount)
+        Next
+        For Each objJournalEntryCredit As IJournalEntryCredit In JournalEntry.GetCredits
+            totalCredit += objJournalEntryCredit.Amount
+            CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountBehaviour.Credit, objJournalEntryCredit.Account, objJournalEntryCredit.Amount)
+        Next
+        If totalDebit <> totalCredit Then Throw New Exception("Journal entry is not balance")
+        Return periodCutOffJournal
+    End Function
+
+    Public Shared Sub DeletePeriodCutOffJournal(ByVal PeriodCutOffJournal As PeriodCutOffJournal)
+        For Each objAccountMutation In PeriodCutOffJournal.AccountMutations
+            DeletePeriodCutOffJournalAccountMutation(objAccountMutation)
+        Next
+        PeriodCutOffJournal.Delete()
+    End Sub
+
     'Public Shared Function CreatePeriodCutOffAccountMutation(ByVal Account As Account, ByVal TransDate As Date, ByVal Amount As Decimal, ByVal Note As String) As PeriodCutOffAccountMutation
     '    Dim session As Session = Account.Session
     '    If TransactionConfig.IsInClosedPeriod(session, TransDate) Then Throw New Exception("Not in open period")

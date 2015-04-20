@@ -58,7 +58,7 @@ Partial Public Class TransactionBaseController
             Return CancelSubmitAction
         End Get
     End Property
-   
+
     Private Sub CustomizePopupWindowParams(sender As Object, e As DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventArgs) Handles SubmitAction.CustomizePopupWindowParams, CancelSubmitAction.CustomizePopupWindowParams
         Dim objectSpace As IObjectSpace = Application.CreateObjectSpace()
         Dim popUpNote As PopUpNote = objectSpace.CreateObject(Of PopUpNote)()
@@ -84,7 +84,7 @@ Partial Public Class TransactionBaseController
                     Next
                     View.ObjectSpace.CommitChanges()
                 End If
-             
+
             Finally
                 View.ObjectSpace.Refresh()
             End Try
@@ -111,7 +111,7 @@ Partial Public Class TransactionBaseController
         Finally
             View.ObjectSpace.Refresh()
         End Try
-        
+
     End Sub
 
 #Region "Filtering"

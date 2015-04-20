@@ -18,6 +18,7 @@ Imports DevExpress.Persistent.Validation
 <DefaultClassOptions()> _
 Public Class JournalEntryDebit
     Inherits BaseObject
+    Implements IJournalEntryDebit
     Public Sub New(ByVal session As Session)
         MyBase.New(session)
     End Sub
@@ -61,7 +62,7 @@ Public Class JournalEntryDebit
         End Set
     End Property
     <RuleRequiredField("Rule Required for JournalEntryDebit.Account", DefaultContexts.Save)>
-    Public Property Account As Account
+    Public Property Account As Account Implements IJournalEntryDebit.Account
         Get
             Return _account
         End Get
@@ -69,7 +70,7 @@ Public Class JournalEntryDebit
             SetPropertyValue("Account", _account, value)
         End Set
     End Property
-    Public Property Amount As Decimal
+    Public Property Amount As Decimal Implements IJournalEntryDebit.Amount
         Get
             Return _amount
         End Get

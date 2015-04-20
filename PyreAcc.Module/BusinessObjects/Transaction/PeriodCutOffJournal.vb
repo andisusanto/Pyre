@@ -66,16 +66,10 @@ Public Class PeriodCutOffJournal
         End Set
     End Property
 
-    <Association("PeriodCutOffJournal-PeriodCutOffJournalDebit"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Debits As XPCollection(Of PeriodCutOffJournalDebit)
+    <Association("PeriodCutOffJournal-PeriodCutOffJournalAccountMutation"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property AccountMutations As XPCollection(Of PeriodCutOffJournalAccountMutation)
         Get
-            Return GetCollection(Of PeriodCutOffJournalDebit)("Debits")
-        End Get
-    End Property
-    <Association("PeriodCutOffJournal-PeriodCutOffJournalCredit"), DevExpress.Xpo.Aggregated()>
-    Public ReadOnly Property Credits As XPCollection(Of PeriodCutOffJournalCredit)
-        Get
-            Return GetCollection(Of PeriodCutOffJournalCredit)("Credits")
+            Return GetCollection(Of PeriodCutOffJournalAccountMutation)("AccountMutations")
         End Get
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
@@ -83,11 +77,15 @@ Public Class PeriodCutOffJournal
         Get
             Dim totalDebit As Decimal = 0
             Dim totalCredit As Decimal = 0
-            For Each objDebit In Debits
-                totalDebit += objDebit.Amount
-            Next
-            For Each objCredit In Credits
-                totalCredit += objCredit.Amount
+            For Each obj In AccountMutations
+                Select Case obj.Account.AccountBehaviour
+                    Case AccountBehaviour.Debit
+                        totalDebit += obj.Amount
+                    Case AccountBehaviour.Credit
+                        totalCredit += obj.Amount
+                    Case Else
+                        Throw New NotImplementedException
+                End Select
             Next
             Return totalDebit = totalCredit
         End Get
