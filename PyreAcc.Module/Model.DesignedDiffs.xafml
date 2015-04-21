@@ -33,8 +33,6 @@
     <Class Name="PyreAcc.Module.Location" ImageName="Location" />
     <Class Name="PyreAcc.Module.PeriodCutOff" ImageName="CutOff" />
     <Class Name="PyreAcc.Module.PeriodCutOffJournal" ImageName="Journal" />
-    <Class Name="PyreAcc.Module.PeriodCutOffJournalCredit" ImageName="Journal" />
-    <Class Name="PyreAcc.Module.PeriodCutOffJournalDebit" ImageName="Journal" />
     <Class Name="PyreAcc.Module.PurchaseInvoice" ImageName="BO_Invoice" />
     <Class Name="PyreAcc.Module.PurchaseInvoiceDetail" ImageName="BO_Invoice" IsCloneable="True" />
     <Class Name="PyreAcc.Module.PurchasePayment" ImageName="Payment" />
@@ -125,7 +123,7 @@
           <Item Id="TransactionConfig_ListView" ViewId="TransactionConfig_ListView" ObjectKey="" IsNewNode="True" />
         </Items>
       </Item>
-      <Item Id="Master" Caption="Master" Index="1" ChildItemsDisplayStyle="List" IsNewNode="True">
+      <Item Id="Master" Caption="Master" Index="1" ChildItemsDisplayStyle="List" ImageName="Master" IsNewNode="True">
         <Items IsNewNode="True">
           <Item Id="Inventory_ListView" ViewId="Inventory_ListView" ObjectKey="" Index="0" IsNewNode="True" />
           <Item Id="Item_ListView" ViewId="Item_ListView" ObjectKey="" Index="1" IsNewNode="True" />
@@ -143,8 +141,8 @@
       </Item>
       <Item Id="Inquiry" Index="2" IsNewNode="True">
         <Items IsNewNode="True">
-          <Item Id="Journal_ListView" ViewId="Journal_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="PeriodCutOff_ListView" ViewId="PeriodCutOff_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="SalesInvoiceDetail_ListView" ObjectKey="" ViewId="SalesInvoiceDetail_ListView" IsNewNode="True" />
         </Items>
       </Item>
       <Item Id="@63726291-c60d-42ca-9afe-ad4e324fa107" Caption="System" Index="3" ChildItemsDisplayStyle="List" IsNewNode="True">
