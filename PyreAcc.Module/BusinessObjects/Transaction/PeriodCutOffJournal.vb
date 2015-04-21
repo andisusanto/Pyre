@@ -78,10 +78,10 @@ Public Class PeriodCutOffJournal
             Dim totalDebit As Decimal = 0
             Dim totalCredit As Decimal = 0
             For Each obj In AccountMutations
-                Select Case obj.Account.AccountBehaviour
-                    Case AccountBehaviour.Debit
+                Select Case obj.Account.NormalBalance
+                    Case AccountMutationType.Debit
                         totalDebit += obj.Amount
-                    Case AccountBehaviour.Credit
+                    Case AccountMutationType.Credit
                         totalCredit += obj.Amount
                     Case Else
                         Throw New NotImplementedException

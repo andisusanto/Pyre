@@ -33,6 +33,7 @@ Public Class SalesPaymentDetail
     Private _salesPayment As SalesPayment
     Private _salesInvoice As SalesInvoice
     Private _amount As Decimal
+    <VisibleInListView(False)>
     Public Property Sequence As Integer
         Get
             Return _sequence

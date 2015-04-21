@@ -33,7 +33,7 @@ Public Class Account
     Private _parent As Account
     Private _isParent As Boolean
     Private _isActive As Boolean
-    Private _accountBehaviour As AccountBehaviour
+    Private _normalBalance As AccountMutationType
     <RuleUniqueValue("Rule Unique for Account.Code", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for Account.Code", DefaultContexts.Save)>
     Public Property Code As String
@@ -53,6 +53,7 @@ Public Class Account
             SetPropertyValue("Description", _description, value)
         End Set
     End Property
+    <VisibleInListView(False)>
     <DataSourceCriteria("IsParent = TRUE AND IsActive = TRUE")>
     <Association("Account-Account")>
     Public Property Parent As Account
@@ -77,6 +78,7 @@ Public Class Account
             Return GetCollection(Of Account)("Children")
         End Get
     End Property
+    <VisibleInListView(False)>
     Public Property IsParent As Boolean
         Get
             Return _isParent
@@ -85,12 +87,12 @@ Public Class Account
             SetPropertyValue("IsParent", _isParent, value)
         End Set
     End Property
-    Public Property AccountBehaviour As AccountBehaviour
+    Public Property NormalBalance As AccountMutationType
         Get
-            Return _accountBehaviour
+            Return _normalBalance
         End Get
-        Set(value As AccountBehaviour)
-            SetPropertyValue("AccountBehaviour", _accountBehaviour, value)
+        Set(value As AccountMutationType)
+            SetPropertyValue("NormalBalance", _normalBalance, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
@@ -121,7 +123,7 @@ Public Class Account
     End Property
 End Class
 
-Public Enum AccountBehaviour
+Public Enum AccountMutationType
     Debit
     Credit
 End Enum

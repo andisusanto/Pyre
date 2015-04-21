@@ -29,7 +29,7 @@ Public Class PeriodCutOffJournalAccountMutation
     Private _sequence As Integer
     Private _journal As PeriodCutOffJournal
     Private _account As Account
-    Private _mutationType As AccountBehaviour
+    Private _mutationType As AccountMutationType
     Private _amount As Decimal
     Private _afterMutationAmount As Decimal
 
@@ -70,11 +70,11 @@ Public Class PeriodCutOffJournalAccountMutation
             SetPropertyValue("Account", _account, value)
         End Set
     End Property
-    Public Property MutationType As AccountBehaviour
+    Public Property MutationType As AccountMutationType
         Get
             Return _mutationType
         End Get
-        Set(value As AccountBehaviour)
+        Set(value As AccountMutationType)
             SetPropertyValue("MutationType", _mutationType, value)
         End Set
     End Property

@@ -44,6 +44,7 @@ Public Class SalesInvoiceDetail
     Private _discount As Double
     Private _grandTotal As Decimal
     Private _periodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
+    <VisibleInListView(False)>
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -136,6 +137,7 @@ Public Class SalesInvoiceDetail
             UnitPrice = 0
         End If
     End Sub
+    <VisibleInListView(False)>
     Public Property BaseUnitQuantity As Decimal
         Get
             Return _baseUnitQuantity
@@ -173,6 +175,7 @@ Public Class SalesInvoiceDetail
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     Public Property DiscountType As DiscountType
         Get
@@ -185,6 +188,7 @@ Public Class SalesInvoiceDetail
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
     Public Property DiscountValue As Double

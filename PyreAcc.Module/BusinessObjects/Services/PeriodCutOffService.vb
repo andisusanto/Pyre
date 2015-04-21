@@ -148,13 +148,13 @@ Public Class PeriodCutOffService
         Return 0
     End Function
 
-    Private Shared Function CreatePeriodCutOffJournalMutation(ByVal PeriodCutOffJournal As PeriodCutOffJournal, ByVal MutationType As AccountBehaviour, ByVal Account As Account, ByVal Amount As Decimal) As PeriodCutOffJournalAccountMutation
+    Private Shared Function CreatePeriodCutOffJournalMutation(ByVal PeriodCutOffJournal As PeriodCutOffJournal, ByVal MutationType As AccountMutationType, ByVal Account As Account, ByVal Amount As Decimal) As PeriodCutOffJournalAccountMutation
         Dim Session As Session = PeriodCutOffJournal.Session
         Dim objPeriodCutOffJournalAccountMutation As New PeriodCutOffJournalAccountMutation(Session) _
             With {.PeriodCutOffJournal = PeriodCutOffJournal, _
-                  .MutationType = AccountBehaviour.Debit, _
+                  .MutationType = AccountMutationType.Debit, _
                   .Account = Account}
-        If Account.AccountBehaviour = MutationType Then
+        If Account.NormalBalance = MutationType Then
             objPeriodCutOffJournalAccountMutation.Amount = Amount
         Else
             objPeriodCutOffJournalAccountMutation.Amount = -1 * Amount
@@ -199,11 +199,11 @@ Public Class PeriodCutOffService
         Dim totalCredit As Decimal = 0
         For Each objJournalEntryDebit As IJournalEntryDebit In JournalEntry.GetDebits
             totalDebit += objJournalEntryDebit.Amount
-            CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountBehaviour.Debit, objJournalEntryDebit.Account, objJournalEntryDebit.Amount)
+            CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountMutationType.Debit, objJournalEntryDebit.Account, objJournalEntryDebit.Amount)
         Next
         For Each objJournalEntryCredit As IJournalEntryCredit In JournalEntry.GetCredits
             totalCredit += objJournalEntryCredit.Amount
-            CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountBehaviour.Credit, objJournalEntryCredit.Account, objJournalEntryCredit.Amount)
+            CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountMutationType.Credit, objJournalEntryCredit.Account, objJournalEntryCredit.Amount)
         Next
         If totalDebit <> totalCredit Then Throw New Exception("Journal entry is not balance")
         Return periodCutOffJournal

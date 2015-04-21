@@ -46,6 +46,7 @@ Public Class PurchaseInvoiceDetail
     Private _discount As Decimal
     Private _grandTotal As Decimal
     Private _periodCutOffInventoryItem As PeriodCutOffInventoryItem
+    <VisibleInListView(False)>
     Public Property Sequence As Integer
         Get
             Return _sequence
@@ -146,6 +147,7 @@ Public Class PurchaseInvoiceDetail
             SetPropertyValue("ExpiryDate", _expiryDate, value)
         End Set
     End Property
+    <VisibleInListView(False)>
     Public Property BaseUnitQuantity As Decimal
         Get
             Return _baseUnitQuantity
@@ -183,6 +185,7 @@ Public Class PurchaseInvoiceDetail
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     Public Property DiscountType As DiscountType
         Get
@@ -195,6 +198,7 @@ Public Class PurchaseInvoiceDetail
             End If
         End Set
     End Property
+    <VisibleInListView(False)>
     <ImmediatePostData(True)>
     <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
     Public Property DiscountValue As Decimal
