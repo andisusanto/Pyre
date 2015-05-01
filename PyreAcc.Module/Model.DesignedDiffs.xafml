@@ -121,6 +121,7 @@
           <Item Id="InventoryItemAdjustment_ListView" ViewId="InventoryItemAdjustment_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="JournalEntry_ListView" ViewId="JournalEntry_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="Reports" ViewId="UIContainerObject_ListView" Caption="Reports" ImageName="BO_Report" IsNewNode="True" />
           <Item Id="TransactionConfig_DetailView" ObjectKey="" ViewId="TransactionConfig_DetailView" IsNewNode="True" />
         </Items>
       </Item>

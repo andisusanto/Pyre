@@ -174,6 +174,7 @@
     <Compile Include="BusinessObjects\System\Object\SystemJournalEntry.vb" />
     <Compile Include="BusinessObjects\System\Object\SystemJournalEntryCredit.vb" />
     <Compile Include="BusinessObjects\System\Object\SystemJournalEntryDebit.vb" />
+    <Compile Include="BusinessObjects\System\Object\UIContainerObject.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationRole.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationUser.vb" />
     <Compile Include="BusinessObjects\System\SystemConfig.vb" />

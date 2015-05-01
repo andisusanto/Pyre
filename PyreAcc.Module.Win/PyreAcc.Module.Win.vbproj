@@ -125,6 +125,10 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="DevExpress.XtraTreeList.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="Report.Module, Version=1.0.5453.16811, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\Report.Module.dll</HintPath>
+    </Reference>
     <Reference Include="Report.Module.Win">
       <HintPath>..\DLL\Report.Module.Win.dll</HintPath>
     </Reference>
@@ -166,6 +170,12 @@
     <Compile Include="Controllers\SuppressTransactionBaseConfirmation.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controllers\View\ShowCustomFormWindowController.Designer.vb">
+      <DependentUpon>ShowCustomFormWindowController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\View\ShowCustomFormWindowController.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -189,6 +199,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controllers\View\ShowCustomFormWindowController.resx">
+      <DependentUpon>ShowCustomFormWindowController.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
