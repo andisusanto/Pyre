@@ -14,7 +14,6 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
 <DeferredDeletion(False)>
-<RuleCriteria("Rule Criteria for PeriodCutOffInventoryItem.UnitPrice > 0", DefaultContexts.Save, "UnitPrice > 0")>
 <DefaultClassOptions()> _
 Public Class PeriodCutOffInventoryItem
     Inherits BaseObject
