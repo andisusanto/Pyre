@@ -118,11 +118,11 @@
               <Item Id="CutOffProcess_ListView" ViewId="CutOffProcess_ListView" ObjectKey="" IsNewNode="True" />
             </Items>
           </Item>
-          <Item Id="InventoryItemAdjustment_ListView" ViewId="InventoryItemAdjustment_ListView" ObjectKey="" IsNewNode="True" />
-          <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" IsNewNode="True" />
-          <Item Id="JournalEntry_ListView" ViewId="JournalEntry_ListView" ObjectKey="" IsNewNode="True" />
-          <Item Id="Reports" ViewId="UIContainerObject_ListView" Caption="Reports" ImageName="BO_Report" IsNewNode="True" />
-          <Item Id="TransactionConfig_DetailView" ObjectKey="" ViewId="TransactionConfig_DetailView" IsNewNode="True" />
+          <Item Id="InventoryItemAdjustment_ListView" ViewId="InventoryItemAdjustment_ListView" ObjectKey="" Index="4" IsNewNode="True" />
+          <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" Index="5" IsNewNode="True" />
+          <Item Id="JournalEntry_ListView" ViewId="JournalEntry_ListView" ObjectKey="" Index="6" IsNewNode="True" />
+          <Item Id="TransactionConfig_DetailView" ObjectKey="" ViewId="TransactionConfig_DetailView" Index="7" IsNewNode="True" />
+          <Item Id="Reports" ViewId="UIContainerObject_ListView" Caption="Reports" ImageName="BO_Report" Index="10" IsNewNode="True" />
         </Items>
       </Item>
       <Item Id="Master" Caption="Master" Index="1" ChildItemsDisplayStyle="List" ImageName="Master" IsNewNode="True">
