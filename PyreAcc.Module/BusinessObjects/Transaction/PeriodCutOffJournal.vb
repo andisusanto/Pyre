@@ -12,7 +12,7 @@ Imports System.Collections.Generic
 Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
-<RuleCriteria("Rule Criteria for PeriodCutOffJournal.IsAmountBalance = True", DefaultContexts.Save, "IsAmountBalance = True")>
+'<RuleCriteria("Rule Criteria for PeriodCutOffJournal.IsAmountBalance = True", DefaultContexts.Save, "IsAmountBalance = True")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PeriodCutOffJournal
@@ -72,22 +72,22 @@ Public Class PeriodCutOffJournal
             Return GetCollection(Of PeriodCutOffJournalAccountMutation)("AccountMutations")
         End Get
     End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property IsAmountBalance As Boolean
-        Get
-            Dim totalDebit As Decimal = 0
-            Dim totalCredit As Decimal = 0
-            For Each obj In AccountMutations
-                Select Case obj.Account.NormalBalance
-                    Case AccountMutationType.Debit
-                        totalDebit += obj.Amount
-                    Case AccountMutationType.Credit
-                        totalCredit += obj.Amount
-                    Case Else
-                        Throw New NotImplementedException
-                End Select
-            Next
-            Return totalDebit = totalCredit
-        End Get
-    End Property
+    '<VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    'Public ReadOnly Property IsAmountBalance As Boolean
+    '    Get
+    '        Dim totalDebit As Decimal = 0
+    '        Dim totalCredit As Decimal = 0
+    '        For Each obj In AccountMutations
+    '            Select Case obj.Account.NormalBalance
+    '                Case AccountMutationType.Debit
+    '                    totalDebit += obj.Amount
+    '                Case AccountMutationType.Credit
+    '                    totalCredit += obj.Amount
+    '                Case Else
+    '                    Throw New NotImplementedException
+    '            End Select
+    '        Next
+    '        Return totalDebit = totalCredit
+    '    End Get
+    'End Property
 End Class

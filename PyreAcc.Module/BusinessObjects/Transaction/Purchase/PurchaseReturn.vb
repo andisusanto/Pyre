@@ -46,6 +46,7 @@ Public Class PurchaseReturn
     Private _discount As Decimal
     Private _grandTotal As Decimal
     Private _debitNote As DebitNote
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleUniqueValue("Rule Unique for PurchaseReturn.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for PurchaseReturn.No", DefaultContexts.Save)>
     Public Property No As String
@@ -160,6 +161,15 @@ Public Class PurchaseReturn
             SetPropertyValue("DebitNote", _debitNote, value)
         End Set
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
+        Get
+            Return _periodCutOffJournal
+        End Get
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
+        End Set
+    End Property
     <Association("PurchaseReturn-PurchaseReturnDetail"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property Details As XPCollection(Of PurchaseReturnDetail)
         Get
@@ -183,7 +193,7 @@ Public Class PurchaseReturn
             Case [Module].DiscountType.ByAmount
                 Discount = DiscountValue
             Case [Module].DiscountType.ByPercentage
-                Discount = Total * DiscountValue / 100
+                Discount = GlobalFunction.Round(Total * DiscountValue / 100)
         End Select
     End Sub
     Private Sub CalculateGrandTotal()

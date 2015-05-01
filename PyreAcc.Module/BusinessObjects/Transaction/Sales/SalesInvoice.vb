@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesInvoice
@@ -38,6 +38,8 @@ Public Class SalesInvoice
     Private _dueDate As Date
     Private _customer As Customer
     Private _inventory As Inventory
+    Private _detailsTotal As Decimal
+    Private _detailsDiscount As Decimal
     Private _total As Decimal
     Private _discountType As DiscountType
     Private _discountValue As Decimal
@@ -46,6 +48,7 @@ Public Class SalesInvoice
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
     Private _salesman As Salesman
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleUniqueValue("Rule Unique for SalesInvoice.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for SalesInvoice.No", DefaultContexts.Save)>
     Public Property No As String
@@ -117,7 +120,24 @@ Public Class SalesInvoice
             SetPropertyValue("Inventory", _inventory, value)
         End Set
     End Property
-
+    <VisibleInDetailView(False)>
+    Public Property DetailsTotal As Decimal
+        Get
+            Return _detailsTotal
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DetailsTotal", _detailsTotal, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False)>
+    Public Property DetailsDiscount As Decimal
+        Get
+            Return _detailsDiscount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DetailsDiscount", _detailsDiscount, value)
+        End Set
+    End Property
     <ImmediatePostData(True)>
     Public Property Total As Decimal
         Get
@@ -208,6 +228,15 @@ Public Class SalesInvoice
             SetPropertyValue("Salesman", _salesman, value)
         End Set
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
+        Get
+            Return _periodCutOffJournal
+        End Get
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
+        End Set
+    End Property
     <Association("SalesInvoice-SalesInvoiceDetail"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property Details As XPCollection(Of SalesInvoiceDetail)
         Get
@@ -238,7 +267,7 @@ Public Class SalesInvoice
             Case [Module].DiscountType.ByAmount
                 Discount = DiscountValue
             Case [Module].DiscountType.ByPercentage
-                Discount = Total * DiscountValue / 100
+                Discount = GlobalFunction.Round(Total * DiscountValue / 100)
         End Select
     End Sub
     Private Sub CalculateGrandTotal()
@@ -261,6 +290,31 @@ Public Class SalesInvoice
             objDetail.PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Sale)
         Next
         Customer.OutstandingPaymentAmount += GrandTotal
+
+        'Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        'Dim objSystemJournalEntry As New SystemJournalEntry
+
+        'Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryCredit
+        'objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.SalesAccount
+        'objSystemJournalEntrySalesAccount.Amount = DetailsTotal
+        'objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
+
+        'Dim objSystemJournalEntrySalesDiscountAccount As New SystemJournalEntryDebit
+        'objSystemJournalEntrySalesDiscountAccount.Account = objAccountLinkingConfig.SalesDiscountAccount
+        'objSystemJournalEntrySalesDiscountAccount.Amount = DetailsDiscount + Discount
+        'objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesDiscountAccount)
+
+        'Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryDebit
+        'objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.SalesInvoiceAccount
+        'objSystemJournalEntrySalesInvoiceAccount.Amount = GrandTotal
+        'objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
+
+        'Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryCredit
+        'objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+        'objSystemJournalEntryInventoryAccount.Amount = DetailsTotal
+        'objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
+        'PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()

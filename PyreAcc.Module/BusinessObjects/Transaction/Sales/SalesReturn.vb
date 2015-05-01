@@ -47,6 +47,7 @@ Public Class SalesReturn
     Private _grandTotal As Decimal
     Private _salesman As Salesman
     Private _creditNote As CreditNote
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleUniqueValue("Rule Unique for SalesReturn.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for SalesReturn.No", DefaultContexts.Save)>
     Public Property No As String
@@ -169,6 +170,15 @@ Public Class SalesReturn
             SetPropertyValue("CreditNote", _creditNote, value)
         End Set
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
+        Get
+            Return _periodCutOffJournal
+        End Get
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
+        End Set
+    End Property
     <Association("SalesReturn-SalesReturnDetail"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property Details As XPCollection(Of SalesReturnDetail)
         Get
@@ -192,7 +202,7 @@ Public Class SalesReturn
             Case [Module].DiscountType.ByAmount
                 Discount = DiscountValue
             Case [Module].DiscountType.ByPercentage
-                Discount = Total * DiscountValue / 100
+                Discount = GlobalFunction.Round(Total * DiscountValue / 100)
         End Select
     End Sub
     Private Sub CalculateGrandTotal()

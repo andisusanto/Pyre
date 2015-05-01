@@ -41,6 +41,7 @@ Public Class PurchasePayment
     Private _debitNoteAmount As Decimal
     Private _remainingAmount As Decimal
     Private _fromAccount As Account
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleUniqueValue("Rule Unique for PurchasePayment.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for PurchasePayment.No", DefaultContexts.Save)>
     Public Property No As String
@@ -107,6 +108,15 @@ Public Class PurchasePayment
         End Get
         Set(value As Account)
             SetPropertyValue("FromAccount", _fromAccount, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
+        Get
+            Return _periodCutOffJournal
+        End Get
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>

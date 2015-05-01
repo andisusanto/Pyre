@@ -137,7 +137,7 @@ Public Class PeriodCutOffService
         Dim Session As Session = Account.Session
         Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
                                                                           GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOffJournal.TransDate", TransDate, BinaryOperatorType.LessOrEqual))) _
-                                                                      With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("EntryDate", DB.SortingDirection.Descending))}
+                                                                      With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("PeriodCutOffJournal.EntryDate", DB.SortingDirection.Descending))}
         If xp.Count > 0 Then
             Return xp(0).Amount
         Else
@@ -170,6 +170,11 @@ Public Class PeriodCutOffService
             obj.Amount += objPeriodCutOffJournalAccountMutation.Amount
             obj.AfterMutationAmount += objPeriodCutOffJournalAccountMutation.Amount
         Next
+        Dim periodCutOffAccount As PeriodCutOffAccount = Session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOffJournal.PeriodCutOff), New BinaryOperator("Account", Account)))
+        If periodCutOffAccount Is Nothing Then
+            periodCutOffAccount = New PeriodCutOffAccount(Session) With {.Account = Account, .PeriodCutOff = PeriodCutOffJournal.PeriodCutOff, .InitialBalance = 0}
+        End If
+        periodCutOffAccount.LastBalance += objPeriodCutOffJournalAccountMutation.Amount
         Return objPeriodCutOffJournalAccountMutation
     End Function
 
@@ -184,6 +189,8 @@ Public Class PeriodCutOffService
             obj.Amount -= PeriodCutOffJournalAccountMutation.Amount
             obj.AfterMutationAmount -= PeriodCutOffJournalAccountMutation.Amount
         Next
+        Dim periodCutOffAccount As PeriodCutOffAccount = Session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.PeriodCutOff), New BinaryOperator("Account", PeriodCutOffJournalAccountMutation.Account)))
+        periodCutOffAccount.LastBalance -= PeriodCutOffJournalAccountMutation.Amount
         PeriodCutOffJournalAccountMutation.Delete()
     End Sub
 
@@ -195,23 +202,18 @@ Public Class PeriodCutOffService
         Dim entryDate As Date = GlobalFunction.GetServerNow(session)
         Dim periodCutOffJournal As New PeriodCutOffJournal(session) With {.PeriodCutOff = PeriodCutOff, .TransDate = JournalEntry.TransDate, .Description = JournalEntry.Description, .EntryDate = entryDate}
 
-        Dim totalDebit As Decimal = 0
-        Dim totalCredit As Decimal = 0
         For Each objJournalEntryDebit As IJournalEntryDebit In JournalEntry.GetDebits
-            totalDebit += objJournalEntryDebit.Amount
             CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountMutationType.Debit, objJournalEntryDebit.Account, objJournalEntryDebit.Amount)
         Next
         For Each objJournalEntryCredit As IJournalEntryCredit In JournalEntry.GetCredits
-            totalCredit += objJournalEntryCredit.Amount
             CreatePeriodCutOffJournalMutation(periodCutOffJournal, AccountMutationType.Credit, objJournalEntryCredit.Account, objJournalEntryCredit.Amount)
         Next
-        If totalDebit <> totalCredit Then Throw New Exception("Journal entry is not balance")
         Return periodCutOffJournal
     End Function
 
     Public Shared Sub DeletePeriodCutOffJournal(ByVal PeriodCutOffJournal As PeriodCutOffJournal)
-        For Each objAccountMutation In PeriodCutOffJournal.AccountMutations
-            DeletePeriodCutOffJournalAccountMutation(objAccountMutation)
+        For i = 0 To PeriodCutOffJournal.AccountMutations.Count - 1
+            DeletePeriodCutOffJournalAccountMutation(PeriodCutOffJournal.AccountMutations(0))
         Next
         PeriodCutOffJournal.Delete()
     End Sub

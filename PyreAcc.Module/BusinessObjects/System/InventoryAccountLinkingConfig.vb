@@ -28,6 +28,7 @@ Public Class InventoryAccountLinkingConfig
     Private fAccountLinkingConfig As AccountLinkingConfig
     Private fInventory As Inventory
     Private fAccount As Account
+    <Association("AccountLinkingConfig-InventoryAccountLinkingConfig")>
     <RuleRequiredField("Rule Required for InventoryAccountLinkingConfig.AccountLinkingConfig", DefaultContexts.Save)>
     Public Property AccountLinkingConfig As AccountLinkingConfig
         Get

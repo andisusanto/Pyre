@@ -137,7 +137,7 @@ Public Class PeriodCutOffInventoryItemDeductTransaction
             objDeductDetail.PeriodCutOffInventoryItem.DeductedBaseUnitQuantity += tmpDeductBaseUnitQuantity
             availableBaseUnitQuantity -= tmpDeductBaseUnitQuantity
         Next
-        If availableBaseUnitQuantity > 0 Then Throw New Exception("Not enough balance")
+        If availableBaseUnitQuantity > 0 Then Throw New Exception("Not enough balance " & Environment.NewLine & "Item: " & Item.Name)
     End Sub
 End Class
 

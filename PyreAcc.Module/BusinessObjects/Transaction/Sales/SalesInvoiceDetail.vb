@@ -64,6 +64,8 @@ Public Class SalesInvoiceDetail
             SetPropertyValue("SalesInvoice", _salesInvoice, value)
             If Not IsLoading Then
                 If SalesInvoice IsNot Nothing Then
+                    SalesInvoice.DetailsTotal += Total
+                    SalesInvoice.DetailsDiscount += Discount
                     SalesInvoice.Total += GrandTotal
                     If SalesInvoice.Details.Count = 0 Then
                         Sequence = 0
@@ -72,7 +74,11 @@ Public Class SalesInvoiceDetail
                         Sequence = SalesInvoice.Details(SalesInvoice.Details.Count - 1).Sequence + 1
                     End If
                 End If
-                If oldValue IsNot Nothing Then oldValue.Total -= GrandTotal
+                If oldValue IsNot Nothing Then
+                    oldValue.DetailsTotal -= Total
+                    oldValue.DetailsDiscount -= Discount
+                    oldValue.Total -= GrandTotal
+                End If
             End If
         End Set
     End Property
@@ -169,9 +175,14 @@ Public Class SalesInvoiceDetail
             Return _total
         End Get
         Set(ByVal value As Double)
+            Dim oldValue = Total
             SetPropertyValue("Total", _total, value)
             If Not IsLoading Then
                 CalculateDiscount()
+                If SalesInvoice IsNot Nothing Then
+                    SalesInvoice.DetailsTotal -= oldValue
+                    SalesInvoice.DetailsTotal += Total
+                End If
             End If
         End Set
     End Property
@@ -208,9 +219,14 @@ Public Class SalesInvoiceDetail
             Return _discount
         End Get
         Set(ByVal value As Double)
+            Dim oldValue = Discount
             SetPropertyValue("Discount", _discount, value)
             If Not IsLoading Then
                 CalculateGrandTotal()
+                If SalesInvoice IsNot Nothing Then
+                    SalesInvoice.DetailsDiscount -= oldValue
+                    SalesInvoice.DetailsDiscount += Discount
+                End If
             End If
         End Set
     End Property
@@ -246,7 +262,7 @@ Public Class SalesInvoiceDetail
             Case [Module].DiscountType.ByAmount
                 Discount = DiscountValue
             Case [Module].DiscountType.ByPercentage
-                Discount = Total * DiscountValue / 100
+                Discount = GlobalFunction.Round(Total * DiscountValue / 100)
         End Select
     End Sub
     Private Sub CalculateGrandTotal()

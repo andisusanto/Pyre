@@ -59,6 +59,7 @@
       <Item Id="Default" Visible="False" Index="-1">
         <Items>
           <Item Id="Account_ListView" Removed="True" />
+          <Item Id="AccountLinkingConfig_ListView" Removed="True" />
           <Item Id="ApplicationRole_ListView" Removed="True" />
           <Item Id="ApplicationUser_ListView" Removed="True" />
           <Item Id="AutoNo_ListView" Removed="True" />
@@ -120,7 +121,7 @@
           <Item Id="InventoryItemAdjustment_ListView" ViewId="InventoryItemAdjustment_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="ItemPriceMutation_ListView" ViewId="ItemPriceMutation_ListView" ObjectKey="" IsNewNode="True" />
           <Item Id="JournalEntry_ListView" ViewId="JournalEntry_ListView" ObjectKey="" IsNewNode="True" />
-          <Item Id="TransactionConfig_ListView" ViewId="TransactionConfig_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="TransactionConfig_DetailView" ObjectKey="" ViewId="TransactionConfig_DetailView" IsNewNode="True" />
         </Items>
       </Item>
       <Item Id="Master" Caption="Master" Index="1" ChildItemsDisplayStyle="List" ImageName="Master" IsNewNode="True">
@@ -153,6 +154,7 @@
               <Item Id="SystemConfig_ListView" ViewId="SystemConfig_ListView" ObjectKey="" Index="2" IsNewNode="True" />
               <Item Id="CompanyInformation_ListView" ViewId="CompanyInformation_ListView" ObjectKey="" Index="3" IsNewNode="True" />
               <Item Id="ReportConfiguration_ListView" ObjectKey="" ViewId="ReportConfiguration_DetailView" Index="4" IsNewNode="True" />
+              <Item Id="AccountLinkingConfig_DetailView" ViewId="AccountLinkingConfig_DetailView" ObjectKey="" IsNewNode="True" />
             </Items>
           </Item>
           <Item Id="Report" IsNewNode="True">

@@ -57,4 +57,8 @@ Public Class GlobalFunction
         Loop
         Return False
     End Function
+
+    Public Shared Function Round(ByVal Value As Decimal) As Decimal
+        Return Math.Round(Value, 2, MidpointRounding.AwayFromZero)
+    End Function
 End Class

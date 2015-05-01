@@ -235,7 +235,7 @@ Public Class PurchaseReturnDetail
             Case [Module].DiscountType.ByAmount
                 Discount = DiscountValue
             Case [Module].DiscountType.ByPercentage
-                Discount = Total * DiscountValue / 100
+                Discount = GlobalFunction.Round(Total * DiscountValue / 100)
         End Select
     End Sub
     Private Sub CalculateGrandTotal()

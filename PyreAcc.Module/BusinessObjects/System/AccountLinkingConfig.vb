@@ -27,12 +27,17 @@ Public Class AccountLinkingConfig
 
     Private fPurchaseInvoiceAccount As Account
     Private fSalesInvoiceAccount As Account
-    Private fSalesAccount As Account
     Private fPurchaseAccount As Account
+    Private fSalesAccount As Account
+    Private fPurchaseDiscountAccount As Account
+    Private fSalesDiscountAccount As Account
     Private fInventoryAccount As Account
     Private fCostOfSalesAccount As Account
     Private fDebitNoteAccount As Account
     Private fCreditNoteAccount As Account
+
+    Private fRoundingPlusAccount As Account
+    Private fRoundingMinusAccount As Account
 
     <DataSourceCriteria("IsParent = False AND IsActive = True")>
     <RuleRequiredField("Rule Required for AccountLinkingConfig.PurchaseInvoiceAccount", DefaultContexts.Save)>
@@ -75,6 +80,26 @@ Public Class AccountLinkingConfig
         End Set
     End Property
     <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.PurchaseDiscountAccount", DefaultContexts.Save)>
+    Public Property PurchaseDiscountAccount As Account
+        Get
+            Return fPurchaseDiscountAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("PurchaseDiscountAccount", fPurchaseDiscountAccount, value)
+        End Set
+    End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.SalesDiscountAccount", DefaultContexts.Save)>
+    Public Property SalesDiscountAccount As Account
+        Get
+            Return fSalesDiscountAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("SalesDiscountAccount", fSalesDiscountAccount, value)
+        End Set
+    End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
     <RuleRequiredField("Rule Required for AccountLinkingConfig.InventoryAccount", DefaultContexts.Save)>
     Public Property InventoryAccount As Account
         Get
@@ -114,5 +139,40 @@ Public Class AccountLinkingConfig
             SetPropertyValue("CreditNoteAccount", fCreditNoteAccount, value)
         End Set
     End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.RoundingPlusAccount", DefaultContexts.Save)>
+    Public Property RoundingPlusAccount As Account
+        Get
+            Return fRoundingPlusAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("RoundingPlusAccount", fRoundingPlusAccount, value)
+        End Set
+    End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.RoundingMinusAccount", DefaultContexts.Save)>
+    Public Property RoundingMinusAccount As Account
+        Get
+            Return fRoundingMinusAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("RoundingMinusAccount", fRoundingMinusAccount, value)
+        End Set
+    End Property
+    <Association("AccountLinkingConfig-InventoryAccountLinkingConfig"), DevExpress.Xpo.Aggregated()>
+    Public ReadOnly Property InventoryAccountLinkingConfigs As XPCollection(Of InventoryAccountLinkingConfig)
+        Get
+            Return GetCollection(Of InventoryAccountLinkingConfig)("InventoryAccountLinkingConfigs")
+        End Get
+    End Property
 
+    Public Function GetInventoryAccountLinking(ByVal Inventory As Inventory) As Account
+        InventoryAccountLinkingConfigs.Filter = New BinaryOperator("Inventory", Inventory)
+        If InventoryAccountLinkingConfigs.Count > 0 Then Return InventoryAccountLinkingConfigs(0).Account
+        Return Nothing
+    End Function
+
+    Public Shared Function GetInstance(ByVal Session As Session) As AccountLinkingConfig
+        Return Session.FindObject(Of AccountLinkingConfig)(Nothing)
+    End Function
 End Class

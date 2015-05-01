@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for PurchaseInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for PurchaseInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PurchaseInvoice
@@ -39,6 +39,8 @@ Public Class PurchaseInvoice
     Private _dueDate As Date
     Private _supplier As Supplier
     Private _inventory As Inventory
+    Private _detailsTotal As Decimal
+    Private _detailsDiscount As Decimal
     Private _total As Decimal
     Private _discountType As DiscountType
     Private _discountValue As Decimal
@@ -46,6 +48,8 @@ Public Class PurchaseInvoice
     Private _grandTotal As Decimal
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
+
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleUniqueValue("Rule Unique for PurchaseInvoice.No", DefaultContexts.Save)>
     <RuleRequiredField("Rule Required for PurchaseInvoice.No", DefaultContexts.Save)>
     Public Property No As String
@@ -124,6 +128,24 @@ Public Class PurchaseInvoice
         End Get
         Set(value As Inventory)
             SetPropertyValue("Inventory", _inventory, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False)>
+    Public Property DetailsTotal As Decimal
+        Get
+            Return _detailsTotal
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DetailsTotal", _detailsTotal, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False)>
+    Public Property DetailsDiscount As Decimal
+        Get
+            Return _detailsDiscount
+        End Get
+        Set(ByVal value As Decimal)
+            SetPropertyValue("DetailsDiscount", _detailsDiscount, value)
         End Set
     End Property
     <ImmediatePostData(True)>
@@ -209,6 +231,15 @@ Public Class PurchaseInvoice
             SetPropertyValue("PaymentOutstandingAmount", _paymentOutstandingAmount, value)
         End Set
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
+        Get
+            Return _periodCutOffJournal
+        End Get
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
+        End Set
+    End Property
     <Association("PurchaseInvoice-PurchaseInvoiceDetail"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property Details As XPCollection(Of PurchaseInvoiceDetail)
         Get
@@ -231,7 +262,7 @@ Public Class PurchaseInvoice
             Case [Module].DiscountType.ByAmount
                 Discount = DiscountValue
             Case [Module].DiscountType.ByPercentage
-                Discount = Total * DiscountValue / 100
+                Discount = GlobalFunction.Round(Total * DiscountValue / 100)
         End Select
     End Sub
     Private Sub CalculateGrandTotal()
@@ -243,9 +274,37 @@ Public Class PurchaseInvoice
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            Dim tmpUnitPrice As Decimal = objDetail.UnitPrice * objDetail.Quantity / objDetail.BaseUnitQuantity
+            Dim tmpUnitPrice As Decimal = (objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount / objDetail.GrandTotal / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity
             objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
         Next
+        'Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        'Dim objSystemJournalEntry As New SystemJournalEntry
+        'objSystemJournalEntry.Description = "Pembelian dengan no " & No & "(" & ReferenceNo & ")"
+        'objSystemJournalEntry.TransDate = TransDate
+
+        'Dim objSystemJournalEntryPurchaseAccount As New SystemJournalEntryDebit
+        'objSystemJournalEntryPurchaseAccount.Account = objAccountLinkingConfig.PurchaseAccount
+        'objSystemJournalEntryPurchaseAccount.Amount = DetailsTotal
+        'objSystemJournalEntry.Debits.Add(objSystemJournalEntryPurchaseAccount)
+
+        'If DetailsDiscount + Discount > 0 Then
+        '    Dim objSystemJournalEntryPurchaseDiscountAccount As New SystemJournalEntryCredit
+        '    objSystemJournalEntryPurchaseDiscountAccount.Account = objAccountLinkingConfig.PurchaseDiscountAccount
+        '    objSystemJournalEntryPurchaseDiscountAccount.Amount = DetailsDiscount + Discount
+        '    objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseDiscountAccount)
+        'End If
+
+        'Dim objSystemJournalEntryPurchaseInvoiceAccount As New SystemJournalEntryCredit
+        'objSystemJournalEntryPurchaseInvoiceAccount.Account = objAccountLinkingConfig.PurchaseInvoiceAccount
+        'objSystemJournalEntryPurchaseInvoiceAccount.Amount = GrandTotal
+        'objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseInvoiceAccount)
+
+        'Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryDebit
+        'objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+        'objSystemJournalEntryInventoryAccount.Amount = GrandTotal
+        'objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
+        'PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -254,6 +313,9 @@ Public Class PurchaseInvoice
             objDetail.PeriodCutOffInventoryItem = Nothing
             PeriodCutOffService.DeletePeriodCutOffInventoryItem(tmp)
         Next
+        'Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        'PeriodCutOffJournal = Nothing
+        'PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
     End Sub
 End Class
 Public Enum OutstandingStatus
