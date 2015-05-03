@@ -124,6 +124,7 @@
     <Reference Include="DevExpress.XtraPrinting.v14.1">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="DevExpress.XtraReports.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraTreeList.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="Report.Module, Version=1.0.5453.16811, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -164,6 +165,18 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\PrintSalesReturnController.Designer.vb">
+      <DependentUpon>PrintSalesReturnController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PrintSalesReturnController.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PrintInvoiceController.Designer.vb">
+      <DependentUpon>PrintInvoiceController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PrintInvoiceController.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controllers\SuppressTransactionBaseConfirmation.Designer.vb">
       <DependentUpon>SuppressTransactionBaseConfirmation.vb</DependentUpon>
     </Compile>
@@ -199,8 +212,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controllers\PrintSalesReturnController.resx">
+      <DependentUpon>PrintSalesReturnController.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controllers\View\ShowCustomFormWindowController.resx">
       <DependentUpon>ShowCustomFormWindowController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PrintInvoiceController.resx">
+      <DependentUpon>PrintInvoiceController.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

@@ -30,6 +30,7 @@ Public Class TransactionBase
         MyBase.AfterConstruction()
         ' Place here your initialization code.
     End Sub
+    Private _note As String
     Private _status As TransactionStatus
     Private _entryDateTime As DateTime
     Private _submitDateTime As DateTime
@@ -40,6 +41,14 @@ Public Class TransactionBase
     Private _submitNote As String
     Private _cancelNote As String
 
+    Public Property Note As String
+        Get
+            Return _note
+        End Get
+        Set(value As String)
+            SetPropertyValue("Note", _note, value)
+        End Set
+    End Property
     Public Property Status() As TransactionStatus
         Get
             Return _status
