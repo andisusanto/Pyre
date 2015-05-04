@@ -241,6 +241,7 @@
     <Compile Include="Global\GlobalEnum.vb" />
     <Compile Include="Global\GlobalFunction.vb" />
     <Compile Include="Global\GlobalVar.vb" />
+    <Compile Include="Global\IndonesianWordSays.vb" />
     <Compile Include="Module.Designer.vb">
       <DependentUpon>Module.vb</DependentUpon>
     </Compile>

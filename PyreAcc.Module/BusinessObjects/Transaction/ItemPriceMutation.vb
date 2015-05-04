@@ -24,12 +24,12 @@ Public Class ItemPriceMutation
     End Sub
     Public Overrides Sub AfterConstruction()
         MyBase.AfterConstruction()
-        EffectiveDate = Today
+        TransDate = Today
     End Sub
 
     Private _no As String
     Private _item As Item
-    Private _effectiveDate As Date
+    Private _transDate As Date
     Private _minimumPrice As Decimal
     Private _standardPrice As Decimal
     Private _maximumPrice As Decimal
@@ -54,13 +54,13 @@ Public Class ItemPriceMutation
             SetPropertyValue("Item", _item, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for ItemPriceMutation.EffectiveDate", DefaultContexts.Save)>
-    Public Property EffectiveDate As Date
+    <RuleRequiredField("Rule Required for ItemPriceMutation.TransDate", DefaultContexts.Save)>
+    Public Property TransDate As Date
         Get
-            Return _effectiveDate
+            Return _transDate
         End Get
         Set(ByVal value As Date)
-            SetPropertyValue("EffectiveDate", _effectiveDate, value)
+            SetPropertyValue("EffectiveDate", _transDate, value)
         End Set
     End Property
     Public Property MinimumPrice As Decimal
@@ -106,7 +106,7 @@ Public Class ItemPriceMutation
 
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        ItemPrice = PyreAcc.Module.ItemPrice.CreateItemPrice(Session, Item, EffectiveDate, MinimumPrice, StandardPrice, MaximumPrice)
+        ItemPrice = PyreAcc.Module.ItemPrice.CreateItemPrice(Session, Item, TransDate, MinimumPrice, StandardPrice, MaximumPrice)
     End Sub
 
     Protected Overrides Sub OnCanceled()

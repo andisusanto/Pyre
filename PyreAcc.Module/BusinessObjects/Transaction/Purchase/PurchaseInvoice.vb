@@ -274,7 +274,7 @@ Public Class PurchaseInvoice
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            Dim tmpUnitPrice As Decimal = (objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount / objDetail.GrandTotal / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity
+            Dim tmpUnitPrice As Decimal = (objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity
             objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, IIf(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
         Next
         'Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)

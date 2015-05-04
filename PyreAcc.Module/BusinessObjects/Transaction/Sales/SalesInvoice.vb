@@ -45,6 +45,7 @@ Public Class SalesInvoice
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
+    Private _indonesianWordSays As String
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
     Private _salesman As Salesman
@@ -197,7 +198,17 @@ Public Class SalesInvoice
             SetPropertyValue("GrandTotal", _grandTotal, value)
             If Not IsLoading Then
                 CalculatePaymentOutstandingAmount()
+                IndonesianWordSays = PyreAcc.Module.IndonesianWordSays.GetIndonesianSays(GrandTotal)
             End If
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False)>
+    Public Property IndonesianWordSays As String
+        Get
+            Return _indonesianWordSays
+        End Get
+        Set(value As String)
+            SetPropertyValue("IndonesianWordSays", _indonesianWordSays, value)
         End Set
     End Property
     Public Property PaidAmount As Decimal
