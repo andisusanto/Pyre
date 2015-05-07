@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, IndonesianWordSays, Rounding, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesInvoice
@@ -45,6 +45,7 @@ Public Class SalesInvoice
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
+    Private _rounding As Decimal
     Private _indonesianWordSays As String
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
@@ -200,6 +201,15 @@ Public Class SalesInvoice
                 CalculatePaymentOutstandingAmount()
                 IndonesianWordSays = PyreAcc.Module.IndonesianWordSays.GetIndonesianSays(GrandTotal)
             End If
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False)>
+    Public Property Rounding As Decimal
+        Get
+            Return _rounding
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("Rounding", _rounding, value)
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False)>

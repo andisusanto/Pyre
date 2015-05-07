@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel PurchaseInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for PurchaseInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for PurchaseInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for PurchaseInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, Rounding, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PurchaseInvoice
@@ -46,6 +46,7 @@ Public Class PurchaseInvoice
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
+    Private _rounding As Decimal
     Private _paidAmount As Decimal
     Private _paymentOutstandingAmount As Decimal
 
@@ -210,6 +211,15 @@ Public Class PurchaseInvoice
             End If
         End Set
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False)>
+    Public Property Rounding As Decimal
+        Get
+            Return _rounding
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("Rounding", _rounding, value)
+        End Set
+    End Property
     <VisibleInListView(False)>
     Public Property PaidAmount As Decimal
         Get
@@ -313,6 +323,7 @@ Public Class PurchaseInvoice
             objDetail.PeriodCutOffInventoryItem = Nothing
             PeriodCutOffService.DeletePeriodCutOffInventoryItem(tmp)
         Next
+        Rounding = 0
         'Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
         'PeriodCutOffJournal = Nothing
         'PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)

@@ -18,7 +18,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for Cancel SalesReturn.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for SalesReturn.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesReturn.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for SalesReturn", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, PaidAmount, PaymentOutstandingAmount")>
+<Appearance("Appearance Default Disabled for SalesReturn", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, Discount, GrandTotal, IndonesianWordSays, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class SalesReturn
@@ -45,6 +45,7 @@ Public Class SalesReturn
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
+    Private _indonesianWordSays As String
     Private _salesman As Salesman
     Private _creditNote As CreditNote
     Private _periodCutOffJournal As PeriodCutOffJournal
@@ -151,6 +152,18 @@ Public Class SalesReturn
         End Get
         Set(ByVal value As Decimal)
             SetPropertyValue("GrandTotal", _grandTotal, value)
+            If Not IsLoading Then
+                IndonesianWordSays = PyreAcc.Module.IndonesianWordSays.GetIndonesianSays(GrandTotal)
+            End If
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False)>
+    Public Property IndonesianWordSays As String
+        Get
+            Return _indonesianWordSays
+        End Get
+        Set(value As String)
+            SetPropertyValue("IndonesianWordSays", _indonesianWordSays, value)
         End Set
     End Property
     Public Property Salesman As Salesman
