@@ -32,6 +32,7 @@ Partial Public Class PrintInvoiceController
         Dim rpt As Report.Module.Report = View.ObjectSpace.FindObject(Of Report.Module.Report)(New BinaryOperator("Name", tmpName))
         Dim lst As New List(Of IReportParameterControl)
         lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "SalesInvoice", .IsActive = True, .Values = {"('" & CurObject.Oid.ToString() & "')"}, .CriteriaString = {CurObject.No}})
+        lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "TransDate", .IsActive = False})
         Dim Xrpt = rpt.GetXtraReport(lst)
         Xrpt.ShowRibbonPreviewDialog()
     End Sub
