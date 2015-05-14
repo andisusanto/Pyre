@@ -125,11 +125,11 @@ Public Class PeriodCutOffService
         Dim tmpBalance As Decimal = 0
         For Each objInventoryItem In PeriodCutOff.InventoryItems
             tmpBalance += objInventoryItem.BaseUnitQuantity
-            If objInventoryItem.Item.HasExpiryDate AndAlso objInventoryItem.ExpiryDate < TransDate Then tmpBalance -= objInventoryItem.RemainingBaseUnitQuantity
+            'If objInventoryItem.Item.HasExpiryDate AndAlso objInventoryItem.ExpiryDate < TransDate Then tmpBalance -= objInventoryItem.RemainingBaseUnitQuantity
         Next
-        For Each objInventoryItemDeductTransaction In PeriodCutOff.InventoryItemDeductTransactions
-            tmpBalance -= objInventoryItemDeductTransaction.BaseUnitQuantity
-        Next
+        'For Each objInventoryItemDeductTransaction In PeriodCutOff.InventoryItemDeductTransactions
+        '    tmpBalance -= objInventoryItemDeductTransaction.BaseUnitQuantity
+        'Next
         Return tmpBalance
     End Function
 
