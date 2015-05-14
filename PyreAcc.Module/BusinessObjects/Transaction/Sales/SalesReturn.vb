@@ -224,7 +224,7 @@ Public Class SalesReturn
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         For Each objDetail In Details
-            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, If(objDetail.Item.HasExpiryDate, objDetail.ExpiryDate, New Date), objDetail.BatchNo)
+            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
         Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}

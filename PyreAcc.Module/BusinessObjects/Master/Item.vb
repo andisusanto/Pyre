@@ -41,7 +41,6 @@ Public Class Item
     Private fMainSupplier As Supplier
     Private fDefaultCapital As Decimal
     Private fBaseUnit As Unit
-    Private fHasExpiryDate As Boolean
     Private fActive As Boolean
     Private fType As ItemType
 
@@ -110,14 +109,6 @@ Public Class Item
         End Get
         Set(value As Unit)
             SetPropertyValue("BaseUnit", fBaseUnit, value)
-        End Set
-    End Property
-    Public Property HasExpiryDate As Boolean
-        Get
-            Return fHasExpiryDate
-        End Get
-        Set(value As Boolean)
-            SetPropertyValue("HasExpiryDate", fHasExpiryDate, value)
         End Set
     End Property
     Public Property Active As Boolean

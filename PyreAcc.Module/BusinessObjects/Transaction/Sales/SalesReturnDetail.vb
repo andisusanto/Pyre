@@ -131,7 +131,6 @@ Public Class SalesReturnDetail
             SetPropertyValue("BatchNo", _batchNo, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for SalesReturnDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate

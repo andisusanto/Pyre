@@ -142,7 +142,6 @@ Public Class PurchaseInvoiceDetail
             BaseUnitQuantity = 0
         End If
     End Sub
-    <RuleRequiredField("Rule Required for PurchaseInvoiceDetail.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate
