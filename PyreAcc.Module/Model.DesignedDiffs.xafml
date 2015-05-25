@@ -144,6 +144,7 @@
       <Item Id="Inquiry" Index="2" IsNewNode="True">
         <Items IsNewNode="True">
           <Item Id="PeriodCutOff_ListView" ViewId="PeriodCutOff_ListView" ObjectKey="" IsNewNode="True" />
+          <Item Id="Purchase Invoice Detail" ImageName="BO_Invoice" ViewId="PurchaseInvoiceDetail_ListView" IsNewNode="True" />
           <Item Id="SalesInvoiceDetail_ListView" ObjectKey="" ViewId="SalesInvoiceDetail_ListView" IsNewNode="True" />
         </Items>
       </Item>

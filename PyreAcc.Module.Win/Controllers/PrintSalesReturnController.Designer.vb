@@ -34,6 +34,7 @@ Partial Class PrintSalesReturnController
         Me.PrintSalesReturn.Caption = "Print Sales Return"
         Me.PrintSalesReturn.ConfirmationMessage = Nothing
         Me.PrintSalesReturn.Id = "PrintSalesReturn"
+        Me.PrintSalesReturn.Shortcut = "ctrl + p"
         Me.PrintSalesReturn.TargetObjectType = GetType(PyreAcc.[Module].SalesReturn)
         Me.PrintSalesReturn.ToolTip = Nothing
 

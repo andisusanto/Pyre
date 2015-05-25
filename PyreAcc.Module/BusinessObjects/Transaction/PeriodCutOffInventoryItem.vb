@@ -90,7 +90,7 @@ Public Class PeriodCutOffInventoryItem
             SetPropertyValue("UnitPrice", _unitPrice, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
+    '<RuleRequiredField("Rule Required for PeriodCutOffInventoryItem.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate = TRUE")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate

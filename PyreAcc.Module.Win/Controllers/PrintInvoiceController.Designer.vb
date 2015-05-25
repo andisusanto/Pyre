@@ -34,6 +34,7 @@ Partial Class PrintInvoiceController
         Me.PrintInvoice.Caption = "Print Invoice"
         Me.PrintInvoice.ConfirmationMessage = Nothing
         Me.PrintInvoice.Id = "PrintInvoice"
+        Me.PrintInvoice.Shortcut = "ctrl+shift+alt+p"
         Me.PrintInvoice.TargetObjectType = GetType(PyreAcc.[Module].SalesInvoice)
         Me.PrintInvoice.ToolTip = Nothing
 

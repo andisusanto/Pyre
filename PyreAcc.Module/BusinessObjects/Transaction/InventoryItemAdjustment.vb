@@ -13,8 +13,8 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
+'<Appearance("Appearance for InventoryItemAdjusment.Item.HasExpiryDate = FALSE", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="ExpiryDate", criteria:="Item.HasExpiryDate = FALSE")>
 <Appearance("Appearance for InventoryItemAdjusment.BaseUnitQuantity < 0", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="UnitPrice, ExpiryDate, BatchNo", criteria:="BaseUnitQuantity < 0")>
-<Appearance("Appearance for InventoryItemAdjusment.Item.HasExpiryDate = FALSE", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="ExpiryDate", criteria:="Item.HasExpiryDate = FALSE")>
 <Appearance("Appearance Default Disabled for InventoryItemAdjustment", AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, Total", enabled:=False)>
 <RuleCriteria("Rule Criteria for InventoryItemAdjustment.BaseUnitQuantity <> 0", "Submit", "BaseUnitQuantity <> 0")>
 <DeferredDeletion(False)>
@@ -127,7 +127,7 @@ Public Class InventoryItemAdjustment
             SetPropertyValue("UnitPrice", _unitPrice, value)
         End Set
     End Property
-    <RuleRequiredField("Rule Required for InventoryItemAdjustment.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate AND BaseUnitQuantity > 0")>
+    '<RuleRequiredField("Rule Required for InventoryItemAdjustment.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate AND BaseUnitQuantity > 0")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate
