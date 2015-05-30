@@ -2,6 +2,7 @@
 <Application Title="PyreAcc" Logo="ExpressAppLogo">
   <ActionDesign>
     <Actions>
+      <Action Id="SaveAndNew" Shortcut="CtrlQ" />
       <Action Id="TransactionBaseCancelSubmitAction" ValidationContexts="CancelSubmit" />
       <Action Id="TransactionBaseSubmitAction" ValidationContexts="Submit" />
     </Actions>
