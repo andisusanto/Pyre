@@ -13,7 +13,6 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
-'<Appearance("Appearance for InventoryItemAdjusment.Item.HasExpiryDate = FALSE", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="ExpiryDate", criteria:="Item.HasExpiryDate = FALSE")>
 <Appearance("Appearance for InventoryItemAdjusment.BaseUnitQuantity < 0", visibility:=Editors.ViewItemVisibility.Hide, targetitems:="UnitPrice, ExpiryDate, BatchNo", criteria:="BaseUnitQuantity < 0")>
 <Appearance("Appearance Default Disabled for InventoryItemAdjustment", AppearanceItemType:="ViewItem", targetitems:="BaseUnitQuantity, Total", enabled:=False)>
 <RuleCriteria("Rule Criteria for InventoryItemAdjustment.BaseUnitQuantity <> 0", "Submit", "BaseUnitQuantity <> 0")>
@@ -42,6 +41,8 @@ Public Class InventoryItemAdjustment
     Private _batchNo As String
     Private _periodCutOffInventoryItem As PeriodCutOffInventoryItem
     Private _periodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
+
+    Private _periodCutOffJournal As PeriodCutOffJournal
     <RuleRequiredField("Rule Required for InventoryItemAdjustment.No", DefaultContexts.Save)>
     <RuleUniqueValue("Rule Unique for InventoryItemAdjustment.No", DefaultContexts.Save)>
     Public Property No As String
@@ -69,7 +70,10 @@ Public Class InventoryItemAdjustment
         End Get
         Set(ByVal value As Item)
             SetPropertyValue("Item", _item, value)
-            If Not IsLoading Then CalculateBaseUnitQuantity()
+            If Not IsLoading Then
+                CalculateBaseUnitQuantity()
+                Unit = Item.BaseUnit
+            End If
         End Set
     End Property
     <ImmediatePostData(True)>
@@ -84,6 +88,7 @@ Public Class InventoryItemAdjustment
     End Property
     <ImmediatePostData(True)>
     <RuleRequiredField("Rule Required for InventoryItemAdjustment.Unit", DefaultContexts.Save)>
+    <DataSourceProperty("Item.UnitSource")>
     Public Property Unit As Unit
         Get
             Return _unit
@@ -127,7 +132,6 @@ Public Class InventoryItemAdjustment
             SetPropertyValue("UnitPrice", _unitPrice, value)
         End Set
     End Property
-    '<RuleRequiredField("Rule Required for InventoryItemAdjustment.ExpiryDate", DefaultContexts.Save, targetcriteria:="Item.HasExpiryDate AND BaseUnitQuantity > 0")>
     Public Property ExpiryDate As Date
         Get
             Return _expiryDate
@@ -162,6 +166,15 @@ Public Class InventoryItemAdjustment
             SetPropertyValue("PeriodCutOffInventoryItemInventoryItemDeductTransaction", _periodCutOffInventoryItemDeductTransaction, value)
         End Set
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public Property PeriodCutOffJournal As PeriodCutOffJournal
+        Get
+            Return _periodCutOffJournal
+        End Get
+        Set(value As PeriodCutOffJournal)
+            SetPropertyValue("PeriodCutOffJournal", _periodCutOffJournal, value)
+        End Set
+    End Property
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
             Return No
@@ -169,12 +182,44 @@ Public Class InventoryItemAdjustment
     End Property
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+        'Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        'Dim objSystemJournalEntry As New SystemJournalEntry
+        'objSystemJournalEntry.Description = "Inventory Adjustment dengan no " & No
+        'objSystemJournalEntry.TransDate = TransDate
+
         If BaseUnitQuantity > 0 Then
             Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
             PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
+
+            'Dim total = tmpUnitPrice * BaseUnitQuantity
+            'Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryCredit
+            'objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentPlusAccount
+            'objSystemJournalEntrySalesAccount.Amount = total
+            'objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
+
+            'Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryDebit
+            'objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+            'objSystemJournalEntrySalesInvoiceAccount.Amount = total
+            'objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
         Else
             PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Adjustment)
+
+            'Dim total As Decimal = 0
+            'For Each objDeductTransactionDetail In PeriodCutOffInventoryItemDeductTransaction.Details
+            '    total += objDeductTransactionDetail.DeductedBaseUnitQuantity * objDeductTransactionDetail.PeriodCutOffInventoryItem.UnitPrice
+            'Next
+            'Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryDebit
+            'objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentMinusAccount
+            'objSystemJournalEntrySalesAccount.Amount = total
+            'objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
+
+            'Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryCredit
+            'objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+            'objSystemJournalEntrySalesInvoiceAccount.Amount = total
+            'objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
         End If
+        'PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
