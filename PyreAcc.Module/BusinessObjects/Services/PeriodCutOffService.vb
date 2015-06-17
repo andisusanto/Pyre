@@ -212,6 +212,7 @@ Public Class PeriodCutOffService
     End Function
 
     Public Shared Sub DeletePeriodCutOffJournal(ByVal PeriodCutOffJournal As PeriodCutOffJournal)
+        If PeriodCutOffJournal Is Nothing Then Exit Sub
         For i = 0 To PeriodCutOffJournal.AccountMutations.Count - 1
             DeletePeriodCutOffJournalAccountMutation(PeriodCutOffJournal.AccountMutations(0))
         Next
