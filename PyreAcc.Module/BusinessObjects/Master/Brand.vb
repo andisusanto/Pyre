@@ -56,5 +56,9 @@ Public Class Brand
             SetPropertyValue("Active", _active, value)
         End Set
     End Property
-
+    Public Overrides ReadOnly Property DefaultDisplay As String
+        Get
+            Return Name
+        End Get
+    End Property
 End Class

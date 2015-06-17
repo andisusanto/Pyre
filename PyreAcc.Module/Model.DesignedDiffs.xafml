@@ -317,6 +317,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="InventoryItemAdjustment_ListView" IsFooterVisible="True" />
+    <ListView Id="Item_ListView" IsFooterVisible="True" />
+    <ListView Id="ItemPrice_ListView" IsFooterVisible="True" />
     <DetailView Id="ItemPriceMutation_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -374,6 +377,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="ItemPriceMutation_ListView" IsFooterVisible="True" />
     <DetailView Id="JournalEntry_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -434,6 +438,8 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="PeriodCutOff_InventoryItems_ListView" IsFooterVisible="True" />
+    <ListView Id="PeriodCutOff_ListView" IsFooterVisible="True" />
     <ListView Id="PurchaseInvoice_Details_ListView" AllowEdit="True" NewItemRowPosition="Top">
       <Columns>
         <ColumnInfo Id="BaseUnitQuantity" Index="-1" />
@@ -536,6 +542,7 @@
         <ColumnInfo Id="PaymentOutstandingAmount" PropertyName="PaymentOutstandingAmount" Width="50" Index="13" IsNewNode="True" />
       </Columns>
     </ListView>
+    <ListView Id="PurchaseInvoice_ListView" IsFooterVisible="True" />
     <DetailView Id="PurchaseInvoiceDetail_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -569,6 +576,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="PurchaseInvoiceDetail_ListView" IsFooterVisible="True" />
     <ListView Id="PurchasePayment_Details_ListView">
       <Columns>
         <ColumnInfo Id="Sequence" Index="-1" />
@@ -639,6 +647,8 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="PurchasePayment_ListView" IsFooterVisible="True" />
+    <ListView Id="PurchasePaymentDebitNote_ListView" IsFooterVisible="True" />
     <DetailView Id="PurchasePaymentDetail_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -652,6 +662,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="PurchasePaymentDetail_ListView" IsFooterVisible="True" />
     <ListView Id="PurchaseReturn_Details_ListView" AllowEdit="True" NewItemRowPosition="Top" />
     <DetailView Id="PurchaseReturn_DetailView">
       <Layout>
@@ -718,7 +729,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="SalesInvoice_Details_ListView" NewItemRowPosition="Top" AllowEdit="True">
+    <ListView Id="PurchaseReturn_ListView" IsFooterVisible="True" />
+    <ListView Id="PurchaseReturnDetail_ListView" IsFooterVisible="True" />
+    <ListView Id="SalesInvoice_Details_ListView" NewItemRowPosition="Top" AllowEdit="True" IsFooterVisible="True">
       <Columns>
         <ColumnInfo Id="BaseUnitQuantity" Index="-1" />
       </Columns>
@@ -817,6 +830,7 @@
         <ColumnInfo Id="PaymentOutstandingAmount" PropertyName="PaymentOutstandingAmount" Width="50" Index="12" IsNewNode="True" />
       </Columns>
     </ListView>
+    <ListView Id="SalesInvoice_ListView" IsFooterVisible="True" />
     <DetailView Id="SalesInvoiceDetail_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -848,7 +862,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="SalesPayment_Details_ListView">
+    <ListView Id="SalesInvoiceDetail_ListView" IsFooterVisible="True" />
+    <ListView Id="SalesPayment_CreditNotes_ListView" IsFooterVisible="True" />
+    <ListView Id="SalesPayment_Details_ListView" IsFooterVisible="True">
       <Columns>
         <ColumnInfo Id="Sequence" Index="-1" />
       </Columns>
@@ -918,6 +934,8 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="SalesPayment_ListView" IsFooterVisible="True" />
+    <ListView Id="SalesPaymentCreditNote_ListView" IsFooterVisible="True" />
     <DetailView Id="SalesPaymentDetail_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -931,7 +949,8 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="SalesReturn_Details_ListView" AllowEdit="True" NewItemRowPosition="Top" />
+    <ListView Id="SalesPaymentDetail_ListView" IsFooterVisible="True" />
+    <ListView Id="SalesReturn_Details_ListView" AllowEdit="True" NewItemRowPosition="Top" IsFooterVisible="True" />
     <DetailView Id="SalesReturn_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -998,6 +1017,8 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="SalesReturn_ListView" IsFooterVisible="True" />
+    <ListView Id="SalesReturnDetail_ListView" IsFooterVisible="True" />
     <DetailView Id="SupplierContactInformation_DetailView">
       <Items>
         <PropertyEditor Id="ContactInformation.ContactNo" PropertyName="ContactInformation.ContactNo" IsNewNode="True" />
