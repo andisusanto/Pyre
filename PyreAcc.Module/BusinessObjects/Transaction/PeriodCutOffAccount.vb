@@ -13,7 +13,6 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
-<RuleCriteria("Rule Criteria for PeriodCutOffAccount.LastBalance >= 0", DefaultContexts.Save, "LastBalance >= 0")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PeriodCutOffAccount

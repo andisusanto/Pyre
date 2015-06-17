@@ -15,10 +15,10 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
-<RuleCriteria("Rule Criteria for SalesPayment.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for SalesPayment.GrandTotal > 0", DefaultContexts.Save, "GrandTotal > 0")>
 <RuleCriteria("Rule Criteria for SalesPayment.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Actions for SalesPayment.EnableDetails = FALSE", appearanceitemtype:="Action", enabled:=False, targetitems:="btnSalesPaymentWizardSalesInvoiceForPayment; btnSalesPaymentWizardCreditNoteForPayment", criteria:="EnableDetails = FALSE")>
-<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, CreditNoteAmount, RemainingAmount")>
+<Appearance("Appearance Default Disabled for SalesPayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, GrandTotal, CreditNoteAmount, RemainingAmount")>
 <Appearance("Appearance for SalesPayment.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
 <Appearance("Appearance for SalesPayment.Details.Count > 0", AppearanceItemType:="ViewItem", criteria:="@Details.Count > 0", enabled:=False, targetitems:="Customer")>
 <DeferredDeletion(False)>
@@ -38,6 +38,8 @@ Public Class SalesPayment
     Private _transDate As Date
     Private _customer As Customer
     Private _total As Decimal
+    Private _discount As Decimal
+    Private _grandTotal As Decimal
     Private _creditNoteAmount As Decimal
     Private _remainingAmount As Decimal
     Private _toAccount As Account
@@ -77,6 +79,28 @@ Public Class SalesPayment
         End Get
         Set(value As Decimal)
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property Discount As Decimal
+        Get
+            Return _discount
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("Discount", _discount, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property GrandTotal As Decimal
+        Get
+            Return _grandTotal
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("GrandTotal", _grandTotal, value)
             If Not IsLoading Then
                 CalculateRemainingAmount()
             End If
@@ -120,7 +144,10 @@ Public Class SalesPayment
         End Set
     End Property
     Private Sub CalculateRemainingAmount()
-        RemainingAmount = Total - CreditNoteAmount
+        RemainingAmount = GrandTotal - CreditNoteAmount
+    End Sub
+    Private Sub CalculateGrandTotal()
+        GrandTotal = Total - Discount
     End Sub
     <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
     Public ReadOnly Property IsPeriodClosed As Boolean
@@ -162,7 +189,34 @@ Public Class SalesPayment
             If obj.CreditNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Credit note with no {0} has no enough balance", obj.CreditNote.No))
             obj.CreditNote.UsedAmount += obj.Amount
         Next
-        Customer.OutstandingPaymentAmount -= Total
+        Customer.OutstandingPaymentAmount -= GrandTotal
+
+
+        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        Dim objSystemJournalEntry As New SystemJournalEntry
+        objSystemJournalEntry.Description = "Pembayaran piutang dengan no " & No
+        objSystemJournalEntry.TransDate = TransDate
+        Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryCredit
+        objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.SalesInvoiceAccount
+        objSystemJournalEntrySalesInvoiceAccount.Amount = Total
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesInvoiceAccount)
+
+        Dim objSystemJournalEntryDiscountAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryDiscountAccount.Account = objAccountLinkingConfig.PaymentDiscountAccount
+        objSystemJournalEntryDiscountAccount.Amount = Discount
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryDiscountAccount)
+
+        Dim objSystemJournalEntryToAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryToAccount.Account = ToAccount
+        objSystemJournalEntryToAccount.Amount = RemainingAmount
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryToAccount)
+
+        Dim objSystemJournalEntryCreditNoteAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryCreditNoteAccount.Account = objAccountLinkingConfig.CreditNoteAccount
+        objSystemJournalEntryCreditNoteAccount.Amount = CreditNoteAmount
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryCreditNoteAccount)
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -172,6 +226,10 @@ Public Class SalesPayment
         For Each obj In CreditNotes
             obj.CreditNote.UsedAmount -= obj.Amount
         Next
-        Customer.OutstandingPaymentAmount += Total
+        Customer.OutstandingPaymentAmount += GrandTotal
+
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
     End Sub
 End Class

@@ -182,44 +182,44 @@ Public Class InventoryItemAdjustment
     End Property
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        'Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
-        'Dim objSystemJournalEntry As New SystemJournalEntry
-        'objSystemJournalEntry.Description = "Inventory Adjustment dengan no " & No
-        'objSystemJournalEntry.TransDate = TransDate
+        Dim objSystemJournalEntry As New SystemJournalEntry
+        objSystemJournalEntry.Description = "Inventory Adjustment dengan no " & No
+        objSystemJournalEntry.TransDate = TransDate
 
         If BaseUnitQuantity > 0 Then
             Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
             PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
 
-            'Dim total = tmpUnitPrice * BaseUnitQuantity
-            'Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryCredit
-            'objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentPlusAccount
-            'objSystemJournalEntrySalesAccount.Amount = total
-            'objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
+            Dim total = tmpUnitPrice * BaseUnitQuantity
+            Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryCredit
+            objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentPlusAccount
+            objSystemJournalEntrySalesAccount.Amount = total
+            objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
 
-            'Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryDebit
-            'objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
-            'objSystemJournalEntrySalesInvoiceAccount.Amount = total
-            'objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
+            Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryDebit
+            objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+            objSystemJournalEntrySalesInvoiceAccount.Amount = total
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
         Else
             PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Adjustment)
 
-            'Dim total As Decimal = 0
-            'For Each objDeductTransactionDetail In PeriodCutOffInventoryItemDeductTransaction.Details
-            '    total += objDeductTransactionDetail.DeductedBaseUnitQuantity * objDeductTransactionDetail.PeriodCutOffInventoryItem.UnitPrice
-            'Next
-            'Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryDebit
-            'objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentMinusAccount
-            'objSystemJournalEntrySalesAccount.Amount = total
-            'objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
+            Dim total As Decimal = 0
+            For Each objDeductTransactionDetail In PeriodCutOffInventoryItemDeductTransaction.Details
+                total += objDeductTransactionDetail.DeductedBaseUnitQuantity * objDeductTransactionDetail.PeriodCutOffInventoryItem.UnitPrice
+            Next
+            Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryDebit
+            objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentMinusAccount
+            objSystemJournalEntrySalesAccount.Amount = total
+            objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
 
-            'Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryCredit
-            'objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
-            'objSystemJournalEntrySalesInvoiceAccount.Amount = total
-            'objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
+            Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryCredit
+            objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+            objSystemJournalEntrySalesInvoiceAccount.Amount = total
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
         End If
-        'PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()

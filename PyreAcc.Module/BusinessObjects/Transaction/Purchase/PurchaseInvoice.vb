@@ -283,38 +283,48 @@ Public Class PurchaseInvoice
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+        Dim currentInventoryValue As Decimal = 0
         For Each objDetail In Details
-            Dim tmpUnitPrice As Decimal = (objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity
+            Dim tmpUnitPrice As Decimal = GlobalFunction.Round((objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity)
+            currentInventoryValue += tmpUnitPrice * objDetail.BaseUnitQuantity
             objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
         Next
-        'Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+        Rounding = GrandTotal - currentInventoryValue
+        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
-        'Dim objSystemJournalEntry As New SystemJournalEntry
-        'objSystemJournalEntry.Description = "Pembelian dengan no " & No & "(" & ReferenceNo & ")"
-        'objSystemJournalEntry.TransDate = TransDate
+        Dim objSystemJournalEntry As New SystemJournalEntry
+        objSystemJournalEntry.Description = "Pembelian dengan no " & No & "(" & ReferenceNo & ")"
+        objSystemJournalEntry.TransDate = TransDate
 
-        'Dim objSystemJournalEntryPurchaseAccount As New SystemJournalEntryDebit
-        'objSystemJournalEntryPurchaseAccount.Account = objAccountLinkingConfig.PurchaseAccount
-        'objSystemJournalEntryPurchaseAccount.Amount = DetailsTotal
-        'objSystemJournalEntry.Debits.Add(objSystemJournalEntryPurchaseAccount)
+        Dim objSystemJournalEntryPurchaseAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryPurchaseAccount.Account = objAccountLinkingConfig.PurchaseAccount
+        objSystemJournalEntryPurchaseAccount.Amount = DetailsTotal
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryPurchaseAccount)
 
-        'If DetailsDiscount + Discount > 0 Then
-        '    Dim objSystemJournalEntryPurchaseDiscountAccount As New SystemJournalEntryCredit
-        '    objSystemJournalEntryPurchaseDiscountAccount.Account = objAccountLinkingConfig.PurchaseDiscountAccount
-        '    objSystemJournalEntryPurchaseDiscountAccount.Amount = DetailsDiscount + Discount
-        '    objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseDiscountAccount)
-        'End If
+        If DetailsDiscount + Discount > 0 Then
+            Dim objSystemJournalEntryPurchaseDiscountAccount As New SystemJournalEntryCredit
+            objSystemJournalEntryPurchaseDiscountAccount.Account = objAccountLinkingConfig.PurchaseDiscountAccount
+            objSystemJournalEntryPurchaseDiscountAccount.Amount = DetailsDiscount + Discount
+            objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseDiscountAccount)
+        End If
 
-        'Dim objSystemJournalEntryPurchaseInvoiceAccount As New SystemJournalEntryCredit
-        'objSystemJournalEntryPurchaseInvoiceAccount.Account = objAccountLinkingConfig.PurchaseInvoiceAccount
-        'objSystemJournalEntryPurchaseInvoiceAccount.Amount = GrandTotal
-        'objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseInvoiceAccount)
+        If Rounding > 0 Then
+            Dim objSystemJournalEntryRoundingAccount As New SystemJournalEntryDebit
+            objSystemJournalEntryRoundingAccount.Account = objAccountLinkingConfig.RoundingAccount
+            objSystemJournalEntryRoundingAccount.Amount = Rounding
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntryRoundingAccount)
+        End If
 
-        'Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryDebit
-        'objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
-        'objSystemJournalEntryInventoryAccount.Amount = GrandTotal
-        'objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
-        'PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
+        Dim objSystemJournalEntryPurchaseInvoiceAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryPurchaseInvoiceAccount.Account = objAccountLinkingConfig.PurchaseInvoiceAccount
+        objSystemJournalEntryPurchaseInvoiceAccount.Amount = GrandTotal
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseInvoiceAccount)
+
+        Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+        objSystemJournalEntryInventoryAccount.Amount = GrandTotal
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -324,9 +334,9 @@ Public Class PurchaseInvoice
             PeriodCutOffService.DeletePeriodCutOffInventoryItem(tmp)
         Next
         Rounding = 0
-        'Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
-        'PeriodCutOffJournal = Nothing
-        'PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
     End Sub
 End Class
 Public Enum OutstandingStatus

@@ -202,13 +202,38 @@ Public Class PurchaseReturn
 
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+        Dim inventoryValue As Decimal = 0
         For Each objDetail In Details
             objDetail.PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Returned)
+            For Each obj In objDetail.PeriodCutOffInventoryItemDeductTransaction.Details
+                inventoryValue += obj.DeductedBaseUnitQuantity * obj.PeriodCutOffInventoryItem.UnitPrice
+            Next
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.DebitNote"), New BinaryOperator("IsActive", True)))
         Dim objDebitNote As New DebitNote(Session) With {.FromSupplier = Supplier, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
         objDebitNote.No = objAutoNo.GetAutoNo(objDebitNote)
         DebitNote = objDebitNote
+        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        Dim objSystemJournalEntry As New SystemJournalEntry
+        objSystemJournalEntry.Description = "Retur Pembelian dengan no " & No & "(" & ReferenceNo & ")"
+        objSystemJournalEntry.TransDate = TransDate
+
+        Dim objSystemJournalEntryDebitNoteAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryDebitNoteAccount.Account = objAccountLinkingConfig.DebitNoteAccount
+        objSystemJournalEntryDebitNoteAccount.Amount = GrandTotal
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryDebitNoteAccount)
+
+        Dim objSystemJournalEntryPurchaseReturnAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryPurchaseReturnAccount.Account = objAccountLinkingConfig.PurchaseReturnAccount
+        objSystemJournalEntryPurchaseReturnAccount.Amount = GrandTotal
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryPurchaseReturnAccount)
+
+        Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+        objSystemJournalEntryInventoryAccount.Amount = GrandTotal
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()

@@ -15,10 +15,10 @@ Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 
 <CreatableItem(False)> _
-<RuleCriteria("Rule Criteria for PurchasePayment.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for PurchasePayment.GrandTotal > 0", DefaultContexts.Save, "GrandTotal > 0")>
 <Appearance("Appearance Actions for PurchasePayment.EnableDetails = FALSE", appearanceitemtype:="Action", enabled:=False, targetitems:="btnPurchasePaymentWizardPurchaseInvoiceForPayment; btnPurchasePaymentWizardDebitNoteForPayment", criteria:="EnableDetails = FALSE")>
 <RuleCriteria("Rule Criteria for PurchasePayment.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, DebitNoteAmount, RemainingAmount")>
+<Appearance("Appearance Default Disabled for PurchasePayment", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="Total, GrandTotal, DebitNoteAmount, RemainingAmount")>
 <Appearance("Appearance for PurchasePayment.EnableDetails = FALSE", AppearanceItemType:="ViewItem", criteria:="EnableDetails = FALSE", enabled:=False, targetitems:="Details")>
 <Appearance("Appearance for PurchasePayment.Details.Count > 0", AppearanceItemType:="ViewItem", criteria:="@Details.Count > 0", enabled:=False, targetitems:="Supplier")>
 <DeferredDeletion(False)>
@@ -35,9 +35,12 @@ Public Class PurchasePayment
         TransDate = Today
     End Sub
     Private _no As String
+    Private _referenceNo As String
     Private _transDate As Date
     Private _supplier As Supplier
     Private _total As Decimal
+    Private _discount As Decimal
+    Private _grandTotal As Decimal
     Private _debitNoteAmount As Decimal
     Private _remainingAmount As Decimal
     Private _fromAccount As Account
@@ -50,6 +53,14 @@ Public Class PurchasePayment
         End Get
         Set(value As String)
             SetPropertyValue("No", _no, value)
+        End Set
+    End Property
+    Public Property ReferenceNo As String
+        Get
+            Return _referenceNo
+        End Get
+        Set(value As String)
+            SetPropertyValue("ReferenceNo", _referenceNo, value)
         End Set
     End Property
     <RuleRequiredField("Rule Required for PurchasePayment.TransDate", DefaultContexts.Save)>
@@ -77,6 +88,28 @@ Public Class PurchasePayment
         End Get
         Set(value As Decimal)
             SetPropertyValue("Total", _total, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property Discount As Decimal
+        Get
+            Return _discount
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("Discount", _discount, value)
+            If Not IsLoading Then
+                CalculateGrandTotal()
+            End If
+        End Set
+    End Property
+    Public Property GrandTotal As Decimal
+        Get
+            Return _grandTotal
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("GrandTotal", _grandTotal, value)
             If Not IsLoading Then
                 CalculateRemainingAmount()
             End If
@@ -126,7 +159,10 @@ Public Class PurchasePayment
         End Get
     End Property
     Private Sub CalculateRemainingAmount()
-        RemainingAmount = Total - DebitNoteAmount
+        RemainingAmount = GrandTotal - DebitNoteAmount
+    End Sub
+    Private Sub CalculateGrandTotal()
+        GrandTotal = Total - Discount
     End Sub
     <Association("PurchasePayment-PurchasePaymentDetail"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property Details As XPCollection(Of PurchasePaymentDetail)
@@ -162,6 +198,32 @@ Public Class PurchasePayment
             If obj.DebitNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Debit note with no {0} has no enough balance", obj.DebitNote.No))
             obj.DebitNote.UsedAmount += obj.Amount
         Next
+
+        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        Dim objSystemJournalEntry As New SystemJournalEntry
+        objSystemJournalEntry.Description = "Pembayaran hutang dengan no " & No & "(" & ReferenceNo & ")"
+        objSystemJournalEntry.TransDate = TransDate
+        Dim objSystemJournalEntryPurchaseInvoiceAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryPurchaseInvoiceAccount.Account = objAccountLinkingConfig.PurchaseInvoiceAccount
+        objSystemJournalEntryPurchaseInvoiceAccount.Amount = Total
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryPurchaseInvoiceAccount)
+
+        Dim objSystemJournalEntryDiscountAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryDiscountAccount.Account = objAccountLinkingConfig.PaymentDiscountAccount
+        objSystemJournalEntryDiscountAccount.Amount = Discount
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryDiscountAccount)
+
+        Dim objSystemJournalEntryFromAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryFromAccount.Account = FromAccount
+        objSystemJournalEntryFromAccount.Amount = RemainingAmount
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryFromAccount)
+
+        Dim objSystemJournalEntryDebitNoteAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryDebitNoteAccount.Account = objAccountLinkingConfig.DebitNoteAccount
+        objSystemJournalEntryDebitNoteAccount.Amount = DebitNoteAmount
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryDebitNoteAccount)
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
@@ -171,5 +233,9 @@ Public Class PurchasePayment
         For Each obj In DebitNotes
             obj.DebitNote.UsedAmount -= obj.Amount
         Next
+
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
     End Sub
 End Class

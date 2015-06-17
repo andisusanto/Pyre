@@ -36,8 +36,14 @@ Public Class AccountLinkingConfig
     Private fDebitNoteAccount As Account
     Private fCreditNoteAccount As Account
 
-    Private fRoundingPlusAccount As Account
-    Private fRoundingMinusAccount As Account
+    Private fSalesReturnAccount As Account
+    Private fPurchaseReturnAccount As Account
+
+    Private fRoundingAccount As Account
+    Private fAdjustmentPlusAccount As Account
+    Private fAdjustmentMinusAccount As Account
+
+    Private fPaymentDiscountAccount As Account
 
     <DataSourceCriteria("IsParent = False AND IsActive = True")>
     <RuleRequiredField("Rule Required for AccountLinkingConfig.PurchaseInvoiceAccount", DefaultContexts.Save)>
@@ -140,25 +146,66 @@ Public Class AccountLinkingConfig
         End Set
     End Property
     <DataSourceCriteria("IsParent = False AND IsActive = True")>
-    <RuleRequiredField("Rule Required for AccountLinkingConfig.RoundingPlusAccount", DefaultContexts.Save)>
-    Public Property RoundingPlusAccount As Account
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.SalesReturnAccount", DefaultContexts.Save)>
+    Public Property SalesReturnAccount As Account
         Get
-            Return fRoundingPlusAccount
+            Return fSalesReturnAccount
         End Get
         Set(ByVal value As Account)
-            SetPropertyValue("RoundingPlusAccount", fRoundingPlusAccount, value)
+            SetPropertyValue("SalesReturnAccount", fSalesReturnAccount, value)
         End Set
     End Property
     <DataSourceCriteria("IsParent = False AND IsActive = True")>
-    <RuleRequiredField("Rule Required for AccountLinkingConfig.RoundingMinusAccount", DefaultContexts.Save)>
-    Public Property RoundingMinusAccount As Account
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.PurchaseReturnAccount", DefaultContexts.Save)>
+    Public Property PurchaseReturnAccount As Account
         Get
-            Return fRoundingMinusAccount
+            Return fPurchaseReturnAccount
         End Get
         Set(ByVal value As Account)
-            SetPropertyValue("RoundingMinusAccount", fRoundingMinusAccount, value)
+            SetPropertyValue("PurchaseReturnAccount", fPurchaseReturnAccount, value)
         End Set
     End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.RoundingAccount", DefaultContexts.Save)>
+    Public Property RoundingAccount As Account
+        Get
+            Return fRoundingAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("RoundingPlusAccount", fRoundingAccount, value)
+        End Set
+    End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.AdjustmentPlusAccount", DefaultContexts.Save)>
+    Public Property AdjustmentPlusAccount As Account
+        Get
+            Return fAdjustmentPlusAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("AdjustmentPlusAccount", fAdjustmentPlusAccount, value)
+        End Set
+    End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.AdjustmentMinusAccount", DefaultContexts.Save)>
+    Public Property AdjustmentMinusAccount As Account
+        Get
+            Return fAdjustmentMinusAccount
+        End Get
+        Set(ByVal value As Account)
+            SetPropertyValue("AdjustmentMinusAccount", fAdjustmentMinusAccount, value)
+        End Set
+    End Property
+    <DataSourceCriteria("IsParent = False AND IsActive = True")>
+    <RuleRequiredField("Rule Required for AccountLinkingConfig.PaymentDiscountAccount", DefaultContexts.Save)>
+    Public Property PaymentDiscountAccount As Account
+        Get
+            Return fPaymentDiscountAccount
+        End Get
+        Set(value As Account)
+            SetPropertyValue("PaymentDiscountAccount", fPaymentDiscountAccount, value)
+        End Set
+    End Property
+
     <Association("AccountLinkingConfig-InventoryAccountLinkingConfig"), DevExpress.Xpo.Aggregated()>
     Public ReadOnly Property InventoryAccountLinkingConfigs As XPCollection(Of InventoryAccountLinkingConfig)
         Get

@@ -45,6 +45,7 @@ Public Class SalesReturn
     Private _discountValue As Decimal
     Private _discount As Decimal
     Private _grandTotal As Decimal
+    Private _rounding As Decimal
     Private _indonesianWordSays As String
     Private _salesman As Salesman
     Private _creditNote As CreditNote
@@ -158,6 +159,15 @@ Public Class SalesReturn
         End Set
     End Property
     <VisibleInDetailView(False), VisibleInListView(False)>
+    Public Property Rounding As Decimal
+        Get
+            Return _rounding
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("Rounding", _rounding, value)
+        End Set
+    End Property
+    <VisibleInDetailView(False), VisibleInListView(False)>
     Public Property IndonesianWordSays As String
         Get
             Return _indonesianWordSays
@@ -223,13 +233,46 @@ Public Class SalesReturn
     End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
+        Dim currentInventoryValue As Decimal = 0
         For Each objDetail In Details
-            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, objDetail.UnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
+            Dim tmpUnitPrice As Decimal = GlobalFunction.Round((objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity)
+            currentInventoryValue += tmpUnitPrice * objDetail.BaseUnitQuantity
+            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
         Next
+        Rounding = GrandTotal - currentInventoryValue
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
-        Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
+        Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = GrandTotal, .Note = "Create from return transaction with no " & No}
         objCreditNote.No = objAutoNo.GetAutoNo(objCreditNote)
         CreditNote = objCreditNote
+
+        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+
+        Dim objSystemJournalEntry As New SystemJournalEntry
+        objSystemJournalEntry.Description = "Retur Penjualan dengan no " & No & "(" & ReferenceNo & ")"
+        objSystemJournalEntry.TransDate = TransDate
+
+        Dim objSystemJournalEntryCreditNoteAccount As New SystemJournalEntryCredit
+        objSystemJournalEntryCreditNoteAccount.Account = objAccountLinkingConfig.CreditNoteAccount
+        objSystemJournalEntryCreditNoteAccount.Amount = GrandTotal
+        objSystemJournalEntry.Credits.Add(objSystemJournalEntryCreditNoteAccount)
+
+        If Rounding > 0 Then
+            Dim objSystemJournalEntryRoundingAccount As New SystemJournalEntryDebit
+            objSystemJournalEntryRoundingAccount.Account = objAccountLinkingConfig.RoundingAccount
+            objSystemJournalEntryRoundingAccount.Amount = Rounding
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntryRoundingAccount)
+        End If
+
+        Dim objSystemJournalEntrySalesReturnAccount As New SystemJournalEntryDebit
+        objSystemJournalEntrySalesReturnAccount.Account = objAccountLinkingConfig.SalesReturnAccount
+        objSystemJournalEntrySalesReturnAccount.Amount = GrandTotal
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesReturnAccount)
+
+        Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryDebit
+        objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+        objSystemJournalEntryInventoryAccount.Amount = GrandTotal
+        objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
