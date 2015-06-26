@@ -17,6 +17,7 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)> _
 <RuleCriteria("Rule Criteria for Cancel SalesInvoice.PaidAmount = 0", "Cancel", "PaidAmount = 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
+<RuleCriteria("Rule Criteria for SalesInvoice.IsExceedingMaximumOutstandingPaymentAmount = False", "Submit", "IsExceedingMaximumOutstandingPaymentAmount = False")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
 <Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, IndonesianWordSays, Rounding, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>

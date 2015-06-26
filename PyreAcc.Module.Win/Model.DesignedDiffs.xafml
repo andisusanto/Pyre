@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application>
+  <ActionDesign>
+    <Actions>
+      <Action Id="PrintInvoice" Shortcut="CtrlO" />
+      <Action Id="PrintSalesReturn" Shortcut="CtrlO" />
+    </Actions>
+  </ActionDesign>
   <SchemaModules>
     <SchemaModule Name="CloneObjectModule" Version="14.1.8.0" IsNewNode="True" />
     <SchemaModule Name="SystemModule" Version="14.1.8.0" IsNewNode="True" />

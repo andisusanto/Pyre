@@ -4,7 +4,7 @@
     <Actions>
       <Action Id="SaveAndNew" Shortcut="CtrlQ" />
       <Action Id="TransactionBaseCancelSubmitAction" ValidationContexts="CancelSubmit" />
-      <Action Id="TransactionBaseSubmitAction" ValidationContexts="Submit" />
+      <Action Id="TransactionBaseSubmitAction" ValidationContexts="Submit" Shortcut="CtrlA" />
     </Actions>
   </ActionDesign>
   <BOModel>
