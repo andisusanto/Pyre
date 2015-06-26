@@ -202,20 +202,25 @@ Public Class SalesPayment
         objSystemJournalEntrySalesInvoiceAccount.Amount = Total
         objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesInvoiceAccount)
 
-        Dim objSystemJournalEntryDiscountAccount As New SystemJournalEntryDebit
-        objSystemJournalEntryDiscountAccount.Account = objAccountLinkingConfig.PaymentDiscountAccount
-        objSystemJournalEntryDiscountAccount.Amount = Discount
-        objSystemJournalEntry.Debits.Add(objSystemJournalEntryDiscountAccount)
+        If Discount > 0 Then
+            Dim objSystemJournalEntryDiscountAccount As New SystemJournalEntryDebit
+            objSystemJournalEntryDiscountAccount.Account = objAccountLinkingConfig.PaymentDiscountAccount
+            objSystemJournalEntryDiscountAccount.Amount = Discount
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntryDiscountAccount)
+        End If
+        If RemainingAmount > 0 Then
+            Dim objSystemJournalEntryToAccount As New SystemJournalEntryDebit
+            objSystemJournalEntryToAccount.Account = ToAccount
+            objSystemJournalEntryToAccount.Amount = RemainingAmount
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntryToAccount)
+        End If
 
-        Dim objSystemJournalEntryToAccount As New SystemJournalEntryDebit
-        objSystemJournalEntryToAccount.Account = ToAccount
-        objSystemJournalEntryToAccount.Amount = RemainingAmount
-        objSystemJournalEntry.Debits.Add(objSystemJournalEntryToAccount)
-
-        Dim objSystemJournalEntryCreditNoteAccount As New SystemJournalEntryDebit
-        objSystemJournalEntryCreditNoteAccount.Account = objAccountLinkingConfig.CreditNoteAccount
-        objSystemJournalEntryCreditNoteAccount.Amount = CreditNoteAmount
-        objSystemJournalEntry.Debits.Add(objSystemJournalEntryCreditNoteAccount)
+        If CreditNoteAmount > 0 Then
+            Dim objSystemJournalEntryCreditNoteAccount As New SystemJournalEntryDebit
+            objSystemJournalEntryCreditNoteAccount.Account = objAccountLinkingConfig.CreditNoteAccount
+            objSystemJournalEntryCreditNoteAccount.Amount = CreditNoteAmount
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntryCreditNoteAccount)
+        End If
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnCanceled()

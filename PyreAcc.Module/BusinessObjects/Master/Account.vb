@@ -118,7 +118,7 @@ Public Class Account
 
     Public Overrides ReadOnly Property DefaultDisplay As String
         Get
-            Return Code
+            Return Code & " - " & Description
         End Get
     End Property
 End Class

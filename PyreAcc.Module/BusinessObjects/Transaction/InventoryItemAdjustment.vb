@@ -212,12 +212,12 @@ Public Class InventoryItemAdjustment
             Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryDebit
             objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentMinusAccount
             objSystemJournalEntrySalesAccount.Amount = total
-            objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesAccount)
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesAccount)
 
             Dim objSystemJournalEntrySalesInvoiceAccount As New SystemJournalEntryCredit
             objSystemJournalEntrySalesInvoiceAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
             objSystemJournalEntrySalesInvoiceAccount.Amount = total
-            objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
+            objSystemJournalEntry.Credits.Add(objSystemJournalEntrySalesInvoiceAccount)
         End If
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
