@@ -187,18 +187,13 @@ Public Class PurchasePayment
             Return Supplier IsNot Nothing
         End Get
     End Property
-    Protected Overrides Sub OnSubmitted()
-        MyBase.OnSubmitted()
-        For Each objDetail In Details
-            If objDetail.PurchaseInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Purchase Invoice with No {0} has not been submitted", objDetail.PurchaseInvoice.No))
-            If objDetail.PurchaseInvoice.PaymentOutstandingAmount < objDetail.Amount Then Throw New Exception(String.Format("Invalid amount for submitting Invoice. Invalid line : {0}", objDetail.ToString))
-            objDetail.PurchaseInvoice.PaidAmount += objDetail.Amount
-        Next
-        For Each obj In DebitNotes
-            If obj.DebitNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Debit note with no {0} has no enough balance", obj.DebitNote.No))
-            obj.DebitNote.UsedAmount += obj.Amount
-        Next
-
+    Public Sub RecreateCreateJournal()
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
+        CreateJournal()
+    End Sub
+    Private Sub CreateJournal()
         Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
         Dim objSystemJournalEntry As New SystemJournalEntry
@@ -230,6 +225,21 @@ Public Class PurchasePayment
             objSystemJournalEntry.Credits.Add(objSystemJournalEntryDebitNoteAccount)
         End If
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
+    End Sub
+
+    Protected Overrides Sub OnSubmitted()
+        MyBase.OnSubmitted()
+        For Each objDetail In Details
+            If objDetail.PurchaseInvoice.Status <> TransactionStatus.Submitted Then Throw New Exception(String.Format("Purchase Invoice with No {0} has not been submitted", objDetail.PurchaseInvoice.No))
+            If objDetail.PurchaseInvoice.PaymentOutstandingAmount < objDetail.Amount Then Throw New Exception(String.Format("Invalid amount for submitting Invoice. Invalid line : {0}", objDetail.ToString))
+            objDetail.PurchaseInvoice.PaidAmount += objDetail.Amount
+        Next
+        For Each obj In DebitNotes
+            If obj.DebitNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Debit note with no {0} has no enough balance", obj.DebitNote.No))
+            obj.DebitNote.UsedAmount += obj.Amount
+        Next
+
+        CreateJournal()
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()

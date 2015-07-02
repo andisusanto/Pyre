@@ -117,6 +117,7 @@
           <Item Id="Process" Index="3" IsNewNode="True">
             <Items IsNewNode="True">
               <Item Id="CutOffProcess_ListView" ViewId="CutOffProcess_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="RecreateJournalProcess_ListView" ViewId="RecreateJournalProcess_ListView" IsNewNode="True" />
             </Items>
           </Item>
           <Item Id="InventoryItemAdjustment_ListView" ViewId="InventoryItemAdjustment_ListView" ObjectKey="" Index="4" IsNewNode="True" />

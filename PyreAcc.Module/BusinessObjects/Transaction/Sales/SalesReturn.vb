@@ -231,21 +231,14 @@ Public Class SalesReturn
     Private Sub CalculateGrandTotal()
         GrandTotal = Total - Discount
     End Sub
-    Protected Overrides Sub OnSubmitted()
-        MyBase.OnSubmitted()
-        Dim currentInventoryValue As Decimal = 0
-        For Each objDetail In Details
-            Dim tmpUnitPrice As Decimal = GlobalFunction.Round((objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity)
-            currentInventoryValue += tmpUnitPrice * objDetail.BaseUnitQuantity
-            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
-        Next
-        Rounding = GrandTotal - currentInventoryValue
-        Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
-        Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = GrandTotal, .Note = "Create from return transaction with no " & No}
-        objCreditNote.No = objAutoNo.GetAutoNo(objCreditNote)
-        CreditNote = objCreditNote
-
-        Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
+    Public Sub RecreateCreateJournal()
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
+        CreateJournal()
+    End Sub
+    Private Sub CreateJournal()
+      Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
         Dim objSystemJournalEntry As New SystemJournalEntry
         objSystemJournalEntry.Description = "Retur Penjualan dengan no " & No & "(" & ReferenceNo & ")"
@@ -274,6 +267,22 @@ Public Class SalesReturn
         objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
+    Protected Overrides Sub OnSubmitted()
+        MyBase.OnSubmitted()
+        Dim currentInventoryValue As Decimal = 0
+        For Each objDetail In Details
+            Dim tmpUnitPrice As Decimal = GlobalFunction.Round((objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity)
+            currentInventoryValue += tmpUnitPrice * objDetail.BaseUnitQuantity
+            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
+        Next
+        Rounding = GrandTotal - currentInventoryValue
+        Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.CreditNote"), New BinaryOperator("IsActive", True)))
+        Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = GrandTotal, .Note = "Create from return transaction with no " & No}
+        objCreditNote.No = objAutoNo.GetAutoNo(objCreditNote)
+        CreditNote = objCreditNote
+
+        CreateJournal()
+    End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
@@ -284,5 +293,8 @@ Public Class SalesReturn
         Dim tmp = CreditNote
         CreditNote = Nothing
         tmp.Delete()
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
     End Sub
 End Class

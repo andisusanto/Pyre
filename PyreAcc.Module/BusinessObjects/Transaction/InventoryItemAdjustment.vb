@@ -180,8 +180,13 @@ Public Class InventoryItemAdjustment
             Return No
         End Get
     End Property
-    Protected Overrides Sub OnSubmitted()
-        MyBase.OnSubmitted()
+    Public Sub RecreateCreateJournal()
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
+        CreateJournal()
+    End Sub
+    Private Sub CreateJournal()
         Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
         Dim objSystemJournalEntry As New SystemJournalEntry
@@ -190,8 +195,6 @@ Public Class InventoryItemAdjustment
 
         If BaseUnitQuantity > 0 Then
             Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
-            PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
-
             Dim total = tmpUnitPrice * BaseUnitQuantity
             Dim objSystemJournalEntrySalesAccount As New SystemJournalEntryCredit
             objSystemJournalEntrySalesAccount.Account = objAccountLinkingConfig.AdjustmentPlusAccount
@@ -203,8 +206,6 @@ Public Class InventoryItemAdjustment
             objSystemJournalEntrySalesInvoiceAccount.Amount = total
             objSystemJournalEntry.Debits.Add(objSystemJournalEntrySalesInvoiceAccount)
         Else
-            PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Adjustment)
-
             Dim total As Decimal = 0
             For Each objDeductTransactionDetail In PeriodCutOffInventoryItemDeductTransaction.Details
                 total += objDeductTransactionDetail.DeductedBaseUnitQuantity * objDeductTransactionDetail.PeriodCutOffInventoryItem.UnitPrice
@@ -221,6 +222,16 @@ Public Class InventoryItemAdjustment
         End If
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
+    Protected Overrides Sub OnSubmitted()
+        MyBase.OnSubmitted()
+        If BaseUnitQuantity > 0 Then
+            Dim tmpUnitPrice As Decimal = UnitPrice * Quantity / BaseUnitQuantity
+            PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, Item, TransDate, BaseUnitQuantity, tmpUnitPrice, ExpiryDate, BatchNo)
+        Else
+            PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, Item, TransDate, -1 * BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Adjustment)
+        End If
+        CreateJournal()
+    End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         If BaseUnitQuantity > 0 Then
@@ -232,5 +243,8 @@ Public Class InventoryItemAdjustment
             PeriodCutOffInventoryItemDeductTransaction = Nothing
             PeriodCutOffService.DeletePeriodCutOffInventoryItemDeductTransaction(tmp)
         End If
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
     End Sub
 End Class

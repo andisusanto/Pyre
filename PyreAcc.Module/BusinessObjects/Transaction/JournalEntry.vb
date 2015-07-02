@@ -89,9 +89,18 @@ Public Class JournalEntry
     Public Function GetCredits() As ICollection(Of IJournalEntryCredit) Implements IJournalEntry.GetCredits
         Return Credits
     End Function
+    Public Sub RecreateCreateJournal()
+        Dim tmp = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmp)
+        CreateJournal()
+    End Sub
+    Private Sub CreateJournal()
+        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, Me)
+    End Sub
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
-        PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, Me)
+        CreateJournal()
     End Sub
 
     Protected Overrides Sub OnCanceled()

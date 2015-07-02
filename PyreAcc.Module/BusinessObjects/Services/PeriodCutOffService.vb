@@ -167,7 +167,6 @@ Public Class PeriodCutOffService
                                                                                                              GroupOperator.And(New BinaryOperator("PeriodCutOffJournal.EntryDate", PeriodCutOffJournal.EntryDate, BinaryOperatorType.Greater), _
                                                                                                                                New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournal.TransDate, BinaryOperatorType.Equal)))))
         For Each obj In xp
-            obj.Amount += objPeriodCutOffJournalAccountMutation.Amount
             obj.AfterMutationAmount += objPeriodCutOffJournalAccountMutation.Amount
         Next
         Dim periodCutOffAccount As PeriodCutOffAccount = Session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOffJournal.PeriodCutOff), New BinaryOperator("Account", Account)))
@@ -186,7 +185,6 @@ Public Class PeriodCutOffService
                                                                                                              GroupOperator.And(New BinaryOperator("PeriodCutOffJournal.EntryDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.EntryDate, BinaryOperatorType.Greater), _
                                                                                                                                New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.TransDate, BinaryOperatorType.Equal)))))
         For Each obj In xp
-            obj.Amount -= PeriodCutOffJournalAccountMutation.Amount
             obj.AfterMutationAmount -= PeriodCutOffJournalAccountMutation.Amount
         Next
         Dim periodCutOffAccount As PeriodCutOffAccount = Session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.PeriodCutOff), New BinaryOperator("Account", PeriodCutOffJournalAccountMutation.Account)))

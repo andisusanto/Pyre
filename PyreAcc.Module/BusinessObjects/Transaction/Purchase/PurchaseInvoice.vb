@@ -281,15 +281,13 @@ Public Class PurchaseInvoice
     Private Sub CalculatePaymentOutstandingAmount()
         PaymentOutstandingAmount = GrandTotal - PaidAmount
     End Sub
-    Protected Overrides Sub OnSubmitted()
-        MyBase.OnSubmitted()
-        Dim currentInventoryValue As Decimal = 0
-        For Each objDetail In Details
-            Dim tmpUnitPrice As Decimal = GlobalFunction.Round((objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity)
-            currentInventoryValue += tmpUnitPrice * objDetail.BaseUnitQuantity
-            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
-        Next
-        Rounding = GrandTotal - currentInventoryValue
+    Public Sub RecreateCreateJournal()
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
+        CreateJournal()
+    End Sub
+    Private Sub CreateJournal()
         Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
         Dim objSystemJournalEntry As New SystemJournalEntry
@@ -325,6 +323,17 @@ Public Class PurchaseInvoice
         objSystemJournalEntryInventoryAccount.Amount = GrandTotal
         objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
+    End Sub
+    Protected Overrides Sub OnSubmitted()
+        MyBase.OnSubmitted()
+        Dim currentInventoryValue As Decimal = 0
+        For Each objDetail In Details
+            Dim tmpUnitPrice As Decimal = GlobalFunction.Round((objDetail.UnitPrice - (objDetail.Discount / objDetail.Quantity) - (Discount * objDetail.GrandTotal / Total / objDetail.Quantity)) * objDetail.Quantity / objDetail.BaseUnitQuantity)
+            currentInventoryValue += tmpUnitPrice * objDetail.BaseUnitQuantity
+            objDetail.PeriodCutOffInventoryItem = PeriodCutOffService.CreatePeriodCutOffInventoryItem(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, tmpUnitPrice, objDetail.ExpiryDate, objDetail.BatchNo)
+        Next
+        Rounding = GrandTotal - currentInventoryValue
+        CreateJournal()
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()

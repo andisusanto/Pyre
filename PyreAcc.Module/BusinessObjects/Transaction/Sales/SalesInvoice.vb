@@ -298,21 +298,13 @@ Public Class SalesInvoice
     Private Sub CalculatePaymentOutstandingAmount()
         PaymentOutstandingAmount = GrandTotal - PaidAmount
     End Sub
-    Protected Overrides Sub OnSubmitted()
-        MyBase.OnSubmitted()
-        Dim CheckPriceRange = Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice
-        For Each objDetail In Details
-            If CheckPriceRange Then
-                Dim itemPrice As ItemPrice = objDetail.Item.GetPrice(TransDate)
-                Dim tmpRate As Decimal = objDetail.Item.GetUnitRate(objDetail.Unit)
-                If objDetail.UnitPrice * tmpRate > itemPrice.MaximumPrice OrElse objDetail.UnitPrice < itemPrice.MinimumPrice Then
-                    If Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice Then Throw New Exception(String.Format("Line with item {0}'s price out of range", objDetail.Item.Name))
-                End If
-            End If
-            objDetail.PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Sale)
-        Next
-        Customer.OutstandingPaymentAmount += GrandTotal
-
+    Public Sub RecreateCreateJournal()
+        Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
+        PeriodCutOffJournal = Nothing
+        PeriodCutOffService.DeletePeriodCutOffJournal(tmpPeriodCutOffJournal)
+        CreateJournal()
+    End Sub
+    Private Sub CreateJournal()
         Dim objAccountLinkingConfig As AccountLinkingConfig = AccountLinkingConfig.GetInstance(Session)
 
         Dim objSystemJournalEntry As New SystemJournalEntry
@@ -347,6 +339,23 @@ Public Class SalesInvoice
         objSystemJournalEntryInventoryAccount.Amount = tmpCoGS
         objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
+    End Sub
+    Protected Overrides Sub OnSubmitted()
+        MyBase.OnSubmitted()
+        Dim CheckPriceRange = Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice
+        For Each objDetail In Details
+            If CheckPriceRange Then
+                Dim itemPrice As ItemPrice = objDetail.Item.GetPrice(TransDate)
+                Dim tmpRate As Decimal = objDetail.Item.GetUnitRate(objDetail.Unit)
+                If objDetail.UnitPrice * tmpRate > itemPrice.MaximumPrice OrElse objDetail.UnitPrice < itemPrice.MinimumPrice Then
+                    If Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice Then Throw New Exception(String.Format("Line with item {0}'s price out of range", objDetail.Item.Name))
+                End If
+            End If
+            objDetail.PeriodCutOffInventoryItemDeductTransaction = PeriodCutOffService.CreatePeriodCutOffInventoryItemDeductTransaction(Inventory, objDetail.Item, TransDate, objDetail.BaseUnitQuantity, PeriodCutOffInventoryItemDeductTransactionType.Sale)
+        Next
+        Customer.OutstandingPaymentAmount += GrandTotal
+
+        CreateJournal()
     End Sub
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
