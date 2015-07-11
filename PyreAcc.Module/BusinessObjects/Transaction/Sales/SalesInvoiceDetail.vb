@@ -36,10 +36,10 @@ Public Class SalesInvoiceDetail
     Private _quantity As Decimal
     Private _baseUnitQuantity As Decimal
     Private _unitPrice As Decimal
-    Private _total As Double
+    Private _total As Decimal
     Private _discountType As DiscountType
-    Private _discountValue As Double
-    Private _discount As Double
+    Private _discountValue As Decimal
+    Private _discount As Decimal
     Private _grandTotal As Decimal
     Private _periodCutOffInventoryItemDeductTransaction As PeriodCutOffInventoryItemDeductTransaction
     <VisibleInListView(False)>
@@ -168,11 +168,11 @@ Public Class SalesInvoiceDetail
             End If
         End Set
     End Property
-    Public Property Total As Double
+    Public Property Total As Decimal
         Get
             Return _total
         End Get
-        Set(ByVal value As Double)
+        Set(ByVal value As Decimal)
             Dim oldValue = Total
             SetPropertyValue("Total", _total, value)
             If Not IsLoading Then
@@ -200,11 +200,11 @@ Public Class SalesInvoiceDetail
     <VisibleInListView(False)>
     <ImmediatePostData(True)>
     <RuleRange(0, 100, targetcriteria:="DiscountType = 'ByPercentage'")>
-    Public Property DiscountValue As Double
+    Public Property DiscountValue As Decimal
         Get
             Return _discountValue
         End Get
-        Set(ByVal value As Double)
+        Set(ByVal value As Decimal)
             SetPropertyValue("DiscountValue", _discountValue, value)
             If Not IsLoading Then
                 CalculateDiscount()
@@ -212,11 +212,11 @@ Public Class SalesInvoiceDetail
         End Set
     End Property
     <ImmediatePostData(True)>
-    Public Property Discount As Double
+    Public Property Discount As Decimal
         Get
             Return _discount
         End Get
-        Set(ByVal value As Double)
+        Set(ByVal value As Decimal)
             Dim oldValue = Discount
             SetPropertyValue("Discount", _discount, value)
             If Not IsLoading Then

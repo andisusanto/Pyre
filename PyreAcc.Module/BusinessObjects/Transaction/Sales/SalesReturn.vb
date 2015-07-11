@@ -167,6 +167,7 @@ Public Class SalesReturn
             SetPropertyValue("Rounding", _rounding, value)
         End Set
     End Property
+    <Size(1000)>
     <VisibleInDetailView(False), VisibleInListView(False)>
     Public Property IndonesianWordSays As String
         Get
