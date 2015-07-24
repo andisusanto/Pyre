@@ -126,13 +126,6 @@
     </Reference>
     <Reference Include="DevExpress.XtraReports.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraTreeList.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="Report.Module, Version=1.0.5453.16811, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DLL\Report.Module.dll</HintPath>
-    </Reference>
-    <Reference Include="Report.Module.Win">
-      <HintPath>..\DLL\Report.Module.Win.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -246,6 +239,14 @@
     <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ReportModule\trunk\Report.Module.Win\Report.Module.Win.vbproj">
+      <Project>{29c560bd-26c7-4af9-82dc-17d0e2a0468d}</Project>
+      <Name>Report.Module.Win</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReportModule\trunk\Report.Module\Report.Module.vbproj">
+      <Project>{417daf9a-9a37-4cf6-a51d-376aa004a384}</Project>
+      <Name>Report.Module</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PyreAcc.Module\PyreAcc.Module.vbproj">
       <Project>{F622EA3C-2609-4BB3-B589-6B1F2CFBB035}</Project>
       <Name>PyreAcc.Module</Name>

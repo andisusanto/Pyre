@@ -26,10 +26,20 @@ Public Class JournalEntry
         TransDate = GlobalFunction.GetServerNow(Session)
     End Sub
 
+    Private _no As String
     Private _transDate As Date
     Private _description As String
 
     Private _periodCutOffJournal As PeriodCutOffJournal
+    <RuleRequiredField("Rule Required for JournalEntry.No", DefaultContexts.Save)>
+    Public Property No As String
+        Get
+            Return _no
+        End Get
+        Set(value As String)
+            SetPropertyValue("No", _no, value)
+        End Set
+    End Property
     <RuleRequiredField("Rule Required for JournalEntry.TransDate", DefaultContexts.Save)>
     Public Property TransDate As Date Implements IJournalEntry.TransDate
         Get
@@ -39,6 +49,7 @@ Public Class JournalEntry
             SetPropertyValue("TransDate", _transDate, value)
         End Set
     End Property
+    <Size(10000)>
     <RuleRequiredField("Rule Required for JournalEntry.Description", DefaultContexts.Save)>
     Public Property Description As String Implements IJournalEntry.Description
         Get
