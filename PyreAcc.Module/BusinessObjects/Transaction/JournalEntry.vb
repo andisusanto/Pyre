@@ -49,7 +49,7 @@ Public Class JournalEntry
             SetPropertyValue("TransDate", _transDate, value)
         End Set
     End Property
-    <Size(10000)>
+    <Size(4000)>
     <RuleRequiredField("Rule Required for JournalEntry.Description", DefaultContexts.Save)>
     Public Property Description As String Implements IJournalEntry.Description
         Get
@@ -95,10 +95,18 @@ Public Class JournalEntry
         End Get
     End Property
     Public Function GetDebits() As ICollection(Of IJournalEntryDebit) Implements IJournalEntry.GetDebits
-        Return Debits
+        Dim list As New List(Of IJournalEntryDebit)
+        For Each obj In Debits
+            list.Add(obj)
+        Next
+        Return list
     End Function
     Public Function GetCredits() As ICollection(Of IJournalEntryCredit) Implements IJournalEntry.GetCredits
-        Return Credits
+        Dim list As New List(Of IJournalEntryCredit)
+        For Each obj In Credits
+            list.Add(obj)
+        Next
+        Return list
     End Function
     Public Sub RecreateCreateJournal()
         Dim tmp = PeriodCutOffJournal

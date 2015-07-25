@@ -247,7 +247,9 @@ Public Class PurchaseReturn
     Protected Overrides Sub OnCanceled()
         MyBase.OnCanceled()
         For Each objDetail In Details
-            PeriodCutOffService.DeletePeriodCutOffInventoryItemDeductTransaction(objDetail.PeriodCutOffInventoryItemDeductTransaction)
+            Dim tmpPeriodCutOffInventoryItemDeductTransaction = objDetail.PeriodCutOffInventoryItemDeductTransaction
+            objDetail.PeriodCutOffInventoryItemDeductTransaction = Nothing
+            PeriodCutOffService.DeletePeriodCutOffInventoryItemDeductTransaction(tmpPeriodCutOffInventoryItemDeductTransaction)
         Next
         Dim tmp = DebitNote
         DebitNote = Nothing

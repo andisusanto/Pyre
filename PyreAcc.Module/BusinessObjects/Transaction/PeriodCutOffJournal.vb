@@ -56,6 +56,7 @@ Public Class PeriodCutOffJournal
             SetPropertyValue("EntryDate", _entryDate, value)
         End Set
     End Property
+    <Size(4000)>
     <RuleRequiredField("Rule Required for PeriodCutOffJournal.Description", DefaultContexts.Save)>
     Public Property Description As String
         Get
