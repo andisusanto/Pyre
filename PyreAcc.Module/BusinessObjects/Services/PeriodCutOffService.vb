@@ -135,11 +135,12 @@ Public Class PeriodCutOffService
 
     Public Shared Function GetAccountAmount(ByVal TransDate As Date, ByVal Account As Account) As Decimal
         Dim Session As Session = Account.Session
-        Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
+        'No need to InTransaction because should not have 1 transaction access to same account for more than 1 times
+        Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(Session, _
                                                                           GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOffJournal.TransDate", TransDate, BinaryOperatorType.LessOrEqual))) _
-                                                                      With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("PeriodCutOffJournal.EntryDate", DB.SortingDirection.Descending))}
+                                                                      With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("PeriodCutOffJournal.TransDate", DB.SortingDirection.Descending), New SortProperty("PeriodCutOffJournal.EntryDate", DB.SortingDirection.Descending))}
         If xp.Count > 0 Then
-            Return xp(0).Amount
+            Return xp(0).AfterMutationAmount
         Else
             Dim xpPeriodCutOffAccount As New XPCollection(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOff.StartDate", TransDate, BinaryOperatorType.LessOrEqual))) _
                 With {.TopReturnedObjects = 1, .Sorting = New SortingCollection(New SortProperty("PeriodCutOff.StartDate", DB.SortingDirection.Descending))}
