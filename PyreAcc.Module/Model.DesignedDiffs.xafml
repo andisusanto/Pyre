@@ -84,6 +84,7 @@
           <Item Id="PurchasePayment_ListView" Removed="True" />
           <Item Id="PurchaseReturn_ListView" Removed="True" />
           <Item Id="Query_ListView" Removed="True" />
+          <Item Id="RecalculateAccountMutation_ListView" Removed="True" />
           <Item Id="Report_ListView" Removed="True" />
           <Item Id="ReportConfiguration_ListView" Removed="True" />
           <Item Id="SalesInvoice_ListView" Removed="True" />
@@ -117,6 +118,7 @@
           <Item Id="Process" Index="3" IsNewNode="True">
             <Items IsNewNode="True">
               <Item Id="CutOffProcess_ListView" ViewId="CutOffProcess_ListView" ObjectKey="" IsNewNode="True" />
+              <Item Id="RecalculateAccountMutation_ListView" ViewId="RecalculateAccountMutation_ListView" ObjectKey="" IsNewNode="True" />
               <Item Id="RecreateJournalProcess_ListView" ViewId="RecreateJournalProcess_ListView" IsNewNode="True" />
             </Items>
           </Item>
@@ -409,7 +411,6 @@
                   </LayoutGroup>
                 </LayoutGroup>
               </TabbedGroup>
-              <LayoutItem Id="Description" Removed="True" />
               <LayoutItem Id="TransDate" Removed="True" />
             </LayoutGroup>
             <LayoutGroup Id="TransactionBase" RelativeSize="60.288808664259925" Removed="True">

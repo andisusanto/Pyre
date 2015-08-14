@@ -8,6 +8,9 @@ Imports DevExpress.ExpressApp.Security
 Imports DevExpress.ExpressApp.Win
 
 Imports PyreAcc.Win
+Imports DevExpress.Persistent.AuditTrail
+
+Imports PyreAcc.Module
 
 Public Class Program
 
@@ -36,11 +39,23 @@ Public Class Program
             _application.DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways
         End If
         Try
+            AddHandler AuditTrailService.Instance.CustomizeAuditTrailSettings, AddressOf Instance_CustomizeAuditTrailSettings
             _application.Setup()
             _application.Start()
         Catch e As Exception
             _application.HandleException(e)
         End Try
 
+    End Sub
+    Shared Sub Instance_CustomizeAuditTrailSettings(ByVal sender As Object, _
+ByVal e As CustomizeAuditTrailSettingsEventArgs)
+        'e.AuditTrailSettings.Clear()
+        e.AuditTrailSettings.RemoveType(GetType(PeriodCutOffJournalAccountMutation))
+        e.AuditTrailSettings.RemoveType(GetType(PeriodCutOffInventoryItem))
+        e.AuditTrailSettings.RemoveType(GetType(PeriodCutOffInventoryItemDeductTransaction))
+        e.AuditTrailSettings.RemoveType(GetType(PeriodCutOffInventoryItemDeductTransactionDetail))
+        e.AuditTrailSettings.RemoveType(GetType(PeriodCutOffJournal))
+        e.AuditTrailSettings.RemoveType(GetType(CutOffProcess))
+        e.AuditTrailSettings.RemoveType(GetType(RecreateJournalProcess))
     End Sub
 End Class

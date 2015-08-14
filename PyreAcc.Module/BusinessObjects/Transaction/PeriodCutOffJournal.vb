@@ -13,6 +13,7 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 '<RuleCriteria("Rule Criteria for PeriodCutOffJournal.IsAmountBalance = True", DefaultContexts.Save, "IsAmountBalance = True")>
+<DefaultProperty("Description")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PeriodCutOffJournal

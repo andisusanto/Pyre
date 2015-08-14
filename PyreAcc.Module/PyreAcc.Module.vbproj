@@ -188,6 +188,7 @@
     <Compile Include="BusinessObjects\Transaction\PeriodCutOffInventoryItemDeductTransaction.vb" />
     <Compile Include="BusinessObjects\Transaction\PeriodCutOffInventoryItemDeductTransactionDetail.vb" />
     <Compile Include="BusinessObjects\Transaction\JournalEntry.vb" />
+    <Compile Include="BusinessObjects\Transaction\Process\RecalculateAccountMutation.vb" />
     <Compile Include="BusinessObjects\Transaction\Process\RecreateJournalProcess.vb" />
     <Compile Include="BusinessObjects\Transaction\Process\CutOffProcess.vb" />
     <Compile Include="BusinessObjects\Transaction\Sales\CreditNote.vb" />

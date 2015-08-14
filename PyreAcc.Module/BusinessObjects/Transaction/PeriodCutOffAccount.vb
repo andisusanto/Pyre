@@ -63,4 +63,10 @@ Public Class PeriodCutOffAccount
             SetPropertyValue("LastBalance", _lastBalance, value)
         End Set
     End Property
+
+    Public ReadOnly Property AccountMutations As XPCollection(Of PeriodCutOffJournalAccountMutation)
+        Get
+            Return New XPCollection(Of PeriodCutOffJournalAccountMutation)(Session, GroupOperator.And(New BinaryOperator("Account", Account), New BinaryOperator("PeriodCutOffJournal.PeriodCutOff", PeriodCutOff)))
+        End Get
+    End Property
 End Class

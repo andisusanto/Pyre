@@ -152,28 +152,28 @@ Public Class PeriodCutOffService
         Dim Session As Session = PeriodCutOffJournal.Session
         Dim objPeriodCutOffJournalAccountMutation As New PeriodCutOffJournalAccountMutation(Session) _
             With {.PeriodCutOffJournal = PeriodCutOffJournal, _
-                  .MutationType = AccountMutationType.Debit, _
-                  .Account = Account}
-        If Account.NormalBalance = MutationType Then
-            objPeriodCutOffJournalAccountMutation.Amount = Amount
-        Else
-            objPeriodCutOffJournalAccountMutation.Amount = -1 * Amount
+                  .MutationType = MutationType, _
+                  .Account = Account,
+                  .Amount = Amount}
+        Dim tmpAmount As Decimal = Amount
+        If Account.NormalBalance <> MutationType Then
+            tmpAmount *= -1
         End If
         Dim tmpBalance As Decimal = GetAccountAmount(PeriodCutOffJournal.TransDate, Account)
-        objPeriodCutOffJournalAccountMutation.AfterMutationAmount = tmpBalance + objPeriodCutOffJournalAccountMutation.Amount
+        objPeriodCutOffJournalAccountMutation.AfterMutationAmount = tmpBalance + tmpAmount
         Dim xp As New XPCollection(Of PeriodCutOffJournalAccountMutation)(PersistentCriteriaEvaluationBehavior.InTransaction, Session, _
                                                                           GroupOperator.And(New BinaryOperator("Account", Account), _
                                                                                             GroupOperator.Or(New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournal.TransDate, BinaryOperatorType.Greater), _
                                                                                                              GroupOperator.And(New BinaryOperator("PeriodCutOffJournal.EntryDate", PeriodCutOffJournal.EntryDate, BinaryOperatorType.Greater), _
                                                                                                                                New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournal.TransDate, BinaryOperatorType.Equal)))))
         For Each obj In xp
-            obj.AfterMutationAmount += objPeriodCutOffJournalAccountMutation.Amount
+            obj.AfterMutationAmount += tmpAmount
         Next
         Dim periodCutOffAccount As PeriodCutOffAccount = Session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOffJournal.PeriodCutOff), New BinaryOperator("Account", Account)))
         If periodCutOffAccount Is Nothing Then
             periodCutOffAccount = New PeriodCutOffAccount(Session) With {.Account = Account, .PeriodCutOff = PeriodCutOffJournal.PeriodCutOff, .InitialBalance = 0}
         End If
-        periodCutOffAccount.LastBalance += objPeriodCutOffJournalAccountMutation.Amount
+        periodCutOffAccount.LastBalance += tmpAmount
         Return objPeriodCutOffJournalAccountMutation
     End Function
 
@@ -184,11 +184,15 @@ Public Class PeriodCutOffService
                                                                                             GroupOperator.Or(New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.TransDate, BinaryOperatorType.Greater), _
                                                                                                              GroupOperator.And(New BinaryOperator("PeriodCutOffJournal.EntryDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.EntryDate, BinaryOperatorType.Greater), _
                                                                                                                                New BinaryOperator("PeriodCutOffJournal.TransDate", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.TransDate, BinaryOperatorType.Equal)))))
+        Dim tmpAmount As Decimal = PeriodCutOffJournalAccountMutation.Amount
+        If PeriodCutOffJournalAccountMutation.MutationType <> PeriodCutOffJournalAccountMutation.Account.NormalBalance Then
+            tmpAmount *= -1
+        End If
         For Each obj In xp
-            obj.AfterMutationAmount -= PeriodCutOffJournalAccountMutation.Amount
+            obj.AfterMutationAmount -= tmpAmount
         Next
         Dim periodCutOffAccount As PeriodCutOffAccount = Session.FindObject(Of PeriodCutOffAccount)(PersistentCriteriaEvaluationBehavior.InTransaction, GroupOperator.And(New BinaryOperator("PeriodCutOff", PeriodCutOffJournalAccountMutation.PeriodCutOffJournal.PeriodCutOff), New BinaryOperator("Account", PeriodCutOffJournalAccountMutation.Account)))
-        periodCutOffAccount.LastBalance -= PeriodCutOffJournalAccountMutation.Amount
+        periodCutOffAccount.LastBalance -= tmpAmount
         PeriodCutOffJournalAccountMutation.Delete()
     End Sub
 
