@@ -227,7 +227,7 @@ Public Class SalesPayment
             If obj.CreditNote.RemainingAmount < obj.Amount Then Throw New Exception(String.Format("Credit note with no {0} has no enough balance", obj.CreditNote.No))
             obj.CreditNote.UsedAmount += obj.Amount
         Next
-        Customer.OutstandingPaymentAmount -= GrandTotal
+        Customer.OutstandingPaymentAmount -= Total
 
         CreateJournal()
     End Sub
@@ -239,7 +239,7 @@ Public Class SalesPayment
         For Each obj In CreditNotes
             obj.CreditNote.UsedAmount -= obj.Amount
         Next
-        Customer.OutstandingPaymentAmount += GrandTotal
+        Customer.OutstandingPaymentAmount += Total
 
         Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
         PeriodCutOffJournal = Nothing
