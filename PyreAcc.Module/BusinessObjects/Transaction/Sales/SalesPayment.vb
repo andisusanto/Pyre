@@ -228,6 +228,7 @@ Public Class SalesPayment
             obj.CreditNote.UsedAmount += obj.Amount
         Next
         Customer.OutstandingPaymentAmount -= Total
+        Customer.TotalCreditNoteAmount -= CreditNoteAmount
 
         CreateJournal()
     End Sub
@@ -240,6 +241,7 @@ Public Class SalesPayment
             obj.CreditNote.UsedAmount -= obj.Amount
         Next
         Customer.OutstandingPaymentAmount += Total
+        Customer.TotalCreditNoteAmount += CreditNoteAmount
 
         Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
         PeriodCutOffJournal = Nothing

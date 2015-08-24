@@ -281,7 +281,7 @@ Public Class SalesInvoice
     Public ReadOnly Property IsExceedingMaximumOutstandingPaymentAmount As Boolean
         Get
             If CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitExceedMaximumOutstandingPaymentInvoice Then Return False
-            If Customer.MaximumOutstandingPaymentAmount < Customer.OutstandingPaymentAmount + PaymentOutstandingAmount Then Return True
+            If Customer.MaximumOutstandingPaymentAmount < Customer.OutstandingPaymentAmount - Customer.TotalCreditNoteAmount + PaymentOutstandingAmount Then Return True
             Return False
         End Get
     End Property

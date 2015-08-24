@@ -43,45 +43,49 @@ Public Class RecreateJournalProcess
         End Set
     End Property
     Public Overrides Sub Execute()
-        Dim xpPurchaseInvoice As New XPCollection(Of PurchaseInvoice)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("No", "IMP%", BinaryOperatorType.Like), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpPurchaseInvoice
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpSalesInvoice As New XPCollection(Of SalesInvoice)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("No", "IMP%", BinaryOperatorType.Like), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpSalesInvoice
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpPurchasePayment As New XPCollection(Of PurchasePayment)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("No", "IMP%", BinaryOperatorType.Like), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpPurchasePayment
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpSalesPayment As New XPCollection(Of SalesPayment)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("No", "IMP%", BinaryOperatorType.Like), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpSalesPayment
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpPurchaseReturn As New XPCollection(Of PurchaseReturn)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("No", "IMP%", BinaryOperatorType.Like), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpPurchaseReturn
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpSalesReturn As New XPCollection(Of SalesReturn)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("No", "IMP%", BinaryOperatorType.Like), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpSalesReturn
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpInventoryItemAdjustment As New XPCollection(Of InventoryItemAdjustment)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpInventoryItemAdjustment
-            obj.RecreateCreateJournal()
-        Next
-        Dim xpJournalEntry As New XPCollection(Of JournalEntry)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, Until), New BinaryOperator("Status", TransactionStatus.Submitted))) _
-            With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
-        For Each obj In xpJournalEntry
-            obj.RecreateCreateJournal()
-        Next
+        Do Until Since > Until
+
+            Dim xpPurchaseInvoice As New XPCollection(Of PurchaseInvoice)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New NotOperator(New BinaryOperator("No", "IMP%", BinaryOperatorType.Like)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpPurchaseInvoice
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpSalesInvoice As New XPCollection(Of SalesInvoice)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New NotOperator(New BinaryOperator("No", "IMP%", BinaryOperatorType.Like)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpSalesInvoice
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpPurchasePayment As New XPCollection(Of PurchasePayment)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New NotOperator(New BinaryOperator("No", "IMP%", BinaryOperatorType.Like)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpPurchasePayment
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpSalesPayment As New XPCollection(Of SalesPayment)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New NotOperator(New BinaryOperator("No", "IMP%", BinaryOperatorType.Like)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpSalesPayment
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpPurchaseReturn As New XPCollection(Of PurchaseReturn)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New NotOperator(New BinaryOperator("No", "IMP%", BinaryOperatorType.Like)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpPurchaseReturn
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpSalesReturn As New XPCollection(Of SalesReturn)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New NotOperator(New BinaryOperator("No", "IMP%", BinaryOperatorType.Like)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpSalesReturn
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpInventoryItemAdjustment As New XPCollection(Of InventoryItemAdjustment)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpInventoryItemAdjustment
+                obj.RecreateCreateJournal()
+            Next
+            Dim xpJournalEntry As New XPCollection(Of JournalEntry)(Session, GroupOperator.And(New BetweenOperator("TransDate", Since, DateAdd(DateInterval.Day, 1, Since)), New BinaryOperator("Status", TransactionStatus.Submitted))) _
+                With {.Sorting = New SortingCollection(New SortProperty("TransDate", DB.SortingDirection.Ascending))}
+            For Each obj In xpJournalEntry
+                obj.RecreateCreateJournal()
+            Next
+            Since = Since.AddDays(1)
+        Loop
     End Sub
 End Class

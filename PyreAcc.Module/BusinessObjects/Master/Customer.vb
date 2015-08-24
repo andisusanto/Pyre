@@ -14,7 +14,7 @@ Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 Imports DevExpress.ExpressApp.ConditionalAppearance
 <CreatableItem(False)> _
-<Appearance("Appearance Default Disable for Customer", enabled:=False, appearanceitemtype:="ViewItem", targetitems:="OutstandingPaymentAmount")>
+<Appearance("Appearance Default Disable for Customer", enabled:=False, appearanceitemtype:="ViewItem", targetitems:="OutstandingPaymentAmount, TotalCreditNoteAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class Customer
@@ -36,6 +36,7 @@ Public Class Customer
     Private fActive As Boolean
     Private fMaximumOutstandingPaymentAmount As Decimal
     Private fOutstandingPaymentAmount As Decimal
+    Private fTotalCreditNoteAmount As Decimal
 
     Private fSunday As Boolean
     Private fMonday As Boolean
@@ -105,7 +106,14 @@ Public Class Customer
             SetPropertyValue("OutstandingPaymentAmount", fOutstandingPaymentAmount, value)
         End Set
     End Property
-
+    Public Property TotalCreditNoteAmount As Decimal
+        Get
+            Return fTotalCreditNoteAmount
+        End Get
+        Set(value As Decimal)
+            SetPropertyValue("TotalCreditNoteAmount", fTotalCreditNoteAmount, value)
+        End Set
+    End Property
     Public Property Sunday As Boolean
         Get
             Return fSunday

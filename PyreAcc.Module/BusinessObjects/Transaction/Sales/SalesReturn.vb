@@ -281,7 +281,7 @@ Public Class SalesReturn
         Dim objCreditNote As New CreditNote(Session) With {.ForCustomer = Customer, .TransDate = TransDate, .Amount = GrandTotal, .Note = "Create from return transaction with no " & No}
         objCreditNote.No = objAutoNo.GetAutoNo(objCreditNote)
         CreditNote = objCreditNote
-
+        Customer.TotalCreditNoteAmount += GrandTotal
         CreateJournal()
     End Sub
     Protected Overrides Sub OnCanceled()
@@ -293,6 +293,7 @@ Public Class SalesReturn
         Next
         Dim tmp = CreditNote
         CreditNote = Nothing
+        Customer.TotalCreditNoteAmount -= GrandTotal
         tmp.Delete()
         Dim tmpPeriodCutOffJournal = PeriodCutOffJournal
         PeriodCutOffJournal = Nothing
