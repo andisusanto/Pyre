@@ -335,10 +335,12 @@ Public Class SalesInvoice
                 tmpCoGS += objDeductTransactionDetail.DeductedBaseUnitQuantity * objDeductTransactionDetail.PeriodCutOffInventoryItem.UnitPrice
             Next
         Next
-        Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryCredit
-        objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
-        objSystemJournalEntryInventoryAccount.Amount = tmpCoGS
-        objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
+        If tmpCoGS > 0 Then
+            Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryCredit
+            objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+            objSystemJournalEntryInventoryAccount.Amount = tmpCoGS
+            objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
+        End If
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
     Protected Overrides Sub OnSubmitted()
