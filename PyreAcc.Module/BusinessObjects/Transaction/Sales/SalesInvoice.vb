@@ -337,9 +337,13 @@ Public Class SalesInvoice
         Next
         If tmpCoGS > 0 Then
             Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryCredit
-            objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.CostOfSalesAccount
+            objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
             objSystemJournalEntryInventoryAccount.Amount = tmpCoGS
             objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
+            Dim objSystemJournalEntryCoGSAccount As New SystemJournalEntryDebit
+            objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.CostOfSalesAccount
+            objSystemJournalEntryInventoryAccount.Amount = tmpCoGS
+            objSystemJournalEntry.Debits.Add(objSystemJournalEntryInventoryAccount)
         End If
         PeriodCutOffJournal = PeriodCutOffService.CreatePeriodCutOffJournal(Session, objSystemJournalEntry)
     End Sub
