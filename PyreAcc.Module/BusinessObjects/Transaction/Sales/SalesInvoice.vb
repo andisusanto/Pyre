@@ -337,7 +337,7 @@ Public Class SalesInvoice
         Next
         If tmpCoGS > 0 Then
             Dim objSystemJournalEntryInventoryAccount As New SystemJournalEntryCredit
-            objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.GetInventoryAccountLinking(Inventory)
+            objSystemJournalEntryInventoryAccount.Account = objAccountLinkingConfig.CostOfSalesAccount
             objSystemJournalEntryInventoryAccount.Amount = tmpCoGS
             objSystemJournalEntry.Credits.Add(objSystemJournalEntryInventoryAccount)
         End If
