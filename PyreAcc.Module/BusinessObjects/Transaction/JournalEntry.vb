@@ -23,7 +23,7 @@ Public Class JournalEntry
     End Sub
     Public Overrides Sub AfterConstruction()
         MyBase.AfterConstruction()
-        TransDate = GlobalFunction.GetServerNow(Session)
+        TransDate = GlobalFunction.GetServerNow(Session).Date
     End Sub
 
     Private _no As String
