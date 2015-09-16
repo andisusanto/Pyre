@@ -30,7 +30,7 @@ Public Class SalesReturn
 
     Public Overrides Sub AfterConstruction()
         MyBase.AfterConstruction()
-        TransDate = Now
+        TransDate = GlobalFunction.GetServerNow(Session).Date
         Inventory = SysConfig.ReturnItemInventory
     End Sub
     Private _no As String
