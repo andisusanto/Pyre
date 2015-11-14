@@ -1,6 +1,6 @@
 /// <XRTypeInfo>
 ///   <AssemblyFullName>DevExpress.XtraReports.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</AssemblyFullName>
-///   <AssemblyLocation>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReports.v14.1\v4.0_14.1.8.0__b88d1754d700e49a\DevExpress.XtraReports.v14.1.dll</AssemblyLocation>
+///   <AssemblyLocation>D:\Pyre\Application\DevExpress.XtraReports.v14.1.dll</AssemblyLocation>
 ///   <TypeName>DevExpress.XtraReports.UI.XtraReport</TypeName>
 ///   <Localization>en-US</Localization>
 ///   <Version>14.1</Version>
@@ -214,7 +214,7 @@ namespace XtraReportSerialization {
             // topMarginBand1
             // 
             this.topMarginBand1.Dpi = 254F;
-            this.topMarginBand1.HeightF = 57F;
+            this.topMarginBand1.HeightF = 38.47916F;
             this.topMarginBand1.Name = "topMarginBand1";
             // 
             // detailBand1
@@ -657,7 +657,7 @@ namespace XtraReportSerialization {
             this.label34.LocationFloat = new DevExpress.Utils.PointFloat(1169.778F, 97.21822F);
             this.label34.Name = "label34";
             this.label34.Padding = new DevExpress.XtraPrinting.PaddingInfo(5, 5, 0, 0, 254F);
-            this.label34.SizeF = new System.Drawing.SizeF(521.7201F, 45.71999F);
+            this.label34.SizeF = new System.Drawing.SizeF(705.2219F, 45.71999F);
             this.label34.StylePriority.UseFont = false;
             // 
             // label37
@@ -669,7 +669,7 @@ namespace XtraReportSerialization {
             this.label37.LocationFloat = new DevExpress.Utils.PointFloat(1169.778F, 142.9382F);
             this.label37.Name = "label37";
             this.label37.Padding = new DevExpress.XtraPrinting.PaddingInfo(5, 5, 0, 0, 254F);
-            this.label37.SizeF = new System.Drawing.SizeF(521.7201F, 45.71999F);
+            this.label37.SizeF = new System.Drawing.SizeF(705.2219F, 45.71999F);
             this.label37.StylePriority.UseFont = false;
             // 
             // label41
@@ -730,7 +730,7 @@ namespace XtraReportSerialization {
             this.label49.LocationFloat = new DevExpress.Utils.PointFloat(1169.778F, 188.6582F);
             this.label49.Name = "label49";
             this.label49.Padding = new DevExpress.XtraPrinting.PaddingInfo(5, 5, 0, 0, 254F);
-            this.label49.SizeF = new System.Drawing.SizeF(521.7201F, 45.71991F);
+            this.label49.SizeF = new System.Drawing.SizeF(705.2219F, 45.71992F);
             this.label49.StylePriority.UseFont = false;
             // 
             // label1
@@ -896,7 +896,7 @@ namespace XtraReportSerialization {
             this.label33.StylePriority.UseBorders = false;
             this.label33.StylePriority.UseFont = false;
             this.label33.StylePriority.UseTextAlignment = false;
-            this.label33.Text = "** [IndonesianWordSays] **";
+            this.label33.Text = "** [IndonesianWordSays] Rupiah **";
             this.label33.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
             // label54
@@ -1267,7 +1267,7 @@ namespace XtraReportSerialization {
             // 
             this.CurrentDateTime.Name = "CurrentDateTime";
             this.CurrentDateTime.Type = typeof(System.DateTime);
-            this.CurrentDateTime.ValueInfo = "06/13/2015 01:58:15";
+            this.CurrentDateTime.ValueInfo = "07/14/2015 12:08:17";
             this.CurrentDateTime.Visible = false;
             // 
             // Title
@@ -1301,7 +1301,7 @@ namespace XtraReportSerialization {
             this.DisplayName = "Report Sales Invoice";
             this.Dpi = 254F;
             this.Font = new System.Drawing.Font("Tahoma", 7F);
-            this.Margins = new System.Drawing.Printing.Margins(137, 129, 57, 39);
+            this.Margins = new System.Drawing.Printing.Margins(137, 129, 38, 39);
             this.Name = "SalesInvoice";
             this.PageHeight = 1400;
             this.PageWidth = 2141;

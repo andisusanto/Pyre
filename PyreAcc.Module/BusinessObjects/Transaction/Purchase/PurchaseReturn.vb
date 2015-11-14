@@ -239,7 +239,7 @@ Public Class PurchaseReturn
             Next
         Next
         Dim objAutoNo As AutoNo = Session.FindObject(Of AutoNo)(GroupOperator.And(New BinaryOperator("TargetType", "PyreAcc.Module.DebitNote"), New BinaryOperator("IsActive", True)))
-        Dim objDebitNote As New DebitNote(Session) With {.FromSupplier = Supplier, .TransDate = TransDate, .Amount = Total, .Note = "Create from return transaction with no " & No}
+        Dim objDebitNote As New DebitNote(Session) With {.FromSupplier = Supplier, .TransDate = TransDate, .Amount = GrandTotal, .Note = "Create from return transaction with no " & No}
         objDebitNote.No = objAutoNo.GetAutoNo(objDebitNote)
         DebitNote = objDebitNote
         CreateJournal()

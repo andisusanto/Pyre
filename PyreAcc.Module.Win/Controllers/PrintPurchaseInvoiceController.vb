@@ -33,6 +33,9 @@ Partial Public Class PrintPurchaseInvoiceController
         Dim lst As New List(Of IReportParameterControl)
         lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "PurchaseInvoice", .IsActive = True, .Values = {"('" & CurObject.Oid.ToString() & "')"}, .CriteriaString = {CurObject.No}})
         lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "TransDate", .IsActive = False})
+        lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "Item", .IsActive = False})
+        lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "Category", .IsActive = False})
+        lst.Add(New Report.Module.SystemReportParameterControl With {.ControlName = "Brand", .IsActive = False})
         Dim Xrpt = rpt.GetXtraReport(lst)
         Xrpt.ShowRibbonPreviewDialog()
     End Sub

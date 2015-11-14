@@ -166,6 +166,18 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\PrintPurchaseInvoiceController.Designer.vb">
+      <DependentUpon>PrintPurchaseInvoiceController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PrintPurchaseInvoiceController.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PrintPurchaseReturnController.Designer.vb">
+      <DependentUpon>PrintPurchaseReturnController.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PrintPurchaseReturnController.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controllers\PrintSalesReturnController.Designer.vb">
       <DependentUpon>PrintSalesReturnController.vb</DependentUpon>
     </Compile>
@@ -213,6 +225,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controllers\PrintPurchaseInvoiceController.resx">
+      <DependentUpon>PrintPurchaseInvoiceController.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PrintPurchaseReturnController.resx">
+      <DependentUpon>PrintPurchaseReturnController.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controllers\PrintSalesReturnController.resx">
       <DependentUpon>PrintSalesReturnController.vb</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +240,7 @@
     <EmbeddedResource Include="Controllers\PrintInvoiceController.resx">
       <DependentUpon>PrintInvoiceController.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>

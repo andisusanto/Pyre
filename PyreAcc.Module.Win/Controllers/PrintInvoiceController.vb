@@ -25,7 +25,7 @@ Partial Public Class PrintInvoiceController
         InitializeComponent()
         RegisterActions(components)
     End Sub
-    
+
     Private Sub PrintInvoice_Execute(sender As Object, e As SimpleActionExecuteEventArgs) Handles PrintInvoice.Execute
         View.ObjectSpace.CommitChanges()
         Dim tmpName As String = "Report Sales Invoice"

@@ -1,6 +1,6 @@
 /// <XRTypeInfo>
 ///   <AssemblyFullName>DevExpress.XtraReports.v14.1, Version=14.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</AssemblyFullName>
-///   <AssemblyLocation>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReports.v14.1\v4.0_14.1.8.0__b88d1754d700e49a\DevExpress.XtraReports.v14.1.dll</AssemblyLocation>
+///   <AssemblyLocation>D:\Pyre\Application\DevExpress.XtraReports.v14.1.dll</AssemblyLocation>
 ///   <TypeName>DevExpress.XtraReports.UI.XtraReport</TypeName>
 ///   <Localization>en-US</Localization>
 ///   <Version>14.1</Version>
@@ -309,7 +309,7 @@ namespace XtraReportSerialization {
             // 
             this.label10.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.label10.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-                        new DevExpress.XtraReports.UI.XRBinding("Text", null, "Table1.SIGrandTotal")});
+                        new DevExpress.XtraReports.UI.XRBinding("Text", null, "Table1.SIDGrandTotal")});
             this.label10.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.label10.LocationFloat = new DevExpress.Utils.PointFloat(448.516F, 3.178914E-05F);
             this.label10.Name = "label10";
@@ -497,7 +497,7 @@ namespace XtraReportSerialization {
             // 
             this.label16.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.label16.DataBindings.AddRange(new DevExpress.XtraReports.UI.XRBinding[] {
-                        new DevExpress.XtraReports.UI.XRBinding("Text", null, "Table1.SIGrandTotal", "{0:n2}")});
+                        new DevExpress.XtraReports.UI.XRBinding("Text", null, "Table1.SIDGrandTotal")});
             this.label16.Font = new System.Drawing.Font("Tahoma", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
             this.label16.LocationFloat = new DevExpress.Utils.PointFloat(448.516F, 0F);
             this.label16.Name = "label16";
@@ -507,6 +507,7 @@ namespace XtraReportSerialization {
             this.label16.StylePriority.UseFont = false;
             this.label16.StylePriority.UseTextAlignment = false;
             summary12.FormatString = "{0:n2}";
+            summary12.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.label16.Summary = summary12;
             this.label16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             // 
@@ -533,7 +534,7 @@ namespace XtraReportSerialization {
             // Title
             // 
             this.Title.Name = "Title";
-            this.Title.ValueInfo = "Report Sales Invoice Summary Detail";
+            this.Title.ValueInfo = "Report Sales Invoice Detail";
             this.Title.Visible = false;
             // 
             // Criteria
@@ -545,7 +546,7 @@ namespace XtraReportSerialization {
             // 
             this.CurrentDateTime.Name = "CurrentDateTime";
             this.CurrentDateTime.Type = typeof(System.DateTime);
-            this.CurrentDateTime.ValueInfo = "05/29/2015 23:48:39";
+            this.CurrentDateTime.ValueInfo = "08/29/2015 03:19:40";
             this.CurrentDateTime.Visible = false;
             // 
             // Apoteker

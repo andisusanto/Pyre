@@ -111,9 +111,6 @@
     <Reference Include="Evaluator">
       <HintPath>..\DLL\Evaluator.dll</HintPath>
     </Reference>
-    <Reference Include="Report.Module">
-      <HintPath>..\DLL\Report.Module.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -336,6 +333,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FunctionalTests\Config.xml" />
+    <None Include="UnusableNodes.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Images\Images.SalesReturn.png" />
     <EmbeddedResource Include="Images\Images.SalesReturn_Large.png" />
     <EmbeddedResource Include="Images\Images.Account.png" />
@@ -389,7 +390,12 @@
     <EmbeddedResource Include="Images\Images.Wizard.png" />
     <EmbeddedResource Include="Images\Images.Wizard_Large.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ReportModule\trunk\Report.Module\Report.Module.vbproj">
+      <Project>{417daf9a-9a37-4cf6-a51d-376aa004a384}</Project>
+      <Name>Report.Module</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
