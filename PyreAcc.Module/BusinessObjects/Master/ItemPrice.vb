@@ -104,7 +104,9 @@ Public Class ItemPrice
     End Property
 
     Public Shared Function CreateItemPrice(ByVal prmUOW As UnitOfWork, ByVal prmItem As Item, ByVal prmEffectiveDate As Date, ByVal prmMinimumPrice As Decimal, ByVal prmStandardPrice As Decimal, ByVal prmMaximumPrice As Decimal) As ItemPrice
-        Dim xpItemPrice As New XPCollection(Of ItemPrice)(prmUOW, GroupOperator.And(New BinaryOperator("Item", prmItem), New BinaryOperator("Since", prmEffectiveDate, BinaryOperatorType.LessOrEqual)))
+        Dim xpItemPrice As New XPCollection(Of ItemPrice)(prmUOW, GroupOperator.And(New BinaryOperator("Item", prmItem),
+                                                                                    New BinaryOperator("Since", prmEffectiveDate, BinaryOperatorType.LessOrEqual)))
+        xpItemPrice.Sorting = New SortingCollection(New SortProperty("Since", DB.SortingDirection.Descending))
         xpItemPrice.TopReturnedObjects = 1
         If xpItemPrice.Count = 0 Then Throw New Exception("Previous history not found")
         Dim tmpUntil = xpItemPrice(0).Until
