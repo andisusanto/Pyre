@@ -13,7 +13,6 @@ Imports DevExpress.ExpressApp.Model
 Imports DevExpress.Persistent.BaseImpl
 Imports DevExpress.Persistent.Validation
 
-<RuleCriteria("Rule Criteria for PeriodCutOffJournalAccountMutation.Amount <> 0", DefaultContexts.Save, "Amount <> 0")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
 Public Class PeriodCutOffJournalAccountMutation
