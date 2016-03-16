@@ -33,6 +33,7 @@ Public Class ApplicationRole
 
     Private _submitExceedMaximumOutstandingPaymentInvoice As Boolean
     Private _submitOutOfPriceRangeInvoice As Boolean
+    Private _submitOverDueDateSalesInvoice As Boolean
 
     Public Property SubmitExceedMaximumOutstandingPaymentInvoice As Boolean
         Get
@@ -48,6 +49,14 @@ Public Class ApplicationRole
         End Get
         Set(ByVal value As Boolean)
             SetPropertyValue("SubmitOutOfPriceRangeInvoice", _submitOutOfPriceRangeInvoice, value)
+        End Set
+    End Property
+    Public Property SubmitOverDueDateSalesInvoice As Boolean
+        Get
+            Return _submitOverDueDateSalesInvoice
+        End Get
+        Set(ByVal value As Boolean)
+            SetPropertyValue("SubmitOverDueDateSalesInvoice", _submitOverDueDateSalesInvoice, value)
         End Set
     End Property
 

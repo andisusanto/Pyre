@@ -50,4 +50,13 @@ Public Class ApplicationUser
             Return False
         End Get
     End Property
+    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
+    Public ReadOnly Property SubmitOverDueDateSalesInvoice As Boolean
+        Get
+            For Each objRole In Roles
+                If CType(objRole, ApplicationRole).SubmitOverDueDateSalesInvoice Then Return True
+            Next
+            Return False
+        End Get
+    End Property
 End Class
