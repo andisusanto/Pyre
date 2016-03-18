@@ -6,6 +6,19 @@
       <Action Id="PrintSalesReturn" Shortcut="CtrlO" />
     </Actions>
   </ActionDesign>
+  <NavigationItems>
+    <Items>
+      <Item Id="Inquiry">
+        <Items>
+          <Item Id="PeriodCutOff_ListView" Index="0" />
+          <Item Id="Purchase Invoice Detail" Index="1" />
+          <Item Id="Purchase Return" Caption="Purchase Return" ImageName="BO_List" ViewId="PurchaseReturnDetail_ListView" Index="2" IsNewNode="True" />
+          <Item Id="SalesInvoiceDetail_ListView" Index="3" />
+          <Item Id="Sales Return Detail" ImageName="BO_List" ViewId="SalesReturnDetail_ListView" IsNewNode="True" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
   <SchemaModules>
     <SchemaModule Name="CloneObjectModule" Version="14.1.8.0" IsNewNode="True" />
     <SchemaModule Name="SystemModule" Version="14.1.8.0" IsNewNode="True" />

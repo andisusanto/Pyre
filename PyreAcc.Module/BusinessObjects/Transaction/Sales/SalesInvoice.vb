@@ -19,7 +19,6 @@ Imports DevExpress.ExpressApp.ConditionalAppearance
 <RuleCriteria("Rule Criteria for SalesInvoice.Total > 0", DefaultContexts.Save, "Total > 0")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsExceedingMaximumOutstandingPaymentAmount = False", "Submit", "IsExceedingMaximumOutstandingPaymentAmount = False")>
 <RuleCriteria("Rule Criteria for SalesInvoice.IsPeriodClosed = FALSE", "Submit; CancelSubmit", "IsPeriodClosed = FALSE", "Period already closed")>
-<RuleCriteria("Rule Criteria for SalesInvoice.IsOutstandingPaymentOverDueDate= FALSE", "Submit", "IsOutstandingPaymentOverDueDate = FALSE", "Previous invoice haven't paid")>
 <Appearance("Appearance Default Disabled for SalesInvoice", enabled:=False, AppearanceItemType:="ViewItem", targetitems:="DetailsTotal, DetailsDiscount, Total, Discount, GrandTotal, IndonesianWordSays, Rounding, PaidAmount, PaymentOutstandingAmount")>
 <DeferredDeletion(False)>
 <DefaultClassOptions()> _
@@ -286,19 +285,6 @@ Public Class SalesInvoice
             Return False
         End Get
     End Property
-    <VisibleInDetailView(False), VisibleInListView(False), Browsable(False)>
-    Public ReadOnly Property IsOutstandingPaymentOverDueDate As Boolean
-        Get
-            If CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOverDueDateSalesInvoice Then Return False
-            Dim UnPaidSalesInvoices As New XPCollection(Of SalesInvoice)(Session, GroupOperator.And _
-                                                (New BinaryOperator("PaymentOutstandingAmount", 0, BinaryOperatorType.Greater), _
-                                                    New BinaryOperator("DueDate", TransDate, BinaryOperatorType.Less), _
-                                                    New BinaryOperator("Customer", Customer),
-                                                    New BinaryOperator("Status", TransactionStatus.Submitted)))
-            If UnPaidSalesInvoices.Count > 0 Then Return True
-            Return False
-        End Get
-    End Property
     Private Sub CalculateDiscount()
         Select Case DiscountType
             Case [Module].DiscountType.ByAmount
@@ -364,6 +350,16 @@ Public Class SalesInvoice
     Protected Overrides Sub OnSubmitted()
         MyBase.OnSubmitted()
         Dim CheckPriceRange = Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice
+
+        If Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOverDueDateSalesInvoice Then
+            Dim UnPaidSalesInvoices As New XPCollection(Of SalesInvoice)(Session, GroupOperator.And _
+                                            (New BinaryOperator("PaymentOutstandingAmount", 0, BinaryOperatorType.Greater), _
+                                                New BinaryOperator("DueDate", TransDate, BinaryOperatorType.Less), _
+                                                New BinaryOperator("Customer", Customer),
+                                                New BinaryOperator("Status", TransactionStatus.Submitted)))
+            If UnPaidSalesInvoices.Count > 0 Then Throw New Exception(String.Format("Invoice {0} has overdue Duedate", UnPaidSalesInvoices.Object(0).No))
+        End If
+
         For Each objDetail In Details
             If CheckPriceRange Then
                 Dim itemPrice As ItemPrice = objDetail.Item.GetPrice(TransDate)
