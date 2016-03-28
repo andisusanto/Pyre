@@ -364,7 +364,7 @@ Public Class SalesInvoice
             If CheckPriceRange Then
                 Dim itemPrice As ItemPrice = objDetail.Item.GetPrice(TransDate)
                 Dim tmpRate As Decimal = objDetail.Item.GetUnitRate(objDetail.Unit)
-                If objDetail.UnitPrice * tmpRate > itemPrice.MaximumPrice OrElse objDetail.UnitPrice < itemPrice.MinimumPrice Then
+                If objDetail.UnitPrice > itemPrice.MaximumPrice * tmpRate OrElse objDetail.UnitPrice < itemPrice.MinimumPrice Then
                     If Not CType(SecuritySystem.CurrentUser, ApplicationUser).SubmitOutOfPriceRangeInvoice Then Throw New Exception(String.Format("Line with item {0}'s price out of range", objDetail.Item.Name))
                 End If
             End If
