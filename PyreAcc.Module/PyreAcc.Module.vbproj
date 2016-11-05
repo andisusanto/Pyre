@@ -111,6 +111,9 @@
     <Reference Include="Evaluator">
       <HintPath>..\DLL\Evaluator.dll</HintPath>
     </Reference>
+    <Reference Include="Report.Module">
+      <HintPath>..\DLL\Report.Module.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -172,6 +175,7 @@
     <Compile Include="BusinessObjects\System\Object\SystemJournalEntryCredit.vb" />
     <Compile Include="BusinessObjects\System\Object\SystemJournalEntryDebit.vb" />
     <Compile Include="BusinessObjects\System\Object\UIContainerObject.vb" />
+    <Compile Include="BusinessObjects\System\Security\ApplicationRoleReport.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationRole.vb" />
     <Compile Include="BusinessObjects\System\Security\ApplicationUser.vb" />
     <Compile Include="BusinessObjects\System\SystemConfig.vb" />
@@ -389,12 +393,6 @@
     <EmbeddedResource Include="Images\Images.Transaction_Large.png" />
     <EmbeddedResource Include="Images\Images.Wizard.png" />
     <EmbeddedResource Include="Images\Images.Wizard_Large.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\ReportModule\trunk\Report.Module\Report.Module.vbproj">
-      <Project>{417daf9a-9a37-4cf6-a51d-376aa004a384}</Project>
-      <Name>Report.Module</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
