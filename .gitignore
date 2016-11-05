@@ -41,3 +41,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+/PyreAcc.Module/obj/Debug
+/PyreAcc.Module.Web/obj/Debug
+/PyreAcc.Web/bin
+/PyreAcc.Web/obj/Debug
+/PyreAcc.Module.Win/obj/Debug
+/PyreAcc.Win/bin/Debug
+/PyreAcc.Win/obj/Debug
+/.vs
