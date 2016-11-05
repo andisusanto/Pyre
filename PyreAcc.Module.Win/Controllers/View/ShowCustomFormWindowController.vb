@@ -100,7 +100,21 @@ Public Class ShowCustomFormWindowController
             Select Case id
                 Case "Reports"
                     If Not isOpened(mainForm, GetType(frmReportBase), "Reports") Then
-                        ShowCustomModalForm(New frmReportBase(session, New XPCollection(Of Report.Module.Report)(session, New BinaryOperator("Active", True)), New List(Of IReportParameterControl)))
+                        Dim reports As New XPCollection(Of Report.Module.Report)(session)
+                        Dim currentUser As ApplicationUser = session.GetObjectByKey(Of ApplicationUser)(SecuritySystem.CurrentUserId)
+                        For Each role As ApplicationRole In currentUser.Roles
+                            For Each applicationReport In role.Reports
+                                Dim alreadyContainReport As Boolean = False
+                                For Each rpt In reports
+                                    If rpt Is applicationReport.Report Then
+                                        alreadyContainReport = True
+                                        Exit For
+                                    End If
+                                Next
+                                If Not alreadyContainReport AndAlso applicationReport.Report.Active Then reports.Add(applicationReport.Report)
+                            Next
+                        Next
+                        ShowCustomModalForm(New frmReportBase(session, reports, New List(Of IReportParameterControl)))
                     End If
                     handled = True
             End Select

@@ -60,4 +60,10 @@ Public Class ApplicationRole
         End Set
     End Property
 
+    <Association("ApplicationRole-ApplicationRoleReport"), Aggregated()>
+    Public ReadOnly Property Reports As XPCollection(Of ApplicationRoleReport)
+        Get
+            Return GetCollection(Of ApplicationRoleReport)("Reports")
+        End Get
+    End Property
 End Class
